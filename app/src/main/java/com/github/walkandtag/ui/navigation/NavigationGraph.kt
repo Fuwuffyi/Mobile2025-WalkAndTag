@@ -1,6 +1,5 @@
 package com.github.walkandtag.ui.navigation
 
-import android.util.Log
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable

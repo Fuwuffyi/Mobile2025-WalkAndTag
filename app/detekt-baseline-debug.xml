@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>FunctionNaming:Login.kt$@Composable fun Login(navController: NavController)</ID>
+    <ID>FunctionNaming:Navbar.kt$NavbarBuilder$@Composable fun Navbar()</ID>
+    <ID>FunctionNaming:NavigationGraph.kt$@Composable fun NavigationGraph()</ID>
+    <ID>FunctionNaming:Register.kt$@Composable fun Register(navController: NavController)</ID>
+    <ID>FunctionNaming:Theme.kt$@Composable fun WalkAndTagTheme( darkTheme: Boolean = isSystemInDarkTheme(), // Dynamic color is available on Android 12+ dynamicColor: Boolean = true, content: @Composable () -&gt; Unit )</ID>
+    <ID>MagicNumber:Color.kt$0xFF625b71</ID>
+    <ID>MagicNumber:Color.kt$0xFF6650a4</ID>
+    <ID>MagicNumber:Color.kt$0xFF7D5260</ID>
+    <ID>MagicNumber:Color.kt$0xFFCCC2DC</ID>
+    <ID>MagicNumber:Color.kt$0xFFD0BCFF</ID>
+    <ID>MagicNumber:Color.kt$0xFFEFB8C8</ID>
+    <ID>MatchingDeclarationName:Navbar.kt$NavbarBuilder</ID>
+    <ID>NewLineAtEndOfFile:Color.kt$com.github.walkandtag.ui.theme.Color.kt</ID>
+    <ID>NewLineAtEndOfFile:Login.kt$com.github.walkandtag.ui.pages.Login.kt</ID>
+    <ID>NewLineAtEndOfFile:MainActivity.kt$com.github.walkandtag.MainActivity.kt</ID>
+    <ID>NewLineAtEndOfFile:Navbar.kt$com.github.walkandtag.ui.components.Navbar.kt</ID>
+    <ID>NewLineAtEndOfFile:Register.kt$com.github.walkandtag.ui.pages.Register.kt</ID>
+    <ID>NewLineAtEndOfFile:Theme.kt$com.github.walkandtag.ui.theme.Theme.kt</ID>
+    <ID>NewLineAtEndOfFile:Type.kt$com.github.walkandtag.ui.theme.Type.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,50 @@
+config:
+  validation: true
+  warningsAsErrors: false
+
+build:
+  maxIssues: 20
+  weights:
+    complexity: 2
+    style: 1
+    formatting: 0
+
+console-reports:
+  active: true
+  exclude:
+    - 'ProjectStatisticsReport'
+    - 'LiteFindingsReport'
+
+baseline: 'config/detekt/baseline.xml'
+
+formatting:
+  active: true
+
+# Jetpack Compose customization
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated: ['Composable']
+  ClassNaming:
+    active: true
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9]*'
+
+complexity:
+  TooManyFunctions:
+    thresholdInFiles: 15
+    ignoreAnnotatedFunctions: ['Preview']
+  LongMethod:
+    threshold: 50
+  LongParameterList:
+    functionThreshold: 15
+    ignoreDefaultParameters: true
+
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+
+potential-bugs:
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
