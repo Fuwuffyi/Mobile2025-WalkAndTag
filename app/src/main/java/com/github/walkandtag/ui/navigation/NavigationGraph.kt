@@ -1,8 +1,6 @@
 package com.github.walkandtag.ui.navigation
 
 import android.util.Log
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
@@ -21,22 +19,12 @@ fun NavigationGraph() {
             "login",
             enterTransition = { slideInHorizontally { it } },
             exitTransition = { slideOutHorizontally { it } }
-        ) {
-            Login(
-                onLogin = { Log.i("Login", "NavigationGraph: Logged in!") },
-                onRegister = { navigationController.navigate("register") }
-            )
-        }
+        ) { Login(navigationController) }
 
         composable(
             "register",
             enterTransition = { slideInHorizontally { -it } },
             exitTransition = { slideOutHorizontally { -it } }
-        ) {
-            Register(
-                onRegister = { Log.i("Login", "NavigationGraph: Logged in!") },
-                onLogin = { navigationController.navigate("login") }
-            )
-        }
+        ) { Register(navigationController) }
     }
 }
