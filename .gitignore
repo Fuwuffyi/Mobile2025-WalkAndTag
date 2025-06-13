@@ -14,3 +14,51 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# JetBrains IDE
+*.ipr
+*.iws
+
+# JVM artifacts
+*.class
+hs_err_pid*
+*.log
+
+# Archives & packages
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# OS artefacts
+Thumbs.db
+.DS_Store
+
+# Android build outputs
+*.apk
+*.ap_
+*.aab
+*.apks
+*.dex
+gen/
+out/
+
+# Keystore files
+*.jks
+*.keystore
+
+# NDK / external native builds
+.externalNativeBuild/
+.cxx/
+
+# Lint outputs
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# Kotlin 2.0+ data folder
+.kotlin/
