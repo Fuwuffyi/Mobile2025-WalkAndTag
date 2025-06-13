@@ -1,7 +1,12 @@
 plugins {
+    // Android
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    // Jetpack compose
     alias(libs.plugins.kotlin.compose)
+    // Serialization
+    kotlin("plugin.serialization") version "2.0.21"
+    // Checkstyle
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
@@ -62,12 +67,18 @@ dependencies {
     implementation(libs.androidx.material3)
     // Test libraries
     testImplementation(libs.junit)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.ui)
+    androidTestImplementation(libs.androidx.navigation.testing)
+    // Serialization
+    implementation(libs.kotlinx.serialization.json)
     // Checkstyle
     implementation(libs.io.gitlab.arturbosch.detekt.gradle.plugin)
 }
