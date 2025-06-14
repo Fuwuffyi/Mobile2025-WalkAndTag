@@ -2,21 +2,15 @@ package com.github.walkandtag
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.github.walkandtag.ui.navigation.LoginNavGraph
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 
 class AuthActivity : ComponentActivity() {
-    private lateinit var auth: FirebaseAuth
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
         enableEdgeToEdge()
         setContent {
             LoginNavGraph()
@@ -25,12 +19,8 @@ class AuthActivity : ComponentActivity() {
 
     public override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            Log.d("AUTH", "AuthActivity start: User was already logged in! ${currentUser.email}")
+        if (FirebaseAuth.getInstance().currentUser != null) {
             gotoHome()
-        } else {
-            Log.d("AUTH", "AuthActivity start: User is not logged in!")
         }
     }
 

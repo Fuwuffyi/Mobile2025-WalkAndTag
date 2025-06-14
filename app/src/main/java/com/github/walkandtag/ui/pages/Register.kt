@@ -30,14 +30,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
-import com.github.walkandtag.auth.registerEmailPassword
+import com.github.walkandtag.auth.AuthResult
+import com.github.walkandtag.auth.Authentication
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun Register(navController: NavController) {
     val context = LocalContext.current
+    val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
+
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
     var confirmPassword: String by remember { mutableStateOf("") }
+
     Scaffold(
         bottomBar = { loginNavbarBuilder.Navbar(navController, "register") }
     ) { innerPadding ->
@@ -96,22 +101,32 @@ fun Register(navController: NavController) {
                 ElevatedButton(
                     onClick = {
                         if (email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
+                                .show()
                         } else if (password != confirmPassword) {
-                            Toast.makeText(context, "Passwords don’t match", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Passwords don’t match", Toast.LENGTH_SHORT)
+                                .show()
                         } else {
-                            registerEmailPassword(email, password) { success ->
-                                if (success) {
-                                    val intent = Intent(context, MainActivity::class.java)
-                                    context.startActivity(intent)
-                                    (context as? Activity)?.finish()
-                                } else {
-                                    Toast.makeText(context, "Could not register your account", Toast.LENGTH_SHORT).show()
+                            authentication.registerEmailPassword(email, password) { res ->
+                                when (res) {
+                                    is AuthResult.Success -> {
+                                        val intent = Intent(context, MainActivity::class.java)
+                                        context.startActivity(intent)
+                                        (context as? Activity)?.finish()
+                                    }
+
+                                    is AuthResult.Failure -> {
+                                        Toast.makeText(
+                                            context,
+                                            "Could not register your account",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             }
                         }
                     },
-                    modifier = Modifier.weight(1.0f)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Register")
                 }

@@ -33,8 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
-import com.github.walkandtag.auth.loginEmailPassword
+import com.github.walkandtag.auth.AuthResult
+import com.github.walkandtag.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
+import com.google.firebase.auth.FirebaseAuth
 
 val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
     .addButton("login", Icons.AutoMirrored.Filled.Login)
@@ -43,6 +45,7 @@ val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
 @Composable
 fun Login(navController: NavController) {
     val context = LocalContext.current
+    val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
 
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
@@ -94,20 +97,29 @@ fun Login(navController: NavController) {
                 ElevatedButton(
                     onClick = {
                         if (email.isBlank() || password.isBlank()) {
-                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
+                                .show()
                         } else {
-                            loginEmailPassword(email, password) { success ->
-                                if (success) {
-                                    val intent = Intent(context, MainActivity::class.java)
-                                    context.startActivity(intent)
-                                    (context as? Activity)?.finish()
-                                } else {
-                                    Toast.makeText(context, "Could not login", Toast.LENGTH_SHORT).show()
+                            authentication.loginEmailPassword(email, password) { res ->
+                                when (res) {
+                                    is AuthResult.Success -> {
+                                        val intent = Intent(context, MainActivity::class.java)
+                                        context.startActivity(intent)
+                                        (context as? Activity)?.finish()
+                                    }
+
+                                    is AuthResult.Failure -> {
+                                        Toast.makeText(
+                                            context,
+                                            "Could not login",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             }
                         }
                     },
-                    modifier = Modifier.weight(1.0f)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Login")
                 }
