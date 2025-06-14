@@ -7,9 +7,8 @@
 - [ ] Pagina di registrazione
 - [ ] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
-- [ ] Pagina dei reward delle quest?
-- [ ] Pagina del profilo
-- [ ] Pagina dei percorsi di un utente
+- [ ] Pagina dei reward e delle quest di un profilo
+- [ ] Pagina del profile (con i propri percorsi)
 - [ ] Pagina di un singolo percorso
 
 ## Integrazioni
