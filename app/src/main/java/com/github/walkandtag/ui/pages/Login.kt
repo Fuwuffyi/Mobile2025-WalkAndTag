@@ -13,7 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AssignmentInd
+import androidx.compose.material.icons.filled.GMobiledata
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -51,7 +54,32 @@ fun Login(navController: NavController) {
     var password: String by remember { mutableStateOf("") }
 
     Scaffold(
-        bottomBar = { loginNavbarBuilder.Navbar(navController, "login") }
+        bottomBar = { loginNavbarBuilder.Navbar(navController, "login") },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    authentication.loginWithGoogle(context) { res ->
+                        when (res) {
+                            is AuthResult.Success -> {
+                                val intent = Intent(context, MainActivity::class.java)
+                                context.startActivity(intent)
+                                (context as? Activity)?.finish()
+                            }
+
+                            is AuthResult.Failure -> {
+                                Toast.makeText(
+                                    context,
+                                    "Could not login using google",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            ) {
+                Icon(Icons.Filled.GMobiledata, "Google login.")
+            }
+        }
     ) { innerPadding ->
         Surface(
             modifier = Modifier

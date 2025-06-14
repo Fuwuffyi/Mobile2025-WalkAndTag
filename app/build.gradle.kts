@@ -82,10 +82,13 @@ dependencies {
     androidTestImplementation(libs.androidx.navigation.testing)
     // Serialization
     implementation(libs.kotlinx.serialization.json)
-    // Firebase
+    // Firebase auth
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
     // Checkstyle
     implementation(libs.io.gitlab.arturbosch.detekt.gradle.plugin)
 }
