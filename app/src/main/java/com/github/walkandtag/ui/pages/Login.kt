@@ -39,7 +39,7 @@ fun Login(navController: NavController) {
     var password: String by remember { mutableStateOf("") }
 
     Scaffold(
-        topBar = { loginNavbarBuilder.Navbar(navController, "login") }
+        bottomBar = { loginNavbarBuilder.Navbar(navController, "login") }
     ) { innerPadding ->
         Surface(
             modifier = Modifier

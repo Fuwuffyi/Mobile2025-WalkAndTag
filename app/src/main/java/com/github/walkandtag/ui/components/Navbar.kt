@@ -27,8 +27,7 @@ class NavbarBuilder {
                     selected = isCurrent,
                     onClick = { if (!isCurrent) navController.navigate(it.first) },
                     icon = { Icon(it.second, it.first) },
-                    label = { Text(it.first) },
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    label = { Text(it.first) }
                 )
             }
         }

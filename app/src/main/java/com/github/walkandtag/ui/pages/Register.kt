@@ -33,7 +33,7 @@ fun Register(navController: NavController) {
     var password: String by remember { mutableStateOf("") }
     var repeatPassword: String by remember { mutableStateOf("") }
     Scaffold(
-        topBar = { loginNavbarBuilder.Navbar(navController, "register") }
+        bottomBar = { loginNavbarBuilder.Navbar(navController, "register") }
     ) { innerPadding ->
         Surface(
             modifier = Modifier
