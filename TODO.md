@@ -1,10 +1,9 @@
 ## Autenticazione
-- [ ] Creazione di un account utilizzando il DB
-- [ ] Creazione di un account utilizzando Firebase?
+- [X] Creazione di un account utilizzando Firebase
 
 ## Layout
-- [ ] Pagina login
-- [ ] Pagina di registrazione
+- [X] Pagina login
+- [X] Pagina di registrazione
 - [ ] Pagina impostazioni
 - [ ] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
@@ -19,8 +18,8 @@
 
 ## Funzionalitá generali
 - [ ] Notifiche in app e/o push (per gamification)
-- [ ] Tema chiaro scuro
-- [ ] Preferenze?
+- [X] Tema chiaro scuro
+- [ ] Preferenze
 - [ ] Grafici (pag. utente)
 - [ ] Salvataggio dati su DB
 - [ ] Integrazione con wearable
