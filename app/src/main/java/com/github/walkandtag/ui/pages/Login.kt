@@ -1,5 +1,8 @@
 package com.github.walkandtag.ui.pages
 
+import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AssignmentInd
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -22,11 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.github.walkandtag.MainActivity
+import com.github.walkandtag.auth.loginEmailPassword
 import com.github.walkandtag.ui.components.NavbarBuilder
 
 val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
@@ -35,6 +42,8 @@ val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
 
 @Composable
 fun Login(navController: NavController) {
+    val context = LocalContext.current
+
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
 
@@ -82,6 +91,26 @@ fun Login(navController: NavController) {
                         .padding(bottom = 24.dp),
                     shape = RoundedCornerShape(8.dp)
                 )
+                ElevatedButton(
+                    onClick = {
+                        if (email.isBlank() || password.isBlank()) {
+                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+                        } else {
+                            loginEmailPassword(email, password) { success ->
+                                if (success) {
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    context.startActivity(intent)
+                                    (context as? Activity)?.finish()
+                                } else {
+                                    Toast.makeText(context, "Could not login", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1.0f)
+                ) {
+                    Text("Login")
+                }
             }
         }
     }

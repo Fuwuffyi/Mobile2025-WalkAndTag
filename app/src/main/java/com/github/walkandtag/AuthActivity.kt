@@ -27,10 +27,10 @@ class AuthActivity : ComponentActivity() {
         super.onStart()
         val currentUser = auth.currentUser
         if (currentUser != null) {
-            Log.i("AUTH", "onStart: User was already logged in!")
+            Log.d("AUTH", "AuthActivity start: User was already logged in! ${currentUser.email}")
             gotoHome()
         } else {
-            Log.i("AUTH", "onStart: User is not logged in!")
+            Log.d("AUTH", "AuthActivity start: User is not logged in!")
         }
     }
 

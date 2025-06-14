@@ -5,6 +5,7 @@
 ## Layout
 - [ ] Pagina login
 - [ ] Pagina di registrazione
+- [ ] Pagina impostazioni
 - [ ] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
 - [ ] Pagina dei reward e delle quest di un profilo
