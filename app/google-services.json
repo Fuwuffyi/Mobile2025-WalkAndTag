@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "911703362279-mfrap3bg48burvhjk7g9aajjcmmg9g8b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.github.walkandtag",
-            "certificate_hash": "af33f21eaa90e511a51466c01b885bd5e6f9be52"
-          }
-        },
-        {
           "client_id": "911703362279-9s66c9rbsllue99s2355nt69srjaqf31.apps.googleusercontent.com",
           "client_type": 3
         }
