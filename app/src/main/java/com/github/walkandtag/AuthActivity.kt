@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.github.walkandtag.ui.navigation.LoginNavGraph
+import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.google.firebase.auth.FirebaseAuth
 
 class AuthActivity : ComponentActivity() {
@@ -13,7 +14,9 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LoginNavGraph()
+            WalkAndTagTheme {
+                LoginNavGraph()
+            }
         }
     }
 
