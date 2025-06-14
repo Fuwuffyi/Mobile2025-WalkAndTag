@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     // Serialization
     kotlin("plugin.serialization") version "2.0.21"
+    // Firebase and google
+    id("com.google.gms.google-services")
     // Checkstyle
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
@@ -80,6 +82,10 @@ dependencies {
     androidTestImplementation(libs.androidx.navigation.testing)
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
     // Checkstyle
     implementation(libs.io.gitlab.arturbosch.detekt.gradle.plugin)
 }

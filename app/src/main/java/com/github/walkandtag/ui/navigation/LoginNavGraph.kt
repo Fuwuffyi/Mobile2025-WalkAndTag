@@ -10,7 +10,7 @@ import com.github.walkandtag.ui.pages.Login
 import com.github.walkandtag.ui.pages.Register
 
 @Composable
-fun NavigationGraph() {
+fun LoginNavGraph() {
     val navigationController = rememberNavController()
 
     NavHost(navController = navigationController, startDestination = "login") {
