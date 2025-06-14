@@ -16,14 +16,14 @@ fun LoginNavGraph() {
     NavHost(navController = navigationController, startDestination = "login") {
         composable(
             "login",
-            enterTransition = { slideInHorizontally { it } },
-            exitTransition = { slideOutHorizontally { it } }
+            enterTransition = { slideInHorizontally { -it } },
+            exitTransition = { slideOutHorizontally { -it } }
         ) { Login(navigationController) }
 
         composable(
             "register",
-            enterTransition = { slideInHorizontally { -it } },
-            exitTransition = { slideOutHorizontally { -it } }
+            enterTransition = { slideInHorizontally { it } },
+            exitTransition = { slideOutHorizontally { it } }
         ) { Register(navigationController) }
     }
 }
