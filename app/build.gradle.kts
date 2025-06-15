@@ -82,6 +82,11 @@ dependencies {
     androidTestImplementation(libs.androidx.navigation.testing)
     // Serialization
     implementation(libs.kotlinx.serialization.json)
+    // Dependency Injection
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     // Firebase auth
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

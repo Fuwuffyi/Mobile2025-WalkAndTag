@@ -40,8 +40,8 @@ import com.github.walkandtag.MainActivity
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
     .addButton("login", Icons.AutoMirrored.Filled.Login)
@@ -50,7 +50,7 @@ val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
 @Composable
 fun Login(navController: NavController) {
     val context = LocalContext.current
-    val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
+    val authentication = koinInject<Authentication>()
     val scope = rememberCoroutineScope()
 
     var email: String by remember { mutableStateOf("") }

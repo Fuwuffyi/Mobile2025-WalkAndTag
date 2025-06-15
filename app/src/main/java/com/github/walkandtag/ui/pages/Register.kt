@@ -35,13 +35,14 @@ import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.UserSchema
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 fun Register(navController: NavController) {
     val context = LocalContext.current
-    val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
+    val authentication: Authentication = koinInject<Authentication>()
+    val userRepo: FirestoreRepository<UserSchema> = koinInject<FirestoreRepository<UserSchema>>()
     val scope = rememberCoroutineScope()
 
     var email: String by remember { mutableStateOf("") }
@@ -115,8 +116,6 @@ fun Register(navController: NavController) {
                             scope.launch {
                                 when (authentication.registerWithEmail(email, password)) {
                                     is AuthResult.Success -> {
-                                        val userRepo: FirestoreRepository<UserSchema> =
-                                            FirestoreRepository.create("users")
                                         userRepo.create(
                                             UserSchema(
                                                 id = authentication.getCurrentUserId(),

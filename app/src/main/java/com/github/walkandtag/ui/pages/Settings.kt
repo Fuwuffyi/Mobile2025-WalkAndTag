@@ -18,11 +18,12 @@ import androidx.navigation.NavController
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.firebase.auth.Authentication
 import com.google.firebase.auth.FirebaseAuth
+import org.koin.compose.koinInject
 
 @Composable
 fun Settings(navController: NavController) {
     val context = LocalContext.current
-    val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
+    val authentication = koinInject<Authentication>()
 
     Scaffold(
         bottomBar = { homeNavbarBuilder.Navbar(navController, "settings") }
