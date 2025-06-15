@@ -84,4 +84,10 @@ class Authentication(private val auth: FirebaseAuth) {
     }
 
     fun logout() = auth.signOut()
+
+    fun getUser() = auth.currentUser
+
+    fun deleteUser() {
+        auth.currentUser?.delete()
+    }
 }

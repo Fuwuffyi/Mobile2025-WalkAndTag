@@ -32,6 +32,8 @@ import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
 import com.github.walkandtag.auth.AuthResult
 import com.github.walkandtag.auth.Authentication
+import com.github.walkandtag.db.FirestoreDAO
+import com.github.walkandtag.db.schemas.UserSchema
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -110,9 +112,26 @@ fun Register(navController: NavController) {
                             authentication.registerEmailPassword(email, password) { res ->
                                 when (res) {
                                     is AuthResult.Success -> {
-                                        val intent = Intent(context, MainActivity::class.java)
-                                        context.startActivity(intent)
-                                        (context as? Activity)?.finish()
+                                        val dao: FirestoreDAO<UserSchema> =
+                                            FirestoreDAO("users", UserSchema::class.java)
+                                        dao.create(
+                                            UserSchema(
+                                                id = authentication.getUser()?.uid,
+                                                username = "test",
+                                                email = authentication.getUser()?.email ?: ""
+                                            )
+                                        ).addOnSuccessListener {
+                                            val intent = Intent(context, MainActivity::class.java)
+                                            context.startActivity(intent)
+                                            (context as? Activity)?.finish()
+                                        }.addOnFailureListener {
+                                            Toast.makeText(
+                                                context,
+                                                "Could not register your account",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            authentication.deleteUser()
+                                        }
                                     }
 
                                     is AuthResult.Failure -> {
