@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.github.walkandtag.AuthActivity
-import com.github.walkandtag.auth.Authentication
+import com.github.walkandtag.firebase.auth.Authentication
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable

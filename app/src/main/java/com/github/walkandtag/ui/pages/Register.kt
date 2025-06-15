@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
-import com.github.walkandtag.auth.AuthResult
-import com.github.walkandtag.auth.Authentication
-import com.github.walkandtag.db.FirestoreRepository
-import com.github.walkandtag.db.schemas.UserSchema
+import com.github.walkandtag.firebase.auth.AuthResult
+import com.github.walkandtag.firebase.auth.Authentication
+import com.github.walkandtag.firebase.db.FirestoreRepository
+import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 

@@ -1,6 +1,6 @@
-package com.github.walkandtag.db
+package com.github.walkandtag.firebase.db
 
-import com.github.walkandtag.db.schemas.Schema
+import com.github.walkandtag.firebase.db.schemas.Schema
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await

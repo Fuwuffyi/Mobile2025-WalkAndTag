@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
-import com.github.walkandtag.auth.AuthResult
-import com.github.walkandtag.auth.Authentication
+import com.github.walkandtag.firebase.auth.AuthResult
+import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch

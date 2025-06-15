@@ -1,4 +1,4 @@
-package com.github.walkandtag.auth
+package com.github.walkandtag.firebase.auth
 
 import android.content.Context
 import androidx.credentials.CredentialManager

@@ -1,4 +1,4 @@
-package com.github.walkandtag.auth
+package com.github.walkandtag.firebase.auth
 
 sealed class AuthResult {
     data object Success : AuthResult()
