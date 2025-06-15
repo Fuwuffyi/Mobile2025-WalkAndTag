@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import com.github.walkandtag.auth.AuthResult
 import com.github.walkandtag.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
     .addButton("login", Icons.AutoMirrored.Filled.Login)
@@ -49,6 +51,7 @@ val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
 fun Login(navController: NavController) {
     val context = LocalContext.current
     val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
+    val scope = rememberCoroutineScope()
 
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
@@ -58,8 +61,8 @@ fun Login(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    authentication.loginWithGoogle(context) { res ->
-                        when (res) {
+                    scope.launch {
+                        when (authentication.loginWithGoogle(context)) {
                             is AuthResult.Success -> {
                                 val intent = Intent(context, MainActivity::class.java)
                                 context.startActivity(intent)
@@ -128,8 +131,8 @@ fun Login(navController: NavController) {
                             Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
                                 .show()
                         } else {
-                            authentication.loginEmailPassword(email, password) { res ->
-                                when (res) {
+                            scope.launch {
+                                when (authentication.loginWithEmail(email, password)) {
                                     is AuthResult.Success -> {
                                         val intent = Intent(context, MainActivity::class.java)
                                         context.startActivity(intent)

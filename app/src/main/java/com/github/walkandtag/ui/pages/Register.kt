@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,14 +33,16 @@ import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
 import com.github.walkandtag.auth.AuthResult
 import com.github.walkandtag.auth.Authentication
-import com.github.walkandtag.db.FirestoreDAO
+import com.github.walkandtag.db.FirestoreRepository
 import com.github.walkandtag.db.schemas.UserSchema
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 @Composable
 fun Register(navController: NavController) {
     val context = LocalContext.current
     val authentication = remember { Authentication(FirebaseAuth.getInstance()) }
+    val scope = rememberCoroutineScope()
 
     var email: String by remember { mutableStateOf("") }
     var password: String by remember { mutableStateOf("") }
@@ -109,29 +112,20 @@ fun Register(navController: NavController) {
                             Toast.makeText(context, "Passwords don’t match", Toast.LENGTH_SHORT)
                                 .show()
                         } else {
-                            authentication.registerEmailPassword(email, password) { res ->
-                                when (res) {
+                            scope.launch {
+                                when (authentication.registerWithEmail(email, password)) {
                                     is AuthResult.Success -> {
-                                        val dao: FirestoreDAO<UserSchema> =
-                                            FirestoreDAO("users", UserSchema::class.java)
-                                        dao.create(
+                                        val userRepo: FirestoreRepository<UserSchema> =
+                                            FirestoreRepository.create("users")
+                                        userRepo.create(
                                             UserSchema(
-                                                id = authentication.getUser()?.uid,
-                                                username = "test",
-                                                email = authentication.getUser()?.email ?: ""
+                                                id = authentication.getCurrentUserId(),
+                                                username = "Username"
                                             )
-                                        ).addOnSuccessListener {
-                                            val intent = Intent(context, MainActivity::class.java)
-                                            context.startActivity(intent)
-                                            (context as? Activity)?.finish()
-                                        }.addOnFailureListener {
-                                            Toast.makeText(
-                                                context,
-                                                "Could not register your account",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            authentication.deleteUser()
-                                        }
+                                        )
+                                        val intent = Intent(context, MainActivity::class.java)
+                                        context.startActivity(intent)
+                                        (context as? Activity)?.finish()
                                     }
 
                                     is AuthResult.Failure -> {
