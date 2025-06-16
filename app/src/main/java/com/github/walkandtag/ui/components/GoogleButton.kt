@@ -36,15 +36,12 @@ fun GoogleButton(scope: CoroutineScope) {
 
                     is AuthResult.Failure -> {
                         Toast.makeText(
-                            context,
-                            "Could not login using google",
-                            Toast.LENGTH_SHORT
+                            context, "Could not login using google", Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
             }
-        }
-    ) {
+        }) {
         Icon(
             painter = painterResource(R.drawable.google_logo),
             modifier = Modifier.size(24.dp),
