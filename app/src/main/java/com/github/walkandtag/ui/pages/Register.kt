@@ -35,6 +35,7 @@ import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.ui.components.GoogleButton
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -50,7 +51,8 @@ fun Register(navController: NavController) {
     var confirmPassword: String by remember { mutableStateOf("") }
 
     Scaffold(
-        bottomBar = { loginNavbarBuilder.Navbar(navController, "register") }
+        bottomBar = { loginNavbarBuilder.Navbar(navController, "register") },
+        floatingActionButton = { GoogleButton(scope) }
     ) { innerPadding ->
         Surface(
             modifier = Modifier

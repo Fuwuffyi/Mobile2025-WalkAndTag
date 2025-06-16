@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import com.github.walkandtag.MainActivity
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
+import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -58,31 +59,7 @@ fun Login(navController: NavController) {
 
     Scaffold(
         bottomBar = { loginNavbarBuilder.Navbar(navController, "login") },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        when (authentication.loginWithGoogle(context)) {
-                            is AuthResult.Success -> {
-                                val intent = Intent(context, MainActivity::class.java)
-                                context.startActivity(intent)
-                                (context as? Activity)?.finish()
-                            }
-
-                            is AuthResult.Failure -> {
-                                Toast.makeText(
-                                    context,
-                                    "Could not login using google",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                }
-            ) {
-                Icon(Icons.Filled.GMobiledata, "Google login.")
-            }
-        }
+        floatingActionButton = { GoogleButton(scope) }
     ) { innerPadding ->
         Surface(
             modifier = Modifier
