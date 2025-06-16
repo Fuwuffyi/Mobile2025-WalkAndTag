@@ -1,8 +1,5 @@
 package com.github.walkandtag.ui.pages
 
-import android.app.Activity
-import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,21 +10,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AssignmentInd
-import androidx.compose.material.icons.filled.GMobiledata
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,13 +27,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.github.walkandtag.MainActivity
-import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
-import kotlinx.coroutines.launch
+import com.github.walkandtag.ui.viewmodel.LoginViewModel
 import org.koin.compose.koinInject
 
 val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
@@ -49,13 +40,11 @@ val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
     .addButton("register", Icons.Filled.AssignmentInd)
 
 @Composable
-fun Login(navController: NavController) {
-    val context = LocalContext.current
-    val authentication = koinInject<Authentication>()
+fun Login(navController: NavController, viewModel: LoginViewModel = viewModel()) {
     val scope = rememberCoroutineScope()
-
-    var email: String by remember { mutableStateOf("") }
-    var password: String by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val auth = koinInject<Authentication>()
+    val state by viewModel.uiState.collectAsState()
 
     Scaffold(
         bottomBar = { loginNavbarBuilder.Navbar(navController, "login") },
@@ -82,8 +71,8 @@ fun Login(navController: NavController) {
                         .padding(bottom = 32.dp)
                 )
                 OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
+                    value = state.email,
+                    onValueChange = viewModel::onEmailChanged,
                     label = { Text("Email") },
                     singleLine = true,
                     modifier = Modifier
@@ -92,8 +81,8 @@ fun Login(navController: NavController) {
                     shape = RoundedCornerShape(8.dp)
                 )
                 OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
+                    value = state.password,
+                    onValueChange = viewModel::onPasswordChanged,
                     label = { Text("Password") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
@@ -103,30 +92,7 @@ fun Login(navController: NavController) {
                     shape = RoundedCornerShape(8.dp)
                 )
                 ElevatedButton(
-                    onClick = {
-                        if (email.isBlank() || password.isBlank()) {
-                            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            scope.launch {
-                                when (authentication.loginWithEmail(email, password)) {
-                                    is AuthResult.Success -> {
-                                        val intent = Intent(context, MainActivity::class.java)
-                                        context.startActivity(intent)
-                                        (context as? Activity)?.finish()
-                                    }
-
-                                    is AuthResult.Failure -> {
-                                        Toast.makeText(
-                                            context,
-                                            "Could not login",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        }
-                    },
+                    onClick = { viewModel.onLogin(context, auth) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Login")
