@@ -24,21 +24,22 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun Register(navController: NavController, viewModel: RegisterViewModel = viewModel()) {
+fun Register(navController: NavController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val userRepo = koinInject<FirestoreRepository<UserSchema>>()
     val auth = koinInject<Authentication>()
+    val viewModel = koinViewModel<RegisterViewModel>()
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(

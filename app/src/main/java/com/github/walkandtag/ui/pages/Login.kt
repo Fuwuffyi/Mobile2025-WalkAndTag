@@ -27,12 +27,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
@@ -40,10 +40,11 @@ val loginNavbarBuilder: NavbarBuilder = NavbarBuilder()
     .addButton("register", Icons.Filled.AssignmentInd)
 
 @Composable
-fun Login(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+fun Login(navController: NavController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val auth = koinInject<Authentication>()
+    val viewModel = koinViewModel<LoginViewModel>()
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
