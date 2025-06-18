@@ -2,10 +2,10 @@ package com.github.walkandtag.ui.pages
 
 import android.app.Activity
 import android.content.Intent
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,14 +28,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.ui.theme.md_theme_dark_primary
-import com.github.walkandtag.ui.theme.md_theme_light_primary
 import org.koin.compose.koinInject
 
 @Composable
@@ -144,7 +141,8 @@ fun Settings() {
                 context.startActivity(intent)
                 (context as? Activity)?.finish()
             },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            contentPadding = PaddingValues(30.dp)
         ) {
             Text(
                 "Logout",
