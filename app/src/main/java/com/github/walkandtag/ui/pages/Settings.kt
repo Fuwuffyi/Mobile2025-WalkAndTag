@@ -2,13 +2,11 @@ package com.github.walkandtag.ui.pages
 
 import android.app.Activity
 import android.content.Intent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,9 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,116 +29,109 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.firebase.auth.Authentication
 import org.koin.compose.koinInject
 
 @Composable
-fun Settings(navController: NavController) {
+fun Settings() {
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
 
-    Scaffold(
-        bottomBar = { homeNavbarBuilder.Navbar(navController, "settings") }
-    ) { innerPadding ->
-        Surface(
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp)
+            .wrapContentSize(Alignment.Center)
+    ) {
+        Text("Settings")
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
+            Text("Cambia tema", modifier = Modifier.weight(1f))
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-                    .wrapContentSize(Alignment.Center)
+                    .width(100.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text("Settings")
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Cambia tema", modifier = Modifier.weight(1f))
-                    Row(
-                        modifier = Modifier
-                            .width(100.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        IconButton(onClick = { /* Azione */ }) {
-                            Icon(
-                                imageVector = Icons.Default.LightMode,
-                                contentDescription = "Imposta modalità chiara",
-                                tint = Color.Yellow
-                            )
-                        }
-                        IconButton(onClick = { /* Azione */ }) {
-                            Icon(
-                                imageVector = Icons.Default.DarkMode,
-                                contentDescription = "Imposta modalità scura",
-                                tint = Color.Yellow
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Modifica profilo", modifier = Modifier.weight(1f))
-                    Box(
-                        modifier = Modifier
-                            .width(100.dp)
-                    ) {
-                        IconButton(onClick = { /* Azione */ }, modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Modifica account",
-                                tint = Color.Yellow
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Elimina account", modifier = Modifier.weight(1f))
-                    Box(
-                        modifier = Modifier
-                            .width(100.dp)
-                    ) {
-                        IconButton(onClick = { /* Azione */ }, modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Elimina account",
-                                tint = Color.Red
-                            )
-                        }
-                    }
-
-                }
-                Button(
-                    onClick = {
-                        authentication.logout()
-                        val intent = Intent(context, AuthActivity::class.java)
-                        context.startActivity(intent)
-                        (context as? Activity)?.finish()
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
-                ) {
-                    Text("Logout")
-                    Spacer(modifier = Modifier.width(8.dp))
+                IconButton(onClick = { /* Azione */ }) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = "Logout",
-                        modifier = Modifier.size(20.dp)
+                        imageVector = Icons.Default.LightMode,
+                        contentDescription = "Imposta modalità chiara",
+                        tint = Color.Yellow
+                    )
+                }
+                IconButton(onClick = { /* Azione */ }) {
+                    Icon(
+                        imageVector = Icons.Default.DarkMode,
+                        contentDescription = "Imposta modalità scura",
+                        tint = Color.Yellow
                     )
                 }
             }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Modifica profilo", modifier = Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .width(100.dp)
+            ) {
+                IconButton(
+                    onClick = { /* Azione */ },
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Modifica account",
+                        tint = Color.Yellow
+                    )
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Elimina account", modifier = Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .width(100.dp)
+            ) {
+                IconButton(
+                    onClick = { /* Azione */ },
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Elimina account",
+                        tint = Color.Red
+                    )
+                }
+            }
+        }
+        Button(
+            onClick = {
+                authentication.logout()
+                val intent = Intent(context, AuthActivity::class.java)
+                context.startActivity(intent)
+                (context as? Activity)?.finish()
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
+        ) {
+            Text("Logout")
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Logout,
+                contentDescription = "Logout",
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }

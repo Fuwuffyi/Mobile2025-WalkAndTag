@@ -5,9 +5,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 
 class NavbarBuilder {
     private val buttonItems: ArrayList<Pair<String, ImageVector>> = ArrayList()
@@ -18,13 +16,13 @@ class NavbarBuilder {
     }
 
     @Composable
-    fun Navbar(navController: NavController, currentPage: String, modifier: Modifier = Modifier) {
-        NavigationBar(modifier = modifier) {
+    fun Navbar(currentPage: String, changePageCallback: (String) -> Unit) {
+        NavigationBar() {
             buttonItems.forEach {
                 val isCurrent: Boolean = currentPage == it.first
                 NavigationBarItem(
                     selected = isCurrent,
-                    onClick = { if (!isCurrent) navController.navigate(it.first) },
+                    onClick = { changePageCallback(it.first) },
                     icon = { Icon(it.second, it.first) },
                     label = { Text(it.first) }
                 )

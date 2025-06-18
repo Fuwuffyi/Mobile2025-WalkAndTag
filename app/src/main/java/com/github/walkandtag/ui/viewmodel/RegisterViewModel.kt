@@ -63,7 +63,7 @@ class RegisterViewModel : ViewModel() {
                         userRepo.create(
                             UserSchema(
                                 id = authentication.getCurrentUserId(),
-                                username = "Username"
+                                username = currState.username
                             )
                         )
                         val intent = Intent(context, MainActivity::class.java)
