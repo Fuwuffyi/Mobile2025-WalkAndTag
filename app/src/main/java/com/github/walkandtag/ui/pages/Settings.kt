@@ -122,8 +122,7 @@ fun Settings() {
                 val intent = Intent(context, AuthActivity::class.java)
                 context.startActivity(intent)
                 (context as? Activity)?.finish()
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6200EE))
+            }
         ) {
             Text("Logout")
             Spacer(modifier = Modifier.width(8.dp))
