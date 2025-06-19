@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.SupervisedUserCircle
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
