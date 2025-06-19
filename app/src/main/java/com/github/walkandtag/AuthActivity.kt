@@ -56,6 +56,7 @@ class AuthActivity : ComponentActivity() {
                 val state by viewModel.uiState.collectAsState()
                 Scaffold(
                     floatingActionButton = {
+                        // @TODO(), ha state sta roba? Dovrei tenerla o toglierla?
                         GoogleButton {
                             scope.launch {
                                 val result = auth.loginWithGoogle(context)
