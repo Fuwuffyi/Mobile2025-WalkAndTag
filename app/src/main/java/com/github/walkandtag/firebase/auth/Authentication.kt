@@ -58,6 +58,8 @@ class Authentication(private val auth: FirebaseAuth) {
 
     fun getCurrentUserId() = auth.currentUser?.uid
 
+    fun getCurrentUserName() = auth.currentUser?.displayName
+
     suspend fun deleteCurrentUser() =
         auth.currentUser?.let {
             runCatching { it.delete().awaitResult() }

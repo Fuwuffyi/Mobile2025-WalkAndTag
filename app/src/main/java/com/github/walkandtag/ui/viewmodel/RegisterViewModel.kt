@@ -61,10 +61,8 @@ class RegisterViewModel : ViewModel() {
                 when (authentication.registerWithEmail(currState.email, currState.password)) {
                     is AuthResult.Success -> {
                         userRepo.create(
-                            UserSchema(
-                                id = authentication.getCurrentUserId(),
-                                username = currState.username
-                            )
+                            UserSchema(username = currState.username),
+                            authentication.getCurrentUserId().orEmpty()
                         )
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)

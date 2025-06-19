@@ -26,11 +26,12 @@ import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
 
 @Composable
 fun Register() {
     val context = LocalContext.current
-    val userRepo = koinInject<FirestoreRepository<UserSchema>>()
+    val userRepo = koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
     val auth = koinInject<Authentication>()
     val viewModel = koinViewModel<RegisterViewModel>()
     val state by viewModel.uiState.collectAsState()
