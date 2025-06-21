@@ -1,5 +1,6 @@
 [versions]
 agp = "8.10.1"
+androidSdk = "11.8.0"
 credentialsPlayServicesAuth = "1.5.0"
 firebaseBom = "33.15.0"
 ioGitlabArturboschDetektGradlePlugin = "1.23.8"
@@ -12,7 +13,7 @@ espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.7.3"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.06.00"
+composeBom = "2025.06.01"
 navigationCompose = "2.9.0"
 googleid = "1.1.1"
 
@@ -27,6 +28,7 @@ androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+gl-android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 io-gitlab-arturbosch-detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "ioGitlabArturboschDetektGradlePlugin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -44,7 +46,6 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
-koin-androidx-viewmodel = { module = "io.insert-koin:koin-androidx-viewmodel" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }

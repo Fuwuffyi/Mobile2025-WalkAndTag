@@ -1,15 +1,15 @@
 package com.github.walkandtag.ui.components
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -25,10 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.maplibre.android.geometry.LatLng
 import java.util.Locale
 
 @Composable
-fun FeedPathEntry(username: String, length: Float, duration: Float) {
+fun FeedPathEntry(username: String, length: Float, duration: Float, path: Collection<LatLng>) {
     Spacer(modifier = Modifier.size(40.dp))
     Column {
         Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -39,20 +40,22 @@ fun FeedPathEntry(username: String, length: Float, duration: Float) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(256.dp)
-                    .background(Color(150, 255, 200))
+                    .aspectRatio(6.0f / 4.0f)
             ) {
+                StaticMapPath(
+                    path = path, modifier = Modifier.fillMaxSize()
+                )
                 IconButton(
                     onClick = { Log.i("TEST", "FeedPathEntry: ") },
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(8.dp) // margine dalla cornice
-                        .border(2.dp, Color.Yellow)
+                        .padding(8.dp)
+                        .border(2.dp, Color(255, 127, 0))
                 ) {
                     Icon(
                         imageVector = Icons.Filled.StarBorder,
                         contentDescription = "Favorite",
-                        tint = Color.Yellow,
+                        tint = Color(255, 127, 0),
                         modifier = Modifier.size(50.dp)
                     )
                 }

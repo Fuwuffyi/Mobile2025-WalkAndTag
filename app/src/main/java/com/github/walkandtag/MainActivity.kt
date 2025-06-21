@@ -24,6 +24,8 @@ import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.qualifier.named
+import org.maplibre.android.MapLibre
+import org.maplibre.android.WellKnownTileServer
 
 private val homeNavbar: NavbarBuilder = NavbarBuilder()
     .addButton("settings", Icons.Filled.Settings)
@@ -33,6 +35,11 @@ private val homeNavbar: NavbarBuilder = NavbarBuilder()
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapLibre.getInstance(
+            this,
+            null,
+            WellKnownTileServer.MapTiler
+        )
         enableEdgeToEdge()
         setContent {
             WalkAndTagTheme {

@@ -94,6 +94,8 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    // Maplibre
+    implementation(libs.gl.android.sdk)
     // Firebase document database
     implementation(libs.google.firebase.firestore)
     // Checkstyle
