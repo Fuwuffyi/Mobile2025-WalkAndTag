@@ -4,7 +4,7 @@
 ## Layout
 - [X] Pagina login
 - [X] Pagina di registrazione
-- [ ] Pagina impostazioni
+- [X] Pagina impostazioni
 - [ ] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
 - [ ] Pagina dei reward e delle quest di un profilo
@@ -18,10 +18,10 @@
 
 ## Funzionalitá generali
 - [ ] Notifiche in app e/o push (per gamification)
-- [X] Tema chiaro scuro
+- [-] Tema chiaro scuro
 - [ ] Preferenze
 - [ ] Grafici (pag. utente)
-- [ ] Salvataggio dati su DB
+- [X] Salvataggio dati su DB
 - [ ] Integrazione con wearable
 
 ### Feature (maybe)
