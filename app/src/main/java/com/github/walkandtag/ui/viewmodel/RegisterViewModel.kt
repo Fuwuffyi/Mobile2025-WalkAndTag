@@ -1,19 +1,16 @@
 package com.github.walkandtag.ui.viewmodel
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.walkandtag.MainActivity
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -21,12 +18,22 @@ data class RegisterState(
     val username: String = "",
     val email: String = "",
     val password: String = "",
-    val confirmPassword: String = ""
+    val confirmPassword: String = "",
+    val errorMessage: String? = null
 )
 
-class RegisterViewModel : ViewModel() {
+sealed class RegisterEvent {
+    object RegisterSuccess : RegisterEvent()
+    data class ShowError(val message: String) : RegisterEvent()
+}
+
+class RegisterViewModel(
+    private val auth: Authentication, private val userRepo: FirestoreRepository<UserSchema>
+) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterState())
     val uiState: StateFlow<RegisterState> = _uiState.asStateFlow()
+    private val _events = Channel<RegisterEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     fun onUsernameChanged(value: String) {
         _uiState.update { current -> current.copy(username = value) }
@@ -44,39 +51,24 @@ class RegisterViewModel : ViewModel() {
         _uiState.update { current -> current.copy(confirmPassword = value) }
     }
 
-    fun onRegister(
-        context: Context,
-        authentication: Authentication,
-        userRepo: FirestoreRepository<UserSchema>
-    ) {
-        val currState: RegisterState = _uiState.value
-        if (currState.email.isBlank() || currState.password.isBlank() || currState.confirmPassword.isBlank()) {
-            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
-                .show()
-        } else if (currState.password != currState.confirmPassword) {
-            Toast.makeText(context, "Passwords don’t match", Toast.LENGTH_SHORT)
-                .show()
-        } else {
-            viewModelScope.launch {
-                when (authentication.registerWithEmail(currState.email, currState.password)) {
-                    is AuthResult.Success -> {
-                        userRepo.create(
-                            UserSchema(username = currState.username),
-                            authentication.getCurrentUserId().orEmpty()
-                        )
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.startActivity(intent)
-                        (context as? Activity)?.finish()
-                    }
-
-                    is AuthResult.Failure -> {
-                        Toast.makeText(
-                            context,
-                            "Could not register your account",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+    fun onRegister() {
+        val (username, email, password, confirmPassword) = _uiState.value
+        if (username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            viewModelScope.launch { _events.send(RegisterEvent.ShowError("All fields are required")) }
+            return
+        }
+        if (password != confirmPassword) {
+            viewModelScope.launch { _events.send(RegisterEvent.ShowError("Passwords do not match")) }
+            return
+        }
+        viewModelScope.launch {
+            when (auth.registerWithEmail(email, password)) {
+                is AuthResult.Success -> {
+                    userRepo.create(UserSchema(username), auth.getCurrentUserId().orEmpty())
+                    _events.send(RegisterEvent.RegisterSuccess)
                 }
+
+                is AuthResult.Failure -> _events.send(RegisterEvent.ShowError("Could not register your account"))
             }
         }
     }

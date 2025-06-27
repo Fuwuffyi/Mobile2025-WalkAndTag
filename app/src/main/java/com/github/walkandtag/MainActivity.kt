@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,25 +22,23 @@ import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
+import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.qualifier.named
 import org.maplibre.android.MapLibre
 import org.maplibre.android.WellKnownTileServer
 
-private val homeNavbar: NavbarBuilder = NavbarBuilder()
-    .addButton("settings", Icons.Filled.Settings)
-    .addButton("home", Icons.Filled.Home)
-    .addButton("profile", Icons.Filled.AccountCircle)
+private val homeNavbar: NavbarBuilder = NavbarBuilder().addButton("settings", Icons.Filled.Settings)
+    .addButton("home", Icons.Filled.Home).addButton("profile", Icons.Filled.AccountCircle)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MapLibre.getInstance(
-            this,
-            null,
-            WellKnownTileServer.MapTiler
+            this, null, WellKnownTileServer.MapTiler
         )
+
         enableEdgeToEdge()
         setContent {
             WalkAndTagTheme {
@@ -47,13 +46,20 @@ class MainActivity : ComponentActivity() {
                 val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
                 val state by viewModel.uiState.collectAsState()
 
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is NavbarEvent.NavigateTo -> navigator.navigate(event.route)
+                        }
+                    }
+                }
+
                 Scaffold(
                     bottomBar = {
                         homeNavbar.Navbar(state.currentPage) {
-                            viewModel.onChangePage(it, navController = navigator)
+                            viewModel.onChangePage(it)
                         }
-                    }
-                ) { innerPadding ->
+                    }) { innerPadding ->
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()

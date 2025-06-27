@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,6 +31,7 @@ import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
+import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -37,9 +39,9 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 
-private val authNavbar: NavbarBuilder = NavbarBuilder()
-    .addButton("login", Icons.AutoMirrored.Filled.Login)
-    .addButton("register", Icons.Filled.AssignmentInd)
+private val authNavbar: NavbarBuilder =
+    NavbarBuilder().addButton("login", Icons.AutoMirrored.Filled.Login)
+        .addButton("register", Icons.Filled.AssignmentInd)
 
 class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,44 +53,51 @@ class AuthActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val scope = rememberCoroutineScope()
                 val auth = koinInject<Authentication>()
-                val userRepo = koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
+                val userRepo =
+                    koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
                 val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("login"))
                 val state by viewModel.uiState.collectAsState()
-                Scaffold(
-                    floatingActionButton = {
-                        // @TODO(), ha state sta roba? Dovrei tenerla o toglierla?
-                        GoogleButton {
-                            scope.launch {
-                                val result = auth.loginWithGoogle(context)
-                                when (result) {
-                                    is AuthResult.Success -> {
-                                        userRepo.create(
-                                            UserSchema(username = auth.getCurrentUserName().orEmpty()),
-                                            auth.getCurrentUserId().orEmpty()
-                                        )
-                                        val intent = Intent(context, MainActivity::class.java)
-                                        context.startActivity(intent)
-                                        (context as? Activity)?.finish()
-                                    }
 
-                                    is AuthResult.Failure -> {
-                                        Toast.makeText(
-                                            context,
-                                            "Could not login using google",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is NavbarEvent.NavigateTo -> navigator.navigate(event.route)
+                        }
+                    }
+                }
+
+                Scaffold(floatingActionButton = {
+                    // @TODO(), ha state sta roba? Dovrei tenerla o toglierla?
+                    GoogleButton {
+                        scope.launch {
+                            val result = auth.loginWithGoogle(context)
+                            when (result) {
+                                is AuthResult.Success -> {
+                                    userRepo.create(
+                                        UserSchema(
+                                            username = auth.getCurrentUserName().orEmpty()
+                                        ), auth.getCurrentUserId().orEmpty()
+                                    )
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    context.startActivity(intent)
+                                    (context as? Activity)?.finish()
+                                }
+
+                                is AuthResult.Failure -> {
+                                    Toast.makeText(
+                                        context,
+                                        "Could not login using google",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }
-                    },
-                    bottomBar = {
-                        authNavbar.Navbar(state.currentPage) {
-                            viewModel.onChangePage(it, navController = navigator)
-                        }
                     }
-                )
-                { innerPadding ->
+                }, bottomBar = {
+                    authNavbar.Navbar(state.currentPage) {
+                        viewModel.onChangePage(it)
+                    }
+                }) { innerPadding ->
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()

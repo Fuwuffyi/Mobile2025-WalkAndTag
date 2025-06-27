@@ -1,27 +1,34 @@
 package com.github.walkandtag.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class NavbarState(
     val currentPage: String = "",
 )
 
+sealed class NavbarEvent {
+    data class NavigateTo(val route: String) : NavbarEvent()
+}
+
 class NavbarViewModel(startPage: String) : ViewModel() {
     private val _uiState = MutableStateFlow(NavbarState(currentPage = startPage))
     val uiState: StateFlow<NavbarState> = _uiState.asStateFlow()
+    private val _events = Channel<NavbarEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
-    private fun changePage(value: String) {
-        _uiState.update { current -> current.copy(currentPage = value) }
-    }
-
-    fun onChangePage(value: String, navController: NavController) {
+    fun onChangePage(value: String) {
         if (value == _uiState.value.currentPage) return
-        changePage(value)
-        navController.navigate(value)
+        _uiState.update { it.copy(currentPage = value) }
+        viewModelScope.launch {
+            _events.send(NavbarEvent.NavigateTo(value))
+        }
     }
 }

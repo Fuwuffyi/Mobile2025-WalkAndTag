@@ -1,5 +1,8 @@
 package com.github.walkandtag.ui.pages
 
+import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,21 +24,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.firebase.db.FirestoreRepository
-import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.MainActivity
+import com.github.walkandtag.ui.viewmodel.RegisterEvent
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
-import org.koin.core.qualifier.named
 
 @Composable
-fun Register() {
+fun Register(viewModel: RegisterViewModel = koinViewModel()) {
     val context = LocalContext.current
-    val userRepo = koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
-    val auth = koinInject<Authentication>()
-    val viewModel = koinViewModel<RegisterViewModel>()
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is RegisterEvent.ShowError -> Toast.makeText(
+                    context, event.message, Toast.LENGTH_SHORT
+                ).show()
+
+                is RegisterEvent.RegisterSuccess -> {
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                    (context as? Activity)?.finish()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -93,8 +107,7 @@ fun Register() {
             shape = RoundedCornerShape(8.dp)
         )
         ElevatedButton(
-            onClick = { viewModel.onRegister(context, auth, userRepo) },
-            modifier = Modifier.fillMaxWidth()
+            onClick = { viewModel.onRegister() }, modifier = Modifier.fillMaxWidth()
         ) {
             Text("Register")
         }
