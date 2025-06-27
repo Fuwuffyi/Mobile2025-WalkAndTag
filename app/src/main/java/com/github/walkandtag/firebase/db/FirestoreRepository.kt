@@ -15,22 +15,35 @@ class FirestoreRepository<T : Any>(
         return id
     }
 
-    suspend fun get(id: String): T? = col.document(id).get().await().toObject(classType)
+    suspend fun get(id: String): FirestoreDocument<T>? {
+        val snapshot = col.document(id).get().await()
+        val obj = snapshot.toObject(classType)
+        return obj?.let { FirestoreDocument(snapshot.id, it) }
+    }
 
-    suspend fun get(ids: Collection<String>): Collection<T> {
+    suspend fun get(ids: Collection<String>): Collection<FirestoreDocument<T>> {
         if (ids.isEmpty()) return emptyList()
         return ids.chunked(10).flatMap { chunk ->
-            col.whereIn(FieldPath.documentId(), chunk).get().await().toObjects(classType)
+            col.whereIn(FieldPath.documentId(), chunk).get().await().documents.mapNotNull { doc ->
+                val obj = doc.toObject(classType)
+                obj?.let { FirestoreDocument(doc.id, it) }
+            }
         }
     }
 
-    suspend fun getAll(): Collection<T> = col.get().await().toObjects(classType)
+    suspend fun getAll(): List<FirestoreDocument<T>> {
+        val snapshot = col.get().await()
+        return snapshot.documents.mapNotNull { doc ->
+            val obj = doc.toObject(classType)
+            obj?.let { FirestoreDocument(doc.id, it) }
+        }
+    }
 
     suspend fun update(item: T, id: String) {
         col.document(id).set(item).await()
     }
 
-    suspend fun delete(id: String) = col.document(id).delete().await()
+    suspend fun delete(id: String): Void = col.document(id).delete().await()
 
     companion object {
         inline fun <reified T : Any> create(

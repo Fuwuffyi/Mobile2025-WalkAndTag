@@ -16,43 +16,35 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class Authentication(private val auth: FirebaseAuth) {
-    private suspend fun signInWithCredential(credential: AuthCredential) =
-        runCatching {
-            auth.signInWithCredential(credential).awaitResult()
-        }.fold({ AuthResult.Success }, { AuthResult.Failure(it) })
+    private suspend fun signInWithCredential(credential: AuthCredential) = runCatching {
+        auth.signInWithCredential(credential).awaitResult()
+    }.fold({ AuthResult.Success }, { AuthResult.Failure(it) })
 
-    suspend fun loginWithEmail(email: String, password: String) =
-        runCatching {
-            auth.signInWithEmailAndPassword(email, password).awaitResult()
-        }.fold({ AuthResult.Success }, { AuthResult.Failure(it) })
+    suspend fun loginWithEmail(email: String, password: String) = runCatching {
+        auth.signInWithEmailAndPassword(email, password).awaitResult()
+    }.fold({ AuthResult.Success }, { AuthResult.Failure(it) })
 
-    suspend fun registerWithEmail(email: String, password: String) =
-        runCatching {
-            auth.createUserWithEmailAndPassword(email, password).awaitResult()
-        }.fold({ AuthResult.Success }, { AuthResult.Failure(it) })
+    suspend fun registerWithEmail(email: String, password: String) = runCatching {
+        auth.createUserWithEmailAndPassword(email, password).awaitResult()
+    }.fold({ AuthResult.Success }, { AuthResult.Failure(it) })
 
-    suspend fun loginWithGoogle(context: Context): AuthResult =
-        withContext(Dispatchers.Main) {
-            try {
-                val options = GetSignInWithGoogleOption.Builder(
-                    serverClientId = context.getString(R.string.server_client_id)
-                ).build()
-                val request = GetCredentialRequest.Builder()
-                    .addCredentialOption(options)
-                    .build()
-                val result = CredentialManager
-                    .create(context)
-                    .getCredential(context, request)
-                val custom = result.credential as? CustomCredential
-                    ?: throw IllegalStateException("Unexpected credential type")
-                val gid = GoogleIdTokenCredential.createFrom(custom.data)
-                val token = gid.idToken
-                val cred = GoogleAuthProvider.getCredential(token, null)
-                signInWithCredential(cred)
-            } catch (e: Exception) {
-                AuthResult.Failure(e)
-            }
+    suspend fun loginWithGoogle(context: Context): AuthResult = withContext(Dispatchers.Main) {
+        try {
+            val options = GetSignInWithGoogleOption.Builder(
+                serverClientId = context.getString(R.string.server_client_id)
+            ).build()
+            val request = GetCredentialRequest.Builder().addCredentialOption(options).build()
+            val result = CredentialManager.create(context).getCredential(context, request)
+            val custom = result.credential as? CustomCredential
+                ?: throw IllegalStateException("Unexpected credential type")
+            val gid = GoogleIdTokenCredential.createFrom(custom.data)
+            val token = gid.idToken
+            val cred = GoogleAuthProvider.getCredential(token, null)
+            signInWithCredential(cred)
+        } catch (e: Exception) {
+            AuthResult.Failure(e)
         }
+    }
 
     fun logout() = auth.signOut()
 
@@ -60,16 +52,15 @@ class Authentication(private val auth: FirebaseAuth) {
 
     fun getCurrentUserName() = auth.currentUser?.displayName
 
-    suspend fun deleteCurrentUser() =
-        auth.currentUser?.let {
-            runCatching { it.delete().awaitResult() }
-                .fold({ AuthResult.Success }, { AuthResult.Failure(it) })
-        } ?: AuthResult.Failure(IllegalStateException("No user to delete"))
+    suspend fun deleteCurrentUser() = auth.currentUser?.let {
+        runCatching { it.delete().awaitResult() }.fold(
+                { AuthResult.Success },
+                { AuthResult.Failure(it) })
+    } ?: AuthResult.Failure(IllegalStateException("No user to delete"))
 }
 
-suspend fun <T> Task<T>.awaitResult(): T =
-    try {
-        await()
-    } catch (e: Exception) {
-        throw e
-    }
+suspend fun <T> Task<T>.awaitResult(): T = try {
+    await()
+} catch (e: Exception) {
+    throw e
+}

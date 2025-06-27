@@ -17,7 +17,7 @@ class NavbarBuilder {
 
     @Composable
     fun Navbar(currentPage: String, changePageCallback: (String) -> Unit) {
-        NavigationBar() {
+        NavigationBar {
             buttonItems.forEach {
                 val isCurrent: Boolean = currentPage == it.first
                 NavigationBarItem(
