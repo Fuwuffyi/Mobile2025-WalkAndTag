@@ -17,7 +17,7 @@ sealed class HomeState {
 }
 
 data class FeedItem(
-    val username: String, val length: Float, val duration: Float, val points: Collection<LatLng>
+    val itemId: String, val username: String, val length: Float, val duration: Float, val points: Collection<LatLng>
 )
 
 class HomeViewModel(
@@ -41,6 +41,7 @@ class HomeViewModel(
                 val feedItems = paths.map { path ->
                     val user = users[path.data.userId] ?: UserSchema("Deleted User")
                     FeedItem(
+                        itemId = path.id,
                         username = user.username,
                         length = path.data.length,
                         duration = path.data.time,

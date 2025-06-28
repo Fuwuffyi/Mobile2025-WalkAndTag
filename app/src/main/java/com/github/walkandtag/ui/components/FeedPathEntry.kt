@@ -29,9 +29,15 @@ import org.maplibre.android.geometry.LatLng
 import java.util.Locale
 
 @Composable
-fun FeedPathEntry(username: String, length: Float, duration: Float, path: Collection<LatLng>) {
+fun FeedPathEntry(
+    username: String,
+    length: Float,
+    duration: Float,
+    path: Collection<LatLng>,
+    modifier: Modifier = Modifier
+) {
     Spacer(modifier = Modifier.size(40.dp))
-    Column {
+    Column(modifier = modifier) {
         Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
             Text(username, modifier = Modifier.padding(start = 4.dp))

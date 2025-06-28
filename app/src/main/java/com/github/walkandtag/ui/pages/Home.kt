@@ -1,5 +1,7 @@
 package com.github.walkandtag.ui.pages
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,19 +13,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import com.github.walkandtag.ui.components.FeedPathEntry
+import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
-fun Home(viewModel: HomeViewModel = koinViewModel()) {
+fun Home(
+    nav: NavHostController,
+    globalViewModel: GlobalViewModel = koinInject(),
+    viewModel: HomeViewModel = koinViewModel()
+) {
 
     val uiState by viewModel.uiState.collectAsState()
 
     when (uiState) {
         is HomeState.Loading -> {
-            // Replace with your own fancy loading UI
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
@@ -31,9 +40,7 @@ fun Home(viewModel: HomeViewModel = koinViewModel()) {
 
         is HomeState.Error -> {
             val message = (uiState as HomeState.Error).message
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Error: $message")
-            }
+            globalViewModel.showSnackbar(message)
         }
 
         is HomeState.Success -> {
@@ -44,7 +51,10 @@ fun Home(viewModel: HomeViewModel = koinViewModel()) {
                         username = feedItem.username,
                         length = feedItem.length,
                         duration = feedItem.duration,
-                        path = feedItem.points
+                        path = feedItem.points,
+                        modifier = Modifier.clickable(onClick = {
+                            nav.navigate(Navigation.PathDetails(feedItem.itemId))
+                        })
                     )
                 }
             }
