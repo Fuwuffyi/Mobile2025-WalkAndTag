@@ -34,10 +34,6 @@ import org.koin.core.qualifier.named
 import org.maplibre.android.MapLibre
 import org.maplibre.android.WellKnownTileServer
 
-private val homeNavbar: NavbarBuilder =
-    NavbarBuilder().addButton(Navigation.Settings, Icons.Filled.Settings, "Settings")
-        .addButton(Navigation.Home, Icons.Filled.Home, "Home")
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +51,9 @@ class MainActivity : ComponentActivity() {
 
                 // @TODO(): Edit this, this code bad
                 val auth = koinInject<Authentication>()
+                val homeNavbar: NavbarBuilder =
+                    NavbarBuilder().addButton(Navigation.Settings, Icons.Filled.Settings, "Settings")
+                        .addButton(Navigation.Home, Icons.Filled.Home, "Home")
                 homeNavbar.addButton(
                     Navigation.Profile(auth.getCurrentUserId() ?: "NULL"),
                     Icons.Filled.AccountCircle, "Account"
