@@ -2,7 +2,6 @@ package com.github.walkandtag.ui.pages
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,21 +24,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.walkandtag.MainActivity
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterEvent
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
-fun Register(viewModel: RegisterViewModel = koinViewModel()) {
+fun Register(
+    globalViewModel: GlobalViewModel = koinInject(),
+    viewModel: RegisterViewModel = koinViewModel()
+) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is RegisterEvent.ShowError -> Toast.makeText(
-                    context, event.message, Toast.LENGTH_SHORT
-                ).show()
+                is RegisterEvent.ShowError -> globalViewModel.showSnackbar(event.message)
 
                 is RegisterEvent.RegisterSuccess -> {
                     val intent = Intent(context, MainActivity::class.java)

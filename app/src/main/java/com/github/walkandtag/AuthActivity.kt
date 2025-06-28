@@ -3,7 +3,6 @@ package com.github.walkandtag
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +14,8 @@ import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,6 +32,7 @@ import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -56,6 +58,7 @@ class AuthActivity : ComponentActivity() {
                 val userRepo =
                     koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
                 val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("login"))
+                val globalViewModel: GlobalViewModel = koinInject()
                 val state by viewModel.uiState.collectAsState()
 
                 LaunchedEffect(Unit) {
@@ -66,7 +69,9 @@ class AuthActivity : ComponentActivity() {
                     }
                 }
 
-                Scaffold(floatingActionButton = {
+                Scaffold(snackbarHost = {
+                    SnackbarHost(globalViewModel.snackbarHostState)
+                }, floatingActionButton = {
                     // @TODO(), ha state sta roba? Dovrei tenerla o toglierla?
                     GoogleButton {
                         scope.launch {
@@ -83,13 +88,7 @@ class AuthActivity : ComponentActivity() {
                                     (context as? Activity)?.finish()
                                 }
 
-                                is AuthResult.Failure -> {
-                                    Toast.makeText(
-                                        context,
-                                        "Could not login using google",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                is AuthResult.Failure -> globalViewModel.showSnackbar("Could not login using google")
                             }
                         }
                     }

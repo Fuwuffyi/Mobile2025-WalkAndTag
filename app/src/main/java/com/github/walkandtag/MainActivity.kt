@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,9 +23,11 @@ import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 import org.maplibre.android.MapLibre
 import org.maplibre.android.WellKnownTileServer
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
             WalkAndTagTheme {
                 val navigator = rememberNavController()
                 val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
+                val globalViewModel: GlobalViewModel = koinInject()
                 val state by viewModel.uiState.collectAsState()
 
                 LaunchedEffect(Unit) {
@@ -55,6 +59,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(
+                    snackbarHost = { SnackbarHost(globalViewModel.snackbarHostState) },
                     bottomBar = {
                         homeNavbar.Navbar(state.currentPage) {
                             viewModel.onChangePage(it)
