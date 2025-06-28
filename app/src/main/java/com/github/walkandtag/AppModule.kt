@@ -4,6 +4,7 @@ import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
@@ -29,4 +30,5 @@ val appModule = module {
     viewModel(named("main")) { NavbarViewModel("home") }
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
+    viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
 }
