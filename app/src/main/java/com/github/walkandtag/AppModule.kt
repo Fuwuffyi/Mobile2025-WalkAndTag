@@ -4,6 +4,7 @@ import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
@@ -28,8 +29,8 @@ val appModule = module {
     }
     // View models
     single { GlobalViewModel() } // Singleton per evitare di passarlo a tutte le pagine
-    viewModel(named("login")) { NavbarViewModel("login") }
-    viewModel(named("main")) { NavbarViewModel("home") }
+    viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
+    viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }

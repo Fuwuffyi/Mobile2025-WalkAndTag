@@ -20,8 +20,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
+import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
@@ -32,8 +34,9 @@ import org.koin.core.qualifier.named
 import org.maplibre.android.MapLibre
 import org.maplibre.android.WellKnownTileServer
 
-private val homeNavbar: NavbarBuilder = NavbarBuilder().addButton("settings", Icons.Filled.Settings)
-    .addButton("home", Icons.Filled.Home).addButton("profile", Icons.Filled.AccountCircle)
+private val homeNavbar: NavbarBuilder =
+    NavbarBuilder().addButton(Navigation.Settings, Icons.Filled.Settings, "Settings")
+        .addButton(Navigation.Home, Icons.Filled.Home, "Home")
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +52,13 @@ class MainActivity : ComponentActivity() {
                 val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
                 val globalViewModel: GlobalViewModel = koinInject()
                 val state by viewModel.uiState.collectAsState()
+
+                // @TODO(): Edit this, this code bad
+                val auth = koinInject<Authentication>()
+                homeNavbar.addButton(
+                    Navigation.Profile(auth.getCurrentUserId() ?: "NULL"),
+                    Icons.Filled.AccountCircle, "Account"
+                )
 
                 LaunchedEffect(Unit) {
                     viewModel.events.collect { event ->

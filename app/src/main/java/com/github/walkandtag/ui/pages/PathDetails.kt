@@ -4,6 +4,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Profile(userId: String) {
-    Text("User id: $userId")
+fun PathDetails(pathId: String) {
+    Text("Path id: $pathId")
 }

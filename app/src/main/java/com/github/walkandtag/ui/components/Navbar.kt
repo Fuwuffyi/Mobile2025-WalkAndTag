@@ -6,25 +6,26 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.walkandtag.ui.navigation.Navigation
 
 class NavbarBuilder {
-    private val buttonItems: ArrayList<Pair<String, ImageVector>> = ArrayList()
+    private val buttonItems: ArrayList<Triple<Navigation, ImageVector, String>> = ArrayList()
 
-    fun addButton(endpoint: String, icon: ImageVector): NavbarBuilder {
-        buttonItems.add(Pair(endpoint, icon))
+    fun addButton(endpoint: Navigation, icon: ImageVector, text: String): NavbarBuilder {
+        buttonItems.add(Triple(endpoint, icon, text))
         return this
     }
 
     @Composable
-    fun Navbar(currentPage: String, changePageCallback: (String) -> Unit) {
+    fun Navbar(currentPage: Navigation, changePageCallback: (Navigation) -> Unit) {
         NavigationBar {
             buttonItems.forEach {
                 val isCurrent: Boolean = currentPage == it.first
                 NavigationBarItem(
                     selected = isCurrent,
                     onClick = { changePageCallback(it.first) },
-                    icon = { Icon(it.second, it.first) },
-                    label = { Text(it.first) }
+                    icon = { Icon(it.second, it.third) },
+                    label = { Text(it.third) }
                 )
             }
         }

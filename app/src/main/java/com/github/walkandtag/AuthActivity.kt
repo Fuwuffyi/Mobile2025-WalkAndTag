@@ -31,6 +31,7 @@ import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
+import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
@@ -42,8 +43,8 @@ import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 
 private val authNavbar: NavbarBuilder =
-    NavbarBuilder().addButton("login", Icons.AutoMirrored.Filled.Login)
-        .addButton("register", Icons.Filled.AssignmentInd)
+    NavbarBuilder().addButton(Navigation.Login, Icons.AutoMirrored.Filled.Login, "Login")
+        .addButton(Navigation.Register, Icons.Filled.AssignmentInd, "Register")
 
 class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +73,7 @@ class AuthActivity : ComponentActivity() {
                 Scaffold(snackbarHost = {
                     SnackbarHost(globalViewModel.snackbarHostState)
                 }, floatingActionButton = {
-                    // @TODO(), ha state sta roba? Dovrei tenerla o toglierla?
+                    // @TODO(), Should I move this??? Unsure
                     GoogleButton {
                         scope.launch {
                             val result = auth.loginWithGoogle(context)
