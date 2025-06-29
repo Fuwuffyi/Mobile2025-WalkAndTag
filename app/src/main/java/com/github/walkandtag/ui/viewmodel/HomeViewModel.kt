@@ -2,23 +2,19 @@ package com.github.walkandtag.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.maplibre.android.geometry.LatLng
 
 sealed class HomeState {
     object Loading : HomeState()
-    data class Success(val items: List<FeedItem>) : HomeState()
+    data class Success(val items: List<Pair<FirestoreDocument<UserSchema>, FirestoreDocument<PathSchema>>>) : HomeState()
     data class Error(val message: String) : HomeState()
 }
-
-data class FeedItem(
-    val itemId: String, val username: String, val length: Float, val duration: Float, val points: Collection<LatLng>
-)
 
 class HomeViewModel(
     private val pathRepo: FirestoreRepository<PathSchema>,
@@ -40,13 +36,7 @@ class HomeViewModel(
                 val users = userRepo.get(userIds).associate { it.id to it.data }
                 val feedItems = paths.map { path ->
                     val user = users[path.data.userId] ?: UserSchema("Deleted User")
-                    FeedItem(
-                        itemId = path.id,
-                        username = user.username,
-                        length = path.data.length,
-                        duration = path.data.time,
-                        points = path.data.points
-                    )
+                    Pair(FirestoreDocument<UserSchema>(path.data.userId, user), path)
                 }
                 _uiState.value = HomeState.Success(feedItems)
             } catch (e: Exception) {

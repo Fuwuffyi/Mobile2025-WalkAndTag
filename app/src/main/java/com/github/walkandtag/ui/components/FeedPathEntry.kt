@@ -2,6 +2,7 @@ package com.github.walkandtag.ui.components
 
 import android.util.Log
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,33 +26,49 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.maplibre.android.geometry.LatLng
+import androidx.navigation.NavHostController
+import com.github.walkandtag.firebase.db.FirestoreDocument
+import com.github.walkandtag.firebase.db.schemas.PathSchema
+import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.ui.navigation.Navigation
 import java.util.Locale
 
 @Composable
 fun FeedPathEntry(
-    username: String,
-    length: Float,
-    duration: Float,
-    path: Collection<LatLng>,
+    nav: NavHostController,
+    user: FirestoreDocument<UserSchema>,
+    path: FirestoreDocument<PathSchema>,
     modifier: Modifier = Modifier
 ) {
     Spacer(modifier = Modifier.size(40.dp))
     Column(modifier = modifier) {
-        Row(modifier = Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .padding(6.dp)
+                // @TODO(): Again, navigator passed as parameter
+                .clickable {
+                    nav.navigate(Navigation.Profile(user.id))
+                },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
-            Text(username, modifier = Modifier.padding(start = 4.dp))
+            Text(user.data.username, modifier = Modifier.padding(start = 4.dp))
         }
-        Row {
+        Row(
+            modifier = Modifier.clickable(onClick = {
+                nav.navigate(Navigation.PathDetails(path.id))
+            })
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(6.0f / 4.0f)
             ) {
                 StaticMapPath(
-                    path = path, modifier = Modifier.fillMaxSize()
+                    path = path.data.points, modifier = Modifier.fillMaxSize()
                 )
                 IconButton(
+                    // @TODO(): Add favorite
                     onClick = { Log.i("TEST", "FeedPathEntry: ") },
                     modifier = Modifier
                         .align(Alignment.TopStart)
@@ -76,7 +93,7 @@ fun FeedPathEntry(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "${String.format(Locale.ITALY, "%.2f", length)}km",
+                    text = "${String.format(Locale.ITALY, "%.2f", path.data.length)}km",
                     modifier = Modifier.padding(end = 4.dp)
                 )
                 Icon(Icons.Filled.PinDrop, contentDescription = "Length")
@@ -84,7 +101,7 @@ fun FeedPathEntry(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Timer, contentDescription = "Duration (h)")
                 Text(
-                    text = "${String.format(Locale.ITALY, "%.2f", duration)}h",
+                    text = "${String.format(Locale.ITALY, "%.2f", path.data.time)}h",
                     modifier = Modifier.padding(start = 4.dp)
                 )
             }

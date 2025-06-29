@@ -1,6 +1,5 @@
 package com.github.walkandtag.ui.pages
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.github.walkandtag.ui.components.FeedPathEntry
-import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
@@ -46,13 +44,7 @@ fun Home(
             LazyColumn {
                 items(items) { feedItem ->
                     FeedPathEntry(
-                        username = feedItem.username,
-                        length = feedItem.length,
-                        duration = feedItem.duration,
-                        path = feedItem.points,
-                        modifier = Modifier.clickable(onClick = {
-                            nav.navigate(Navigation.PathDetails(feedItem.itemId))
-                        })
+                        nav = nav, user = feedItem.first, path = feedItem.second
                     )
                 }
             }
