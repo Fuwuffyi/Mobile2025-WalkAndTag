@@ -11,31 +11,21 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.walkandtag.firebase.db.Filter
-import com.github.walkandtag.firebase.db.FirestoreDocument
-import com.github.walkandtag.firebase.db.FirestoreRepository
-import com.github.walkandtag.firebase.db.schemas.PathSchema
-import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.components.FeedPathEntry
-import kotlinx.coroutines.runBlocking
-import org.koin.compose.koinInject
-import org.koin.core.qualifier.named
+import com.github.walkandtag.ui.viewmodel.ProfileViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Profile(userId: String) {
-
-    // @TODO(): Move to viewModel
-    val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
-    val pathRepo = koinInject<FirestoreRepository<PathSchema>>(named("paths"))
-    var currentUser: FirestoreDocument<UserSchema>? = null
-    var paths: Collection<FirestoreDocument<PathSchema>>? = null
-    runBlocking {
-        currentUser = userRepo.get(userId)
-        if (currentUser != null) paths =
-            pathRepo.getFiltered(listOf(Filter("userId", currentUser.id)))
+fun Profile(userId: String, viewModel: ProfileViewModel = koinViewModel()) {
+    LaunchedEffect(userId) {
+        viewModel.loadUserProfile(userId)
     }
+
+    val state = viewModel.uiState.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -46,13 +36,11 @@ fun Profile(userId: String) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle, contentDescription = "Profile picture"
             )
-            if (currentUser != null) {
-                Text(currentUser.data.username)
-            }
+            state.value.user?.let { Text(it.data.username) }
         }
         LazyColumn {
-            if (paths != null) {
-                items(paths.toList()) { path ->
+            if (state.value.paths.isNotEmpty()) {
+                items(state.value.paths.toList()) { path ->
                     // @TODO(): Navigate to the correct path
                     FeedPathEntry(
                         path = path,
