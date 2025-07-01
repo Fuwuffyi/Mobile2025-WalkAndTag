@@ -24,6 +24,7 @@ import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
@@ -40,11 +41,12 @@ class MainActivity : ComponentActivity() {
         MapLibre.getInstance(
             this, null, WellKnownTileServer.MapTiler
         )
-
         enableEdgeToEdge()
         setContent {
             WalkAndTagTheme {
-                val navigator = rememberNavController()
+                val navigator: Navigator = koinInject()
+                val navigatorController = rememberNavController()
+                navigator.setController(navigatorController)
                 val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
                 val globalViewModel: GlobalViewModel = koinInject()
                 val state by viewModel.uiState.collectAsState()
@@ -80,7 +82,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        MainNavGraph(navigator)
+                        MainNavGraph(navigatorController)
                     }
                 }
             }

@@ -19,11 +19,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.walkandtag.ui.components.FeedPathEntry
+import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
-fun Profile(userId: String, viewModel: ProfileViewModel = koinViewModel()) {
+fun Profile(
+    userId: String, nav: Navigator = koinInject(), viewModel: ProfileViewModel = koinViewModel()
+) {
     LaunchedEffect(userId) {
         viewModel.loadUserProfile(userId)
     }
@@ -58,7 +63,7 @@ fun Profile(userId: String, viewModel: ProfileViewModel = koinViewModel()) {
                 items(state.value.paths.toList()) { path ->
                     FeedPathEntry(
                         path = path,
-                        onPathClick = { /* @TODO: Redirect to path details */ },
+                        onPathClick = { nav.navigate(Navigation.PathDetails(path.id)) },
                         onFavoritePathClick = { /* @TODO: Add path to favorites */ })
                 }
             }

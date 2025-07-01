@@ -8,11 +8,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.github.walkandtag.ui.components.StaticMapFavorite
+import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
-fun PathDetails(pathId: String, viewModel: PathDetailsViewModel = koinViewModel()) {
+fun PathDetails(
+    pathId: String, nav: Navigator = koinInject(), viewModel: PathDetailsViewModel = koinViewModel()
+) {
 
     LaunchedEffect(pathId) {
         viewModel.loadData(pathId)

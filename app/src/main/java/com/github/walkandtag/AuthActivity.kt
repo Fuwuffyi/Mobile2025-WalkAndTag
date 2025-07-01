@@ -31,6 +31,7 @@ import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
@@ -51,7 +52,9 @@ class AuthActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WalkAndTagTheme {
-                val navigator = rememberNavController()
+                val navigator: Navigator = koinInject()
+                val navigatorController = rememberNavController()
+                navigator.setController(navigatorController)
                 val context = LocalContext.current
                 val scope = rememberCoroutineScope()
                 val auth = koinInject<Authentication>()
@@ -103,7 +106,7 @@ class AuthActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        LoginNavGraph(navigator)
+                        LoginNavGraph(navigatorController)
                     }
                 }
             }

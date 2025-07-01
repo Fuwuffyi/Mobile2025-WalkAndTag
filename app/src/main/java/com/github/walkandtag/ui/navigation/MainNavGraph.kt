@@ -10,13 +10,12 @@ import com.github.walkandtag.ui.pages.PathDetails
 import com.github.walkandtag.ui.pages.Profile
 import com.github.walkandtag.ui.pages.Settings
 
-// @TODO(): Maybe find way to move navigation controllers to koin
 @Composable
 fun MainNavGraph(navigationController: NavHostController) {
     NavHost(navController = navigationController, startDestination = Navigation.Home) {
         composable<Navigation.Settings> { Settings() }
 
-        composable<Navigation.Home> { Home(navigationController) }
+        composable<Navigation.Home> { Home() }
 
         composable<Navigation.Profile> {
             val routeData: Navigation.Profile = it.toRoute()

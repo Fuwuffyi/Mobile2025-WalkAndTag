@@ -5,6 +5,7 @@ import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
@@ -22,6 +23,8 @@ val appModule = module {
     single { FirebaseAuth.getInstance() }
     // Authentication singleton
     single { Authentication(get()) }
+    // Navigation singleton
+    single<Navigator> { Navigator() }
     // Repository singletons
     single<FirestoreRepository<UserSchema>>(named("users")) {
         FirestoreRepository.create("users")

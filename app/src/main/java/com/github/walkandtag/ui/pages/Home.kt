@@ -11,9 +11,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import com.github.walkandtag.ui.components.FeedPathEntry
 import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
@@ -22,7 +22,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun Home(
-    nav: NavHostController,
+    nav: Navigator = koinInject(),
     globalViewModel: GlobalViewModel = koinInject(),
     viewModel: HomeViewModel = koinViewModel()
 ) {
