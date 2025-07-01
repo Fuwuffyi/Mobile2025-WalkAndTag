@@ -1,10 +1,12 @@
 package com.github.walkandtag.firebase.db
 
+import com.google.common.primitives.UnsignedInteger
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
+import org.checkerframework.checker.signedness.qual.Unsigned
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
@@ -76,8 +78,8 @@ class FirestoreRepository<T : Any>(
         return cachedDocs + fetchedDocs
     }
 
-    suspend fun getFiltered(filters: Collection<Filter>): Collection<FirestoreDocument<T>> {
-        var query = docRef.limit(1000)
+    suspend fun getFiltered(filters: Collection<Filter>, limit: UInt = 200u): Collection<FirestoreDocument<T>> {
+        var query = docRef.limit(limit.toLong())
         for (filter in filters) {
             query = query.whereEqualTo(filter.field, filter.value)
         }
@@ -92,8 +94,8 @@ class FirestoreRepository<T : Any>(
         }
     }
 
-    suspend fun getAll(): List<FirestoreDocument<T>> {
-        val snapshot = docRef.get().await()
+    suspend fun getAll(limit: UInt = 200u): List<FirestoreDocument<T>> {
+        val snapshot = docRef.limit(limit.toLong()).get().await()
         val now = System.currentTimeMillis()
         return snapshot.documents.mapNotNull { doc ->
             val obj = doc.toObject(classType)
