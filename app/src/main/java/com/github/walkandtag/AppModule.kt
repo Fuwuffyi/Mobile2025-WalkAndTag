@@ -35,5 +35,5 @@ val appModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
-    viewModel { ProfileViewModel(get(named("users")), get(named("paths"))) }
+    viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths"))) }
 }

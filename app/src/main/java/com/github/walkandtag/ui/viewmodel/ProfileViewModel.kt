@@ -2,6 +2,7 @@ package com.github.walkandtag.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.Filter
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.FirestoreRepository
@@ -15,10 +16,12 @@ import kotlinx.coroutines.launch
 
 data class ProfileState(
     var user: FirestoreDocument<UserSchema>? = null,
-    var paths: Collection<FirestoreDocument<PathSchema>> = emptyList()
+    var paths: Collection<FirestoreDocument<PathSchema>> = emptyList(),
+    var isRecording: Boolean = false
 )
 
 class ProfileViewModel(
+    private val auth: Authentication,
     private val userRepo: FirestoreRepository<UserSchema>,
     private val pathRepo: FirestoreRepository<PathSchema>
 ) : ViewModel() {
@@ -35,5 +38,14 @@ class ProfileViewModel(
                 _uiState.update { current -> current.copy(paths = userPaths.toList()) }
             }
         }
+    }
+
+    fun isOwnProfile(): Boolean {
+        val currentUserId = auth.getCurrentUserId()
+        return currentUserId == _uiState.value.user?.id
+    }
+
+    fun toggleRecording() {
+        _uiState.update { current -> current.copy(isRecording = !current.isRecording) }
     }
 }
