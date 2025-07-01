@@ -26,19 +26,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
-import com.github.walkandtag.ui.navigation.Navigation
 import java.util.Locale
 
 // @TODO(): Clean up this code
 @Composable
 fun FeedPathEntry(
-    nav: NavHostController,
     user: FirestoreDocument<UserSchema>,
     path: FirestoreDocument<PathSchema>,
+    onProfileClick: () -> Unit,
+    onPathClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Spacer(modifier = Modifier.size(40.dp))
@@ -46,19 +45,14 @@ fun FeedPathEntry(
         Row(
             modifier = Modifier
                 .padding(6.dp)
-                // @TODO(): Again, navigator passed as parameter
-                .clickable {
-                    nav.navigate(Navigation.Profile(user.id))
-                },
+                .clickable(onClick = onProfileClick),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
             Text(user.data.username, modifier = Modifier.padding(start = 4.dp))
         }
         Row(
-            modifier = Modifier.clickable(onClick = {
-                nav.navigate(Navigation.PathDetails(path.id))
-            })
+            modifier = Modifier.clickable(onClick = onPathClick)
         ) {
             Box(
                 modifier = Modifier
@@ -112,12 +106,13 @@ fun FeedPathEntry(
 
 @Composable
 fun FeedPathEntry(
-    path: FirestoreDocument<PathSchema>,
-    modifier: Modifier = Modifier
+    path: FirestoreDocument<PathSchema>, onPathClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Spacer(modifier = Modifier.size(40.dp))
     Column(modifier = modifier) {
-        Row {
+        Row(
+            modifier = Modifier.clickable(onClick = onPathClick)
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

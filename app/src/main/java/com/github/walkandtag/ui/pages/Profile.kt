@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,9 +53,10 @@ fun Profile(userId: String) {
         LazyColumn {
             if (paths != null) {
                 items(paths.toList()) { path ->
+                    // @TODO(): Navigate to the correct path
                     FeedPathEntry(
-                        path = path
-                    )
+                        path = path,
+                        onPathClick = { Log.i("NAVIGATE", "Profile: Navigate to Path") })
                 }
             }
         }

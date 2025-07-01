@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.github.walkandtag.ui.components.FeedPathEntry
+import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
@@ -44,7 +45,10 @@ fun Home(
             LazyColumn {
                 items(items) { feedItem ->
                     FeedPathEntry(
-                        nav = nav, user = feedItem.first, path = feedItem.second
+                        user = feedItem.first,
+                        path = feedItem.second,
+                        onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
+                        onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) }
                     )
                 }
             }
