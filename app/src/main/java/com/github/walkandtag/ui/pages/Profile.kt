@@ -1,8 +1,10 @@
 package com.github.walkandtag.ui.pages
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,14 +40,18 @@ fun Profile(userId: String, viewModel: ProfileViewModel = koinViewModel()) {
             )
             state.value.user?.let { Text(it.data.username) }
         }
-        LazyColumn {
-            if (state.value.paths.isNotEmpty()) {
+        if (state.value.paths.isNotEmpty()) {
+            LazyColumn {
                 items(state.value.paths.toList()) { path ->
                     // @TODO(): Navigate to the correct path
                     FeedPathEntry(
                         path = path,
                         onPathClick = { Log.i("NAVIGATE", "Profile: Navigate to Path") })
                 }
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("There's nothing here...")
             }
         }
     }

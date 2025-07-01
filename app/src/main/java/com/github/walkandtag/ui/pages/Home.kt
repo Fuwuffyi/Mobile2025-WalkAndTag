@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,14 +43,20 @@ fun Home(
 
         is HomeState.Success -> {
             val items = (uiState as HomeState.Success).items
-            LazyColumn {
-                items(items) { feedItem ->
-                    FeedPathEntry(
-                        user = feedItem.first,
-                        path = feedItem.second,
-                        onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
-                        onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) }
-                    )
+            if (items.isNotEmpty()) {
+                LazyColumn {
+                    items(items) { feedItem ->
+                        FeedPathEntry(
+                            user = feedItem.first,
+                            path = feedItem.second,
+                            onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
+                            onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) }
+                        )
+                    }
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("There's nothing here...")
                 }
             }
         }
