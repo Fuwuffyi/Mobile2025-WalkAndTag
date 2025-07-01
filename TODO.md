@@ -5,11 +5,12 @@
 - [X] Pagina login
 - [X] Pagina di registrazione
 - [X] Pagina impostazioni
-- [ ] Pagina home e ricerca percorsi (con preferiti)
+- [-] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
 - [ ] Pagina dei reward e delle quest di un profilo
-- [ ] Pagina del profile (con i propri percorsi)
-- [ ] Pagina di un singolo percorso
+- [-] Pagina del profile (con i propri percorsi)
+- [-] Pagina di un singolo percorso
+- [ ] Pagina della mappa di un percorso
 
 ## Integrazioni
 - [ ] Telecamera per aggiungere foto ad I percorsi
