@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -40,51 +41,56 @@ fun FeedPathEntry(
     onPathClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Spacer(modifier = Modifier.size(40.dp))
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
         Row(
-            modifier = Modifier
-                .padding(6.dp)
-                .clickable(onClick = onProfileClick),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
-            Text(user.data.username, modifier = Modifier.padding(start = 4.dp))
-        }
-        Row(
-            modifier = Modifier.clickable(onClick = onPathClick)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(6.0f / 4.0f)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable(onClick = onProfileClick)
             ) {
-                StaticMapPath(
-                    path = path.data.points, modifier = Modifier.fillMaxSize()
-                )
-                IconButton(
-                    // @TODO(): Add favorite
-                    onClick = { Log.i("TEST", "FeedPathEntry: ") },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp)
-                        .border(2.dp, Color(255, 127, 0))
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.StarBorder,
-                        contentDescription = "Favorite",
-                        tint = Color(255, 127, 0),
-                        modifier = Modifier.size(50.dp)
-                    )
-                }
+                Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
+                Text(user.data.username, modifier = Modifier.padding(start = 4.dp))
             }
+            Text(path.data.name)
         }
-        Row(
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp),
+                .aspectRatio(6f / 4f)
+                .clickable(onClick = onPathClick)
+        ) {
+            StaticMapPath(
+                path = path.data.points, modifier = Modifier.fillMaxSize()
+            )
+            IconButton(
+                onClick = { /* @TODO(): Add favorite */ },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(8.dp)
+                    .border(2.dp, Color(255, 127, 0))
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.StarBorder,
+                    contentDescription = "Favorite",
+                    tint = Color(255, 127, 0),
+                    modifier = Modifier.size(50.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -108,42 +114,41 @@ fun FeedPathEntry(
 fun FeedPathEntry(
     path: FirestoreDocument<PathSchema>, onPathClick: () -> Unit, modifier: Modifier = Modifier
 ) {
-    Spacer(modifier = Modifier.size(40.dp))
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.clickable(onClick = onPathClick)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(6.0f / 4.0f)
-            ) {
-                StaticMapPath(
-                    path = path.data.points, modifier = Modifier.fillMaxSize()
-                )
-                IconButton(
-                    // @TODO(): Add favorite
-                    onClick = { Log.i("TEST", "FeedPathEntry: ") },
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp)
-                        .border(2.dp, Color(255, 127, 0))
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.StarBorder,
-                        contentDescription = "Favorite",
-                        tint = Color(255, 127, 0),
-                        modifier = Modifier.size(50.dp)
-                    )
-                }
-            }
-        }
-        Row(
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp),
+                .aspectRatio(6f / 4f)
+                .clickable(onClick = onPathClick)
+        ) {
+            StaticMapPath(
+                path = path.data.points, modifier = Modifier.fillMaxSize()
+            )
+            IconButton(
+                onClick = { /* @TODO(): Add favorite */ },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(8.dp)
+                    .border(2.dp, Color(255, 127, 0))
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.StarBorder,
+                    contentDescription = "Favorite",
+                    tint = Color(255, 127, 0),
+                    modifier = Modifier.size(50.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
