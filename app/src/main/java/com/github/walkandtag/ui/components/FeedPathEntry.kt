@@ -61,31 +61,9 @@ fun FeedPathEntry(
             Text(path.data.name)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(6f / 4f)
-                .clickable(onClick = onPathClick)
-        ) {
-            StaticMapPath(
-                path = path.data.points, modifier = Modifier.fillMaxSize()
-            )
-            IconButton(
-                onClick = { /* @TODO(): Add favorite */ },
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(8.dp)
-                    .border(2.dp, Color(255, 127, 0))
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.StarBorder,
-                    contentDescription = "Favorite",
-                    tint = Color(255, 127, 0),
-                    modifier = Modifier.size(50.dp)
-                )
-            }
-        }
+        StaticMapFavorite(
+            path = path.data.points, modifier = Modifier.fillMaxWidth(), onPathClick = onPathClick
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

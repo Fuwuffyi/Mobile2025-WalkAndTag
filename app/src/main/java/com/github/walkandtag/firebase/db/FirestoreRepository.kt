@@ -78,7 +78,22 @@ class FirestoreRepository<T : Any>(
         return cachedDocs + fetchedDocs
     }
 
-    suspend fun getFiltered(filters: Collection<Filter>, limit: UInt = 200u): Collection<FirestoreDocument<T>> {
+    suspend fun getFiltered(filter: Filter, limit: UInt = 200u): FirestoreDocument<T> {
+        val query = docRef.limit(limit.toLong()).whereEqualTo(filter.field, filter.value)
+        val snapshot = query.get().await()
+        val now = System.currentTimeMillis()
+        return snapshot.documents.firstNotNullOf { doc ->
+            val obj = doc.toObject(classType)
+            obj?.let {
+                cache[doc.id] = CachedData(it, now)
+                FirestoreDocument(doc.id, it)
+            }
+        }
+    }
+
+    suspend fun getFiltered(
+        filters: Collection<Filter>, limit: UInt = 200u
+    ): Collection<FirestoreDocument<T>> {
         var query = docRef.limit(limit.toLong())
         for (filter in filters) {
             query = query.whereEqualTo(filter.field, filter.value)
