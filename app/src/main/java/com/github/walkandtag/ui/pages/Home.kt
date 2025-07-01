@@ -50,8 +50,8 @@ fun Home(
                             user = feedItem.first,
                             path = feedItem.second,
                             onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
-                            onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) }
-                        )
+                            onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) },
+                            onFavoritePathClick = { /* @TODO: Add path to favorites */ })
                     }
                 }
             } else {

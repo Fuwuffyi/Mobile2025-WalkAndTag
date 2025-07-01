@@ -1,6 +1,5 @@
 package com.github.walkandtag.ui.pages
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,10 +56,10 @@ fun Profile(userId: String, viewModel: ProfileViewModel = koinViewModel()) {
         if (state.value.paths.isNotEmpty()) {
             LazyColumn {
                 items(state.value.paths.toList()) { path ->
-                    // @TODO(): Navigate to the correct path
                     FeedPathEntry(
                         path = path,
-                        onPathClick = { Log.i("NAVIGATE", "Profile: Navigate to Path") })
+                        onPathClick = { /* @TODO: Redirect to path details */ },
+                        onFavoritePathClick = { /* @TODO: Add path to favorites */ })
                 }
             }
         } else {

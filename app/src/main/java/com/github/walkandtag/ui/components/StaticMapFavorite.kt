@@ -19,16 +19,23 @@ import androidx.compose.ui.unit.dp
 import org.maplibre.android.geometry.LatLng
 
 @Composable
-fun StaticMapFavorite(path: Collection<LatLng>, onPathClick: () -> Unit, modifier: Modifier = Modifier) {
+fun StaticMapFavorite(
+    path: Collection<LatLng>,
+    onPathClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.aspectRatio(6f / 4f).clickable(onClick = onPathClick)
+        modifier = modifier
+            .aspectRatio(6f / 4f)
+            .clickable(onClick = onPathClick)
     ) {
         StaticMapPath(
             path = path, modifier = Modifier.fillMaxSize()
         )
         IconButton(
-            onClick = { /* @TODO(): Add favorite */ },
+            onClick = onFavoriteClick,
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(8.dp)

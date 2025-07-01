@@ -52,10 +52,10 @@ class Authentication(private val auth: FirebaseAuth) {
 
     fun getCurrentUserName() = auth.currentUser?.displayName
 
-    suspend fun deleteCurrentUser() = auth.currentUser?.let {
-        runCatching { it.delete().awaitResult() }.fold(
-                { AuthResult.Success },
-                { AuthResult.Failure(it) })
+    suspend fun deleteCurrentUser() = auth.currentUser?.let { currUser ->
+        runCatching { currUser.delete().awaitResult() }.fold(
+            { AuthResult.Success },
+            { AuthResult.Failure(it) })
     } ?: AuthResult.Failure(IllegalStateException("No user to delete"))
 }
 

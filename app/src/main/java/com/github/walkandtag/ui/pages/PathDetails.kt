@@ -29,8 +29,8 @@ fun PathDetails(pathId: String, viewModel: PathDetailsViewModel = koinViewModel(
             StaticMapFavorite(
                 path = state.value.path!!.data.points,
                 modifier = Modifier.fillMaxWidth(),
-                onPathClick = { /* @TODO: Redirect to full screen map */ })
+                onPathClick = { /* @TODO: Redirect to full screen map */ },
+                onFavoriteClick = { /* @TODO: Add path to favorites */ })
         }
     }
-
 }

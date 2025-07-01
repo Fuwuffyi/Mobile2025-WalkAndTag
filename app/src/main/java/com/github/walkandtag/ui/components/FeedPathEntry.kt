@@ -39,6 +39,7 @@ fun FeedPathEntry(
     path: FirestoreDocument<PathSchema>,
     onProfileClick: () -> Unit,
     onPathClick: () -> Unit,
+    onFavoritePathClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -62,7 +63,10 @@ fun FeedPathEntry(
         }
         Spacer(modifier = Modifier.height(16.dp))
         StaticMapFavorite(
-            path = path.data.points, modifier = Modifier.fillMaxWidth(), onPathClick = onPathClick
+            path = path.data.points,
+            modifier = Modifier.fillMaxWidth(),
+            onPathClick = onPathClick,
+            onFavoriteClick = onFavoritePathClick
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -90,7 +94,10 @@ fun FeedPathEntry(
 
 @Composable
 fun FeedPathEntry(
-    path: FirestoreDocument<PathSchema>, onPathClick: () -> Unit, modifier: Modifier = Modifier
+    path: FirestoreDocument<PathSchema>,
+    onPathClick: () -> Unit,
+    onFavoritePathClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -110,7 +117,7 @@ fun FeedPathEntry(
                 path = path.data.points, modifier = Modifier.fillMaxSize()
             )
             IconButton(
-                onClick = { /* @TODO(): Add favorite */ },
+                onClick = onFavoritePathClick,
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(8.dp)
