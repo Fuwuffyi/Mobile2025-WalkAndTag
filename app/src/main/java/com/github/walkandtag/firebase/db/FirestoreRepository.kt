@@ -1,12 +1,10 @@
 package com.github.walkandtag.firebase.db
 
-import com.google.common.primitives.UnsignedInteger
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
-import org.checkerframework.checker.signedness.qual.Unsigned
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
