@@ -23,9 +23,14 @@ class FirestoreRepository<T : Any>(
 ) {
     private val cache = ConcurrentHashMap<String, CachedData<T>>()
 
-    suspend fun create(item: T, id: String): String {
-        docRef.document(id).set(item).await()
-        return id
+    suspend fun create(item: T, id: String?): String {
+        val documentRef = if (id != null) {
+            docRef.document(id)
+        } else {
+            docRef.document()
+        }
+        documentRef.set(item).await()
+        return documentRef.id
     }
 
     suspend fun get(id: String): FirestoreDocument<T>? {
