@@ -7,17 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import com.github.walkandtag.firebase.db.FirestoreDocument
-import com.github.walkandtag.firebase.db.FirestoreRepository
-import com.github.walkandtag.firebase.db.schemas.PathSchema
-import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.components.StaticMapFavorite
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
-import com.github.walkandtag.ui.viewmodel.ProfileViewModel
-import kotlinx.coroutines.runBlocking
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
-import org.koin.core.qualifier.named
 
 @Composable
 fun PathDetails(pathId: String, viewModel: PathDetailsViewModel = koinViewModel()) {
@@ -37,8 +29,7 @@ fun PathDetails(pathId: String, viewModel: PathDetailsViewModel = koinViewModel(
             StaticMapFavorite(
                 path = state.value.path!!.data.points,
                 modifier = Modifier.fillMaxWidth(),
-                onPathClick = { /* @TODO: Redirect to full screen map */ }
-            )
+                onPathClick = { /* @TODO: Redirect to full screen map */ })
         }
     }
 

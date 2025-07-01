@@ -26,15 +26,14 @@ class PathDetailsViewModel(
 
     fun loadData(pathId: String) {
         viewModelScope.launch {
-            var path = pathRepo.get(pathId)
-            var publisher: FirestoreDocument<UserSchema>? = null
-
-            if (path != null)
-                publisher = userRepo.get(path.data.userId)
-
-            _uiState.update { current ->  current.copy(path = path, publisher = publisher) }
+            _uiState.update { current -> current.copy(path = pathRepo.get(pathId)) }
+            if (_uiState.value.path != null) _uiState.update { current ->
+                current.copy(
+                    publisher = userRepo.get(
+                        _uiState.value.path!!.data.userId
+                    )
+                )
+            }
         }
-
     }
-
 }
