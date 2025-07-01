@@ -72,6 +72,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    // GPS
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.play.services.location)
+    implementation(libs.kotlinx.coroutines.play.services)
     // Navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.ui)

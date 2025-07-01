@@ -87,8 +87,10 @@ private suspend fun generateMapSnapshot(
         val snapshotter = MapSnapshotter(context, options)
         snapshotter.start(callback = { snapshot ->
             continuation.resume(
-                onCancellation = { snapshotter.cancel() }, value = snapshot.bitmap
-            )
+                value = snapshot.bitmap
+            ) { cause, _, _ ->
+                snapshotter.cancel()
+            }
             snapshotter.cancel()
         }, errorHandler = {
             snapshotter.cancel()
