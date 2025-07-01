@@ -4,39 +4,42 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.components.StaticMapFavorite
+import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
+import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import kotlinx.coroutines.runBlocking
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 
 @Composable
-fun PathDetails(pathId: String) {
+fun PathDetails(pathId: String, viewModel: PathDetailsViewModel = koinViewModel()) {
 
-    // @TODO(): Move to viewModel
-    val pathRepo = koinInject<FirestoreRepository<PathSchema>>(named("paths"))
-    val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
-    var path: FirestoreDocument<PathSchema>? = null
-    var publisher: FirestoreDocument<UserSchema>? = null
-    runBlocking {
-        path = pathRepo.get(pathId)
-        if (path != null) publisher = userRepo.get(path.data.userId)
+    LaunchedEffect(pathId) {
+        viewModel.loadData(pathId)
     }
 
-    if (path != null && publisher != null) {
+    val state = viewModel.uiState.collectAsState()
+
+    if (state.value.path != null) {
         Column {
-            Text(text = path.data.name)
-            Text(text = "Author: ${publisher.data.username}")
-            Text(text = "Length: ${path.data.length}")
-            Text(text = "Time: ${path.data.time}")
+            Text(text = "Name: ${state.value.path!!.data.name}")
+            Text(text = "Author: ${state.value.publisher?.data?.username ?: "Account Deleted"}")
+            Text(text = "Length: ${state.value.path!!.data.length}")
+            Text(text = "Time: ${state.value.path!!.data.time}")
             StaticMapFavorite(
-                path = path.data.points,
+                path = state.value.path!!.data.points,
                 modifier = Modifier.fillMaxWidth(),
-                onPathClick = { /* @TODO: Redirect to full screen map */ })
+                onPathClick = { /* @TODO: Redirect to full screen map */ }
+            )
         }
     }
+
 }

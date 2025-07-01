@@ -9,6 +9,7 @@ import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
+import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -36,4 +37,5 @@ val appModule = module {
     viewModel { RegisterViewModel(get(), get(named("users"))) }
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths"))) }
+    viewModel { PathDetailsViewModel(get(named("users")), get(named("paths"))) }
 }
