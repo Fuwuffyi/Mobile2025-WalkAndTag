@@ -7,7 +7,6 @@ import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
-import kotlin.collections.chunked
 
 private data class CachedData<T>(
     val data: T, val timestamp: Long = System.currentTimeMillis()
@@ -20,7 +19,7 @@ data class Filter(
 class FirestoreRepository<T : Any>(
     private val docRef: CollectionReference,
     private val classType: Class<T>,
-    private val expiryMillis: Long = TimeUnit.MINUTES.toMillis(5)
+    private val expiryMillis: Long = TimeUnit.MINUTES.toMillis(60)
 ) {
     private val cache = ConcurrentHashMap<String, CachedData<T>>()
 
