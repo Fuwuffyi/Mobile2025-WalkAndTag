@@ -47,7 +47,7 @@ fun Profile(
             android.Manifest.permission.ACCESS_FINE_LOCATION
         )
     ) { status ->
-        if (status[android.Manifest.permission.ACCESS_COARSE_LOCATION]?.isGranted ?: false || status[android.Manifest.permission.ACCESS_FINE_LOCATION]?.isGranted ?: false) {
+        if (status.values.any { it.isGranted }) {
             viewModel.toggleRecording()
         } else {
             globalViewModel.showSnackbar("You do not have location permissions")
