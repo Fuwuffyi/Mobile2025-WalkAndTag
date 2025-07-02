@@ -4,11 +4,11 @@ import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.repository.Filter
 import com.github.walkandtag.firebase.db.FirestoreDocument
-import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.Filter
+import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.SavedPathRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

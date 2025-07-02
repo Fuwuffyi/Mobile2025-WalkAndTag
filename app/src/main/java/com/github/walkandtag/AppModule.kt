@@ -1,9 +1,9 @@
 package com.github.walkandtag
 
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.SavedPathRepository
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel

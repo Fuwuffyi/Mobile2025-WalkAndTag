@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.FirestoreRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -25,8 +25,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph

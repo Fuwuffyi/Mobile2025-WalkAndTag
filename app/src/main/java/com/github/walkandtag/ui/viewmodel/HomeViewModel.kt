@@ -3,9 +3,9 @@ package com.github.walkandtag.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.firebase.db.FirestoreDocument
-import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.FirestoreRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
