@@ -41,6 +41,7 @@ fun Profile(
 
     val state = viewModel.uiState.collectAsState()
 
+    // @TODO(): Unsure if I should clean this up
     val locationPermissionHandler = rememberMultiplePermissions(
         permissions = listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -71,9 +72,7 @@ fun Profile(
             Row {
                 if (viewModel.isOwnProfile()) {
                     ElevatedButton(
-                        onClick = {
-                            locationPermissionHandler.launchPermissionRequest()
-                        }) {
+                        onClick = { locationPermissionHandler.launchPermissionRequest() }) {
                         Text(if (state.value.isRecording) "Save Path" else "Record Path")
                     }
                 }
