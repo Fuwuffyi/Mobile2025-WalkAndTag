@@ -12,8 +12,4 @@ class Navigator {
     fun navigate(route: Any) {
         navController.navigate(route)
     }
-
-    fun popBackStack() {
-        navController.popBackStack()
-    }
 }

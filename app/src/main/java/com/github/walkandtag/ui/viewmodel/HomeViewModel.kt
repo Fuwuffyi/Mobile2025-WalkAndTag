@@ -36,7 +36,7 @@ class HomeViewModel(
                 val users = userRepo.get(userIds).associate { it.id to it.data }
                 val feedItems = paths.map { path ->
                     val user = users[path.data.userId] ?: UserSchema("Deleted User")
-                    Pair(FirestoreDocument<UserSchema>(path.data.userId, user), path)
+                    Pair(FirestoreDocument(path.data.userId, user), path)
                 }
                 _uiState.value = HomeState.Success(feedItems)
             } catch (e: Exception) {

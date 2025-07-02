@@ -19,7 +19,7 @@ class Notifier(
     private val channelName: String = "WalkAndTag Notifications",
     private val channelDescription: String = "General app notifications",
     private val channelImportance: Int = NotificationManager.IMPORTANCE_DEFAULT,
-    private val smallIconRes: Int = R.mipmap.ic_launcher // @TODO(): Create notification icon
+    private val smallIconRes: Int = R.drawable.notification_icon
 ) {
     init {
         require(appContext.applicationContext === appContext) {

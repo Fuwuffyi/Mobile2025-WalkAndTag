@@ -17,6 +17,7 @@ data class Filter(
     val field: String, val value: Any
 )
 
+// @TODO(): Add a paging system for big gets
 class FirestoreRepository<T : Any>(
     private val docRef: CollectionReference,
     private val classType: Class<T>,

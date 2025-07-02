@@ -54,7 +54,7 @@ class ProfileViewModel(
 
     fun savePath(pathName: String) {
         if (!savedPathRepo.isValid) {
-            return;
+            return
         }
         val pathPoints = savedPathRepo.points
         // Calculate distance (meters) for the path
@@ -81,7 +81,7 @@ class ProfileViewModel(
                     time = (estTime / 3600).toFloat(),
                     points = pathPoints.toMutableList()
                 )
-            );
+            )
         }
     }
 }
