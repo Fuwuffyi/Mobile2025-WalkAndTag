@@ -39,6 +39,7 @@ import kotlin.math.ln
 import kotlin.math.min
 import kotlin.math.sin
 
+// @TODO(): Clean up code and try to remove ExperimentalCoroutinesApi
 private fun latRad(lat: Double): Double {
     val sin = sin(lat * Math.PI / 180.0)
     return ln((1 + sin) / (1 - sin)) / 2.0

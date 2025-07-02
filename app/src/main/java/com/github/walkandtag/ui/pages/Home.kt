@@ -16,13 +16,13 @@ import com.github.walkandtag.util.Navigator
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
+// @TODO(): Create section for filters and searching
 @Composable
 fun Home(
     nav: Navigator = koinInject(),
     globalViewModel: GlobalViewModel = koinInject(),
     viewModel: HomeViewModel = koinViewModel()
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
 
     when (uiState) {

@@ -37,7 +37,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
-    // @TODO(): Implement settings viewModel
+    // @TODO(): Implement settings viewModel (for all functionality)
 
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
@@ -113,7 +113,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { /* TODO: Change language */ }
+                .clickable { }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
