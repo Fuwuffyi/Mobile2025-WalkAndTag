@@ -19,7 +19,6 @@ import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
-import com.github.walkandtag.ui.viewmodel.SettingViewModel
 import com.github.walkandtag.util.Navigator
 import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
@@ -53,7 +52,7 @@ val appModule = module {
         FirestoreRepository.create("paths")
     }
     // View models
-    single { GlobalViewModel() } // Singleton per evitare di passarlo a tutte le pagine
+    single { GlobalViewModel(get()) } // Singleton per evitare di ricrearlo per tutte le pagine
     viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
     viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
     viewModel { LoginViewModel(get()) }
@@ -61,5 +60,4 @@ val appModule = module {
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(named("users")), get(named("paths"))) }
-    viewModel { SettingViewModel(get()) }
 }

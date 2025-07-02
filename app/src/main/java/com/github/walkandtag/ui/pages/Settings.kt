@@ -34,12 +34,11 @@ import androidx.compose.ui.unit.sp
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.repository.Theme
-import com.github.walkandtag.ui.viewmodel.SettingViewModel
-import org.koin.androidx.compose.koinViewModel
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun Settings(viewModel: SettingViewModel = koinViewModel()) {
+fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
 
@@ -64,7 +63,7 @@ fun Settings(viewModel: SettingViewModel = koinViewModel()) {
                     .width(100.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                IconButton(onClick = { viewModel.setTheme(Theme.Light) }) {
+                IconButton(onClick = { globalViewModel.setTheme(Theme.Light) }) {
                     Icon(
                         imageVector = Icons.Default.LightMode,
                         contentDescription = "Imposta modalità chiara",
@@ -72,7 +71,7 @@ fun Settings(viewModel: SettingViewModel = koinViewModel()) {
                         modifier = Modifier.size(70.dp)
                     )
                 }
-                IconButton(onClick = { viewModel.setTheme(Theme.Dark) }) {
+                IconButton(onClick = { globalViewModel.setTheme(Theme.Dark) }) {
                     Icon(
                         imageVector = Icons.Default.DarkMode,
                         contentDescription = "Imposta modalità scura",

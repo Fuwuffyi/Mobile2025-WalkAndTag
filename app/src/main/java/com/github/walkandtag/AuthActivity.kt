@@ -1,6 +1,5 @@
 package com.github.walkandtag
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -29,7 +28,6 @@ import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
-import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
@@ -38,7 +36,6 @@ import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
-import com.github.walkandtag.ui.viewmodel.SettingViewModel
 import com.github.walkandtag.util.Navigator
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -64,9 +61,7 @@ class AuthActivity : ComponentActivity() {
             val state by viewModel.uiState.collectAsState()
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
-            // Get ThemeViewModel
-            val themeViewModel = koinViewModel<SettingViewModel>()
-            val themeState by themeViewModel.state.collectAsStateWithLifecycle()
+            val themeState by globalViewModel.themeState.collectAsStateWithLifecycle()
 
             WalkAndTagTheme(
                 theme = themeState.theme

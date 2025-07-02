@@ -1,6 +1,5 @@
 package com.github.walkandtag.repository
 
-import android.content.res.Resources
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit

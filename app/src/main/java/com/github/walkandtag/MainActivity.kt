@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
@@ -30,7 +29,6 @@ import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
-import com.github.walkandtag.ui.viewmodel.SettingViewModel
 import com.github.walkandtag.util.Navigator
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -55,10 +53,7 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.uiState.collectAsState()
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
-
-            // Get ThemeViewModel
-            val themeViewModel = koinViewModel<SettingViewModel>()
-            val themeState by themeViewModel.state.collectAsStateWithLifecycle()
+            val themeState by globalViewModel.themeState.collectAsStateWithLifecycle()
 
             WalkAndTagTheme(
                 theme = themeState.theme
