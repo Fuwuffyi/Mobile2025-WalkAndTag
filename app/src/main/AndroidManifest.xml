@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Add camera feature -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <!-- Base permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Service permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- Location permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- Query for location permissions  -->
     <queries>
         <intent>
             <action android:name="android.settings.LOCATION_SOURCE_SETTINGS" />
@@ -16,9 +25,9 @@
             <action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" />
         </intent>
     </queries>
+    <!-- Application stuff -->
     <application
         android:name=".WalkAndTagApp"
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -27,20 +36,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WalkAndTag"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <!-- Service to get background position while recording a path -->
+        <service
+            android:name=".service.PathRecordingService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+        <!-- Authentication activity -->
         <activity
             android:name=".AuthActivity"
             android:exported="true"
             android:theme="@style/Theme.WalkAndTag">
+            <!-- Start activity -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Main activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.WalkAndTag">
-        </activity>
+            android:theme="@style/Theme.WalkAndTag" />
     </application>
 </manifest>
