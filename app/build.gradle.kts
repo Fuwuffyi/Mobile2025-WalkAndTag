@@ -100,4 +100,6 @@ dependencies {
     implementation(libs.google.firebase.firestore)
     // Checkstyle
     implementation(libs.io.gitlab.arturbosch.detekt.gradle.plugin)
+    // Datastore
+    implementation(libs.androidx.datastore.preferences)
 }

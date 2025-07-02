@@ -1,10 +1,16 @@
 package com.github.walkandtag
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.SavedPathRepository
+import com.github.walkandtag.repository.ThemeRepository
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
@@ -13,6 +19,7 @@ import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
+import com.github.walkandtag.ui.viewmodel.SettingViewModel
 import com.github.walkandtag.util.Navigator
 import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +29,13 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
+    // Datastore
+    single<DataStore<Preferences>> {
+        val context: Context = get()
+        PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("settings") }
+        )
+    }
     // Firebase singleton
     single { FirebaseAuth.getInstance() }
     // Authentication singleton
@@ -30,6 +44,7 @@ val appModule = module {
     single<Navigator> { Navigator() }
     single<Notifier> { Notifier(androidContext()) }
     // Repository singletons
+    single<ThemeRepository> { ThemeRepository(get()) }
     single<SavedPathRepository> { SavedPathRepository() }
     single<FirestoreRepository<UserSchema>>(named("users")) {
         FirestoreRepository.create("users")
@@ -46,4 +61,5 @@ val appModule = module {
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(named("users")), get(named("paths"))) }
+    viewModel { SettingViewModel(get()) }
 }

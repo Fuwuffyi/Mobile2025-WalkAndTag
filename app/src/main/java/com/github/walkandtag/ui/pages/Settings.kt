@@ -33,10 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.firebase.auth.Authentication
+import com.github.walkandtag.repository.Theme
+import com.github.walkandtag.ui.viewmodel.SettingViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun Settings() {
+fun Settings(viewModel: SettingViewModel = koinViewModel()) {
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
 
@@ -61,7 +64,7 @@ fun Settings() {
                     .width(100.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                IconButton(onClick = { /* Azione */ }) {
+                IconButton(onClick = { viewModel.setTheme(Theme.Light) }) {
                     Icon(
                         imageVector = Icons.Default.LightMode,
                         contentDescription = "Imposta modalità chiara",
@@ -69,7 +72,7 @@ fun Settings() {
                         modifier = Modifier.size(70.dp)
                     )
                 }
-                IconButton(onClick = { /* Azione */ }) {
+                IconButton(onClick = { viewModel.setTheme(Theme.Dark) }) {
                     Icon(
                         imageVector = Icons.Default.DarkMode,
                         contentDescription = "Imposta modalità scura",
@@ -88,7 +91,8 @@ fun Settings() {
             Text(
                 "Modifica profilo",
                 modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp))
+                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp)
+            )
             Box(
                 modifier = Modifier
                     .width(100.dp)
@@ -115,7 +119,8 @@ fun Settings() {
             Text(
                 "Elimina account",
                 modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp))
+                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp)
+            )
             Box(
                 modifier = Modifier
                     .width(100.dp)

@@ -19,8 +19,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.firebase.auth.Authentication
+import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
@@ -28,6 +30,7 @@ import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
+import com.github.walkandtag.ui.viewmodel.SettingViewModel
 import com.github.walkandtag.util.Navigator
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -52,12 +55,23 @@ class MainActivity : ComponentActivity() {
             val state by viewModel.uiState.collectAsState()
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
-            WalkAndTagTheme {
+
+            // Get ThemeViewModel
+            val themeViewModel = koinViewModel<SettingViewModel>()
+            val themeState by themeViewModel.state.collectAsStateWithLifecycle()
+
+            WalkAndTagTheme(
+                darkTheme = themeState.theme == Theme.Dark
+            ) {
 
                 // @TODO(): Edit this, this code bad
                 val auth = koinInject<Authentication>()
                 val homeNavbar: NavbarBuilder =
-                    NavbarBuilder().addButton(Navigation.Settings, Icons.Filled.Settings, "Settings")
+                    NavbarBuilder().addButton(
+                        Navigation.Settings,
+                        Icons.Filled.Settings,
+                        "Settings"
+                    )
                         .addButton(Navigation.Home, Icons.Filled.Home, "Home")
                 homeNavbar.addButton(
                     Navigation.Profile(auth.getCurrentUserId() ?: "NULL"),
