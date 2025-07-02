@@ -7,9 +7,8 @@ class SavedPathRepository() {
     val points: Collection<LatLng>
         get() = _points.toList()
 
-    fun setPath(pathPoints: Collection<LatLng>) {
-        _points.clear()
-        _points.addAll(pathPoints)
+    fun addPoint(point: LatLng) {
+        _points.add(point)
     }
 
     fun clear() {

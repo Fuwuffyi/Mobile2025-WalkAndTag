@@ -27,7 +27,6 @@ class PathRecordingService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val pathPoints = mutableListOf<LatLng>()
     private val notifier: Notifier by inject()
     private val savedPathRepo: SavedPathRepository by inject()
 
@@ -79,7 +78,6 @@ class PathRecordingService : Service() {
         if (::locationCallback.isInitialized) {
             fusedLocationClient.removeLocationUpdates(locationCallback)
         }
-        savedPathRepo.setPath(pathPoints)
         if (!savedPathRepo.isValid) {
             notifier.notify(
                 title = "Path Not Saved",
@@ -93,7 +91,12 @@ class PathRecordingService : Service() {
 
     private fun addPoint(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
-        pathPoints.add(latLng)
-        // @TODO(): Persist each point for crash safety
+        savedPathRepo.addPoint(latLng)
+    }
+
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        stopLocationUpdates()
+        stopSelf()
     }
 }
