@@ -15,10 +15,10 @@
 ## Integrazioni
 - [ ] Telecamera per aggiungere foto ad I percorsi
 - [ ] Maps per vedere tutto
-- [ ] GPS per recording dei percorsi/visualizzazione utente
+- [X] GPS per recording dei percorsi/visualizzazione utente
 
 ## Funzionalitá generali
-- [ ] Notifiche in app e/o push (per gamification)
+- [-] Notifiche in app e/o push (per gamification)
 - [-] Tema chiaro scuro
 - [ ] Preferenze
 - [ ] Grafici (pag. utente)

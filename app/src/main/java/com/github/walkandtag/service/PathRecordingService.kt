@@ -8,8 +8,16 @@ import android.os.IBinder
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import com.github.walkandtag.util.Notifier
-import com.google.android.gms.location.*
-import kotlinx.coroutines.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import org.koin.android.ext.android.inject
 import org.maplibre.android.geometry.LatLng
 

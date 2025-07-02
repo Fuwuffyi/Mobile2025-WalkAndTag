@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
@@ -30,7 +29,6 @@ import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.util.Navigator
-import com.github.walkandtag.util.Notifier
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named

@@ -36,7 +36,6 @@ import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.util.Navigator
-import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
