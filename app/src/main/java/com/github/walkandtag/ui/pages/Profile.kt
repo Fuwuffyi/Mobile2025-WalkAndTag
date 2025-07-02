@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,20 +21,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.walkandtag.ui.components.FeedPathEntry
 import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import com.github.walkandtag.util.Navigator
+import com.github.walkandtag.util.rememberMultiplePermissions
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun Profile(
-    userId: String, nav: Navigator = koinInject(), viewModel: ProfileViewModel = koinViewModel()
+    userId: String,
+    nav: Navigator = koinInject(),
+    viewModel: ProfileViewModel = koinViewModel(),
+    globalViewModel: GlobalViewModel = koinInject()
 ) {
     LaunchedEffect(userId) {
         viewModel.loadUserProfile(userId)
     }
 
     val state = viewModel.uiState.collectAsState()
+
+    val locationPermissionHandler = rememberMultiplePermissions(
+        permissions = listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    ) { status ->
+        if (status[android.Manifest.permission.ACCESS_COARSE_LOCATION]?.isGranted ?: false || status[android.Manifest.permission.ACCESS_FINE_LOCATION]?.isGranted ?: false) {
+            viewModel.toggleRecording()
+        } else {
+            globalViewModel.showSnackbar("You do not have location permissions")
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -52,7 +71,9 @@ fun Profile(
             Row {
                 if (viewModel.isOwnProfile()) {
                     ElevatedButton(
-                        onClick = { viewModel.toggleRecording() }) {
+                        onClick = {
+                            locationPermissionHandler.launchPermissionRequest()
+                        }) {
                         Text(if (state.value.isRecording) "Save Path" else "Record Path")
                     }
                 }
