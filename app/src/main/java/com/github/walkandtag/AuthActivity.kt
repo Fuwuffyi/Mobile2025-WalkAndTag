@@ -31,11 +31,12 @@ import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
-import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.theme.WalkAndTagTheme
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
+import com.github.walkandtag.util.Navigator
+import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -51,18 +52,25 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            // Initialize global things
+            val navigator: Navigator = koinInject()
+            val navigatorController = rememberNavController()
+            navigator.setController(navigatorController)
+            val notifier: Notifier = koinInject()
+            notifier.setContext(LocalContext.current)
+            // Setup navbar
+            val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("login"))
+            val state by viewModel.uiState.collectAsState()
+            // Get global view model
+            val globalViewModel: GlobalViewModel = koinInject()
+
             WalkAndTagTheme {
-                val navigator: Navigator = koinInject()
-                val navigatorController = rememberNavController()
-                navigator.setController(navigatorController)
+                // @TODO(), Should I move this??? Unsure
                 val context = LocalContext.current
                 val scope = rememberCoroutineScope()
                 val auth = koinInject<Authentication>()
                 val userRepo =
                     koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
-                val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("login"))
-                val globalViewModel: GlobalViewModel = koinInject()
-                val state by viewModel.uiState.collectAsState()
 
                 LaunchedEffect(Unit) {
                     viewModel.events.collect { event ->

@@ -1,4 +1,4 @@
-package com.github.walkandtag.ui.navigation
+package com.github.walkandtag.util
 
 import androidx.navigation.NavHostController
 

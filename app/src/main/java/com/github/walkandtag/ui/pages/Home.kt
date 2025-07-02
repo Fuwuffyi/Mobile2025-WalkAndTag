@@ -13,10 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.walkandtag.ui.components.FeedPathEntry
 import com.github.walkandtag.ui.navigation.Navigation
-import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
+import com.github.walkandtag.util.Navigator
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 

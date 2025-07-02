@@ -5,7 +5,6 @@ import com.github.walkandtag.firebase.db.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.ui.navigation.Navigation
-import com.github.walkandtag.ui.navigation.Navigator
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
@@ -13,6 +12,8 @@ import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
+import com.github.walkandtag.util.Navigator
+import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -23,8 +24,9 @@ val appModule = module {
     single { FirebaseAuth.getInstance() }
     // Authentication singleton
     single { Authentication(get()) }
-    // Navigation singleton
+    // Utility singletons
     single<Navigator> { Navigator() }
+    single<Notifier> { Notifier() }
     // Repository singletons
     single<FirestoreRepository<UserSchema>>(named("users")) {
         FirestoreRepository.create("users")
