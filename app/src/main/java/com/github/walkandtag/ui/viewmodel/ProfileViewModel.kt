@@ -69,7 +69,7 @@ class ProfileViewModel(
             )
             result[0].toDouble()
         }
-        // Calculate estimated walking time
+        // Calculate estimated walking time (in seconds)
         val estTime = lengthMeters / 1.39
         // Save the new path to the database
         viewModelScope.launch {
@@ -78,7 +78,7 @@ class ProfileViewModel(
                     userId = auth.getCurrentUserId()!!,
                     name = pathName,
                     length = (lengthMeters / 1000.0).toFloat(),
-                    time = estTime.toFloat(),
+                    time = (estTime / 3600).toFloat(),
                     points = pathPoints.toMutableList()
                 )
             );
