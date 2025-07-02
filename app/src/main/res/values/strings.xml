@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">WalkAndTag</string>
-    <string name="server_client_id">911703362279-qkd33maq6vv29pj5gfj8aldoq6fkosah.apps.googleusercontent.com</string>
+    <string name="app_name" translatable="false">WalkAndTag</string>
+    <string name="server_client_id" translatable="false">911703362279-qkd33maq6vv29pj5gfj8aldoq6fkosah.apps.googleusercontent.com</string>
+    <!-- Language stuff: ENGLISH -->
+    <string name="test_string">Test</string>
 </resources>
