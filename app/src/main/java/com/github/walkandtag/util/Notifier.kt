@@ -16,7 +16,6 @@ class Notifier(
 ) {
     private var context: Context? = null
 
-
     fun setContext(context: Context) {
         this.context = context
         createNotificationChannel()
