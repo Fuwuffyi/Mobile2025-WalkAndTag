@@ -61,7 +61,27 @@ class Notifier(
             .setContentTitle(title).setContentText(text).setPriority(priority).setOngoing(ongoing)
         val notification = builder.build()
         NotificationManagerCompat.from(appContext).notify(notificationId, notification)
-        return notification
+        return builder.build()
+    }
+
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun notifyPersistent(
+        title: String,
+        text: String,
+        priority: Int = NotificationCompat.PRIORITY_DEFAULT
+    ): Notification {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(
+                appContext, Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            throw SecurityException("POST_NOTIFICATIONS permission not granted")
+        }
+        createNotificationChannelIfNeeded()
+        val builder = NotificationCompat.Builder(appContext, channelId).setSmallIcon(smallIconRes)
+            .setContentTitle(title).setContentText(text).setPriority(priority).setOngoing(true)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+        return builder.build()
     }
 
     fun cancel(notificationId: Int) {

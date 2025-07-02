@@ -24,15 +24,13 @@ class PathRecordingService : Service() {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onCreate() {
         super.onCreate()
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        val notification = notifier.notify(
+        val notification = notifier.notifyPersistent(
             title = "Recording Path",
             text = "Your walk is being recorded.",
-            notificationId = pathRecordingNotificationId,
-            ongoing = true,
-            NotificationCompat.PRIORITY_LOW
+            priority = NotificationCompat.PRIORITY_LOW
         )
         startForeground(pathRecordingNotificationId, notification)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     @RequiresPermission(anyOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
