@@ -1,9 +1,10 @@
 package com.github.walkandtag
 
 import com.github.walkandtag.firebase.auth.Authentication
-import com.github.walkandtag.firebase.db.FirestoreRepository
+import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.SavedPathRepository
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
@@ -29,6 +30,7 @@ val appModule = module {
     single<Navigator> { Navigator() }
     single<Notifier> { Notifier(androidContext()) }
     // Repository singletons
+    single<SavedPathRepository> { SavedPathRepository() }
     single<FirestoreRepository<UserSchema>>(named("users")) {
         FirestoreRepository.create("users")
     }
@@ -42,6 +44,6 @@ val appModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
-    viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths"))) }
+    viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(named("users")), get(named("paths"))) }
 }

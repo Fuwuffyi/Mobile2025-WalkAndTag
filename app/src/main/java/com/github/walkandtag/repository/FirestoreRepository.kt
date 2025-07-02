@@ -1,5 +1,6 @@
-package com.github.walkandtag.firebase.db
+package com.github.walkandtag.repository
 
+import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,7 +24,7 @@ class FirestoreRepository<T : Any>(
 ) {
     private val cache = ConcurrentHashMap<String, CachedData<T>>()
 
-    suspend fun create(item: T, id: String?): String {
+    suspend fun create(item: T, id: String? = null): String {
         val documentRef = if (id != null) {
             docRef.document(id)
         } else {

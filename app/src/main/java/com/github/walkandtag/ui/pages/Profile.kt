@@ -56,6 +56,8 @@ fun Profile(
                 context.startForegroundService(Intent(context, PathRecordingService::class.java))
             } else {
                 context.stopService(Intent(context, PathRecordingService::class.java))
+                // @TODO(): Get the path name
+                viewModel.savePath("Temp path name")
             }
             viewModel.toggleRecording()
         } else {
