@@ -15,6 +15,7 @@ import com.github.walkandtag.ui.viewmodel.RegisterViewModel
 import com.github.walkandtag.util.Navigator
 import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -26,7 +27,7 @@ val appModule = module {
     single { Authentication(get()) }
     // Utility singletons
     single<Navigator> { Navigator() }
-    single<Notifier> { Notifier() }
+    single<Notifier> { Notifier(androidContext()) }
     // Repository singletons
     single<FirestoreRepository<UserSchema>>(named("users")) {
         FirestoreRepository.create("users")

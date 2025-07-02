@@ -49,8 +49,6 @@ class MainActivity : ComponentActivity() {
             val navigator: Navigator = koinInject()
             val navigatorController = rememberNavController()
             navigator.setController(navigatorController)
-            val notifier: Notifier = koinInject()
-            notifier.setContext(LocalContext.current)
             // Setup navbar
             val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
             val state by viewModel.uiState.collectAsState()

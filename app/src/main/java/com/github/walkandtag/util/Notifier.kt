@@ -1,48 +1,70 @@
 package com.github.walkandtag.util
 
 import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.walkandtag.R
 
 class Notifier(
-    private val channelId: String = "walkandtag_notification_channel",
-    private val channelName: String = "WalkAndTag Notification Channel"
+    private val appContext: Context,
+    private val channelId: String = "walkandtag_notifications",
+    private val channelName: String = "WalkAndTag Notifications",
+    private val channelDescription: String = "General app notifications",
+    private val channelImportance: Int = NotificationManager.IMPORTANCE_DEFAULT,
+    private val smallIconRes: Int = R.mipmap.ic_launcher // @TODO(): Create notification icon
 ) {
-    private var context: Context? = null
-
-    fun setContext(context: Context) {
-        this.context = context
-        createNotificationChannel()
+    init {
+        require(appContext.applicationContext === appContext) {
+            "Please pass Application context to avoid leaking Activities"
+        }
+        createNotificationChannelIfNeeded()
     }
 
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "App notifications"
-        }
-        if (context != null) {
-            val manager =
-                context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
+    private var channelCreated: Boolean = false
+
+    private fun createNotificationChannelIfNeeded() {
+        if (!channelCreated) {
+            val channel = NotificationChannel(channelId, channelName, channelImportance).apply {
+                description = channelDescription
+            }
+            val mgr =
+                appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mgr.createNotificationChannel(channel)
+            channelCreated = true
         }
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showNotification(title: String, message: String, notificationId: Int = 0) {
-        if (context == null) {
-            Log.e("Notifier", "showNotification: Context not set for notification manager!")
+    fun notify(
+        title: String,
+        text: String,
+        notificationId: Int,
+        ongoing: Boolean = false,
+        priority: Int = NotificationCompat.PRIORITY_DEFAULT
+    ): Notification {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(
+                appContext, Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            throw SecurityException("POST_NOTIFICATIONS permission not granted")
         }
-        val notification =
-            NotificationCompat.Builder(context!!, channelId).setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title).setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT).build()
-        NotificationManagerCompat.from(context!!).notify(notificationId, notification)
+        createNotificationChannelIfNeeded()
+        val builder = NotificationCompat.Builder(appContext, channelId).setSmallIcon(smallIconRes)
+            .setContentTitle(title).setContentText(text).setPriority(priority).setOngoing(ongoing)
+        val notification = builder.build()
+        NotificationManagerCompat.from(appContext).notify(notificationId, notification)
+        return notification
+    }
+
+    fun cancel(notificationId: Int) {
+        NotificationManagerCompat.from(appContext).cancel(notificationId)
     }
 }
