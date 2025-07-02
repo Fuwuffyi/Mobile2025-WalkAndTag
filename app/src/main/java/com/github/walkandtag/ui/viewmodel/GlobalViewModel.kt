@@ -1,6 +1,8 @@
 package com.github.walkandtag.ui.viewmodel
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.repository.Theme
@@ -28,7 +30,25 @@ class GlobalViewModel(
         }
     }
 
-    fun setTheme(theme: Theme) = viewModelScope.launch {
-        themeRepo.setTheme(theme)
+    fun toggleTheme() {
+        val currTheme = themeState.value.theme
+        viewModelScope.launch {
+            if (currTheme == Theme.Dark) {
+                themeRepo.setTheme(Theme.Light)
+            } else {
+                themeRepo.setTheme(Theme.Dark)
+            }
+        }
+    }
+
+    fun toggleSystemTheme() {
+        val currTheme = themeState.value.theme
+        viewModelScope.launch {
+            if (currTheme == Theme.System) {
+                themeRepo.setTheme(Theme.Light)
+            } else {
+                themeRepo.setTheme(Theme.System)
+            }
+        }
     }
 }

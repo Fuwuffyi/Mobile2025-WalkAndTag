@@ -37,6 +37,8 @@ import org.koin.compose.koinInject
 
 @Composable
 fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
+    // @TODO(): Implement settings viewModel
+
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
     val theme = globalViewModel.themeState.collectAsStateWithLifecycle()
@@ -78,9 +80,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             Switch(
                 checked = theme.value.theme == Theme.System,
                 onCheckedChange = {
-                    globalViewModel.setTheme(
-                        if (theme.value.theme == Theme.System) Theme.Light else Theme.System
-                    )
+                    globalViewModel.toggleSystemTheme()
                 }
             )
         }
@@ -99,9 +99,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             Switch(
                 checked = theme.value.theme == Theme.Dark,
                 onCheckedChange = {
-                    globalViewModel.setTheme(
-                        if (theme.value.theme == Theme.Light) Theme.Dark else Theme.Light
-                    )
+                    globalViewModel.toggleTheme()
                 },
                 enabled = theme.value.theme != Theme.System
             )
