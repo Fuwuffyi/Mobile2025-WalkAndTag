@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
             val themeState by themeViewModel.state.collectAsStateWithLifecycle()
 
             WalkAndTagTheme(
-                darkTheme = themeState.theme == Theme.Dark
+                theme = themeState.theme
             ) {
 
                 // @TODO(): Edit this, this code bad

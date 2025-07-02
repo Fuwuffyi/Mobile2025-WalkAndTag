@@ -1,10 +1,12 @@
 package com.github.walkandtag.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import com.github.walkandtag.repository.Theme
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -33,8 +35,13 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun WalkAndTagTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) DarkColorScheme else LightColorScheme
+fun WalkAndTagTheme(theme: Theme, content: @Composable () -> Unit) {
+    val colors = if (theme == Theme.System) {
+        if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
+    } else {
+        if (theme == Theme.Dark) DarkColorScheme else LightColorScheme
+    }
+
     MaterialTheme(
         colorScheme = colors, typography = Typography, content = content
     )

@@ -69,7 +69,7 @@ class AuthActivity : ComponentActivity() {
             val themeState by themeViewModel.state.collectAsStateWithLifecycle()
 
             WalkAndTagTheme(
-                darkTheme = themeState.theme == Theme.Dark
+                theme = themeState.theme
             ) {
                 // @TODO(), Should I move this??? Unsure
                 val context = LocalContext.current
