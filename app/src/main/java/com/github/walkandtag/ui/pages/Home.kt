@@ -1,17 +1,13 @@
 package com.github.walkandtag.ui.pages
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import com.github.walkandtag.ui.components.EmptyFeed
 import com.github.walkandtag.ui.components.FeedPathEntry
+import com.github.walkandtag.ui.components.LoadingScreen
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
@@ -31,9 +27,7 @@ fun Home(
 
     when (uiState) {
         is HomeState.Loading -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            LoadingScreen()
         }
 
         is HomeState.Error -> {
@@ -55,9 +49,7 @@ fun Home(
                     }
                 }
             } else {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("There's nothing here...")
-                }
+                EmptyFeed()
             }
         }
     }

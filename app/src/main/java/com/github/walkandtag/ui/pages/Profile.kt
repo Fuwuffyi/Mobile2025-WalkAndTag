@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.github.walkandtag.service.PathRecordingService
+import com.github.walkandtag.ui.components.EmptyFeed
 import com.github.walkandtag.ui.components.FeedPathEntry
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
@@ -100,9 +101,7 @@ fun Profile(
                 }
             }
         } else {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("There's nothing here...")
-            }
+            EmptyFeed()
         }
     }
 }
