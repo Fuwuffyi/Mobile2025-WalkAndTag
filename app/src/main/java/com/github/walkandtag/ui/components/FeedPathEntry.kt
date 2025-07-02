@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.components
 
+import android.content.res.Resources
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,127 +31,120 @@ import androidx.compose.ui.unit.dp
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
-import java.util.Locale
 
-// @TODO(): Clean up this code
 @Composable
 fun FeedPathEntry(
-    user: FirestoreDocument<UserSchema>,
+    modifier: Modifier = Modifier,
+    user: FirestoreDocument<UserSchema>? = null,
     path: FirestoreDocument<PathSchema>,
-    onProfileClick: () -> Unit,
+    onProfileClick: (() -> Unit)? = null,
     onPathClick: () -> Unit,
-    onFavoritePathClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onFavoritePathClick: () -> Unit
+) {
+    FeedPathEntryLayout(
+        modifier = modifier, userSection = user?.let {
+        {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { onProfileClick?.invoke() }) {
+                Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
+                Text(it.data.username, modifier = Modifier.padding(start = 4.dp))
+            }
+        }
+    }, pathTitle = path.data.name, mapContent = {
+        if (user != null) {
+            StaticMapFavorite(
+                path = path.data.points,
+                modifier = Modifier.fillMaxWidth(),
+                onPathClick = onPathClick,
+                onFavoriteClick = onFavoritePathClick
+            )
+        } else {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(6f / 4f)
+                    .clickable(onClick = onPathClick)
+            ) {
+                StaticMapPath(path = path.data.points, modifier = Modifier.fillMaxSize())
+                IconButton(
+                    onClick = onFavoritePathClick,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp)
+                        .border(2.dp, Color(255, 127, 0))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.StarBorder,
+                        contentDescription = "Favorite",
+                        tint = Color(255, 127, 0),
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+            }
+        }
+    }, length = path.data.length.toDouble(), time = path.data.time.toDouble()
+    )
+}
+
+@Composable
+private fun FeedPathEntryLayout(
+    modifier: Modifier = Modifier,
+    userSection: (@Composable (() -> Unit))? = null,
+    pathTitle: String,
+    mapContent: @Composable () -> Unit,
+    length: Double,
+    time: Double
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        if (userSection != null) {
             Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable(onClick = onProfileClick)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
-                Text(user.data.username, modifier = Modifier.padding(start = 4.dp))
+                userSection()
+                Text(pathTitle)
             }
-            Text(path.data.name)
+        } else {
+            Text(
+                pathTitle, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
+            )
         }
+
         Spacer(modifier = Modifier.height(16.dp))
-        StaticMapFavorite(
-            path = path.data.points,
-            modifier = Modifier.fillMaxWidth(),
-            onPathClick = onPathClick,
-            onFavoriteClick = onFavoritePathClick
-        )
+        mapContent()
         Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "${String.format(Locale.ITALY, "%.2f", path.data.length)}km",
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                Icon(Icons.Filled.PinDrop, contentDescription = "Length")
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.Timer, contentDescription = "Duration (h)")
-                Text(
-                    text = "${String.format(Locale.ITALY, "%.2f", path.data.time)}h",
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
-        }
+        PathDetailsRow(length = length, time = time)
     }
 }
 
 @Composable
-fun FeedPathEntry(
-    path: FirestoreDocument<PathSchema>,
-    onPathClick: () -> Unit,
-    onFavoritePathClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+private fun PathDetailsRow(length: Double, time: Double) {
+    val locale = Resources.getSystem().configuration.locales.get(0)
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Text(path.data.name, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(6f / 4f)
-                .clickable(onClick = onPathClick)
-        ) {
-            StaticMapPath(
-                path = path.data.points, modifier = Modifier.fillMaxSize()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "${String.format(locale, "%.2f", length)}km",
+                modifier = Modifier.padding(end = 4.dp)
             )
-            IconButton(
-                onClick = onFavoritePathClick,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(8.dp)
-                    .border(2.dp, Color(255, 127, 0))
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.StarBorder,
-                    contentDescription = "Favorite",
-                    tint = Color(255, 127, 0),
-                    modifier = Modifier.size(50.dp)
-                )
-            }
+            Icon(Icons.Filled.PinDrop, contentDescription = "Length")
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "${String.format(Locale.ITALY, "%.2f", path.data.length)}km",
-                    modifier = Modifier.padding(end = 4.dp)
-                )
-                Icon(Icons.Filled.PinDrop, contentDescription = "Length")
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Filled.Timer, contentDescription = "Duration (h)")
-                Text(
-                    text = "${String.format(Locale.ITALY, "%.2f", path.data.time)}h",
-                    modifier = Modifier.padding(start = 4.dp)
-                )
-            }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.Timer, contentDescription = "Duration (h)")
+            Text(
+                text = "${String.format(locale, "%.2f", time)}h",
+                modifier = Modifier.padding(start = 4.dp)
+            )
         }
     }
 }
