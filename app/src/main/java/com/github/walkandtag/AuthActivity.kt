@@ -38,6 +38,7 @@ import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.util.Navigator
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -52,41 +53,41 @@ class AuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Initialize global things
-            val navigator: Navigator = koinInject()
-            val navigatorController = rememberNavController()
-            navigator.setController(navigatorController)
-            // Setup navbar
-            val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("login"))
-            val state by viewModel.uiState.collectAsState()
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
             val themeState by globalViewModel.themeState.collectAsStateWithLifecycle()
-
+            // Use theme
             WalkAndTagTheme(
                 theme = themeState.theme
             ) {
-                // @TODO(), Should I move this??? Unsure
+                // @TODO(), Should I move this to a viewmodel??? Unsure
+                // Init navigator and navbar
+                val navigator: Navigator = koinInject()
+                val navController = rememberNavController()
+                navigator.setController(navController)
+                val navbarViewModel = koinViewModel<NavbarViewModel>(qualifier = named("login"))
+                val state by navbarViewModel.uiState.collectAsState()
+                // Setup authentication
                 val context = LocalContext.current
-                val scope = rememberCoroutineScope()
+                val coroutineScope = rememberCoroutineScope()
                 val auth = koinInject<Authentication>()
                 val userRepo =
                     koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
-
+                // Get navbar events
                 LaunchedEffect(Unit) {
-                    viewModel.events.collect { event ->
+                    navbarViewModel.events.collectLatest { event ->
                         when (event) {
                             is NavbarEvent.NavigateTo -> navigator.navigate(event.route)
                         }
                     }
                 }
-
+                // Setup actual page content
                 Scaffold(snackbarHost = {
                     SnackbarHost(globalViewModel.snackbarHostState)
                 }, floatingActionButton = {
-                    // @TODO(), Should I move this??? Unsure
+                    // @TODO(), Should I move this to a viewmodel??? Unsure
                     GoogleButton {
-                        scope.launch {
+                        coroutineScope.launch {
                             val result = auth.loginWithGoogle(context)
                             when (result) {
                                 is AuthResult.Success -> {
@@ -106,7 +107,7 @@ class AuthActivity : ComponentActivity() {
                     }
                 }, bottomBar = {
                     authNavbar.Navbar(state.currentPage) {
-                        viewModel.onChangePage(it)
+                        navbarViewModel.onChangePage(it)
                     }
                 }) { innerPadding ->
                     Surface(
@@ -115,7 +116,7 @@ class AuthActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        LoginNavGraph(navigatorController)
+                        LoginNavGraph(navController)
                     }
                 }
             }
@@ -124,14 +125,11 @@ class AuthActivity : ComponentActivity() {
 
     public override fun onStart() {
         super.onStart()
+        // If logged in, bring to home automatically
         if (FirebaseAuth.getInstance().currentUser != null) {
-            gotoHome()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
-    }
-
-    private fun gotoHome() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }

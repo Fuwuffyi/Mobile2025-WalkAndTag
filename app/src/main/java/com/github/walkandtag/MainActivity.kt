@@ -30,6 +30,7 @@ import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.util.Navigator
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
@@ -37,55 +38,50 @@ import org.maplibre.android.MapLibre
 import org.maplibre.android.WellKnownTileServer
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapLibre.getInstance(
-            this, null, WellKnownTileServer.MapTiler
-        )
+        // Initialize MapLibre with MapTiler tile server
+        MapLibre.getInstance(this, null, WellKnownTileServer.MapTiler)
         enableEdgeToEdge()
+        // Main page
         setContent {
-            // Initialize global things
-            val navigator: Navigator = koinInject()
-            val navigatorController = rememberNavController()
-            navigator.setController(navigatorController)
-            // Setup navbar
-            val viewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
-            val state by viewModel.uiState.collectAsState()
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
             val themeState by globalViewModel.themeState.collectAsStateWithLifecycle()
-
-            WalkAndTagTheme(
-                theme = themeState.theme
-            ) {
-
-                // @TODO(): Edit this, this code bad
+            WalkAndTagTheme(theme = themeState.theme) {
+                // Setup navbar
+                val navigator: Navigator = koinInject()
+                val navController = rememberNavController()
+                navigator.setController(navController)
+                val navbarViewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
+                val uiState by navbarViewModel.uiState.collectAsState()
+                // Setup authentication
                 val auth = koinInject<Authentication>()
-                val homeNavbar: NavbarBuilder =
-                    NavbarBuilder().addButton(
+                // Build navbar buttons dynamically
+                val homeNavbar = NavbarBuilder().addButton(
                         Navigation.Settings,
                         Icons.Filled.Settings,
                         "Settings"
+                    ).addButton(Navigation.Home, Icons.Filled.Home, "Home").addButton(
+                        Navigation.Profile(auth.getCurrentUserId() ?: "NULL"),
+                        Icons.Filled.AccountCircle,
+                        "Account"
                     )
-                        .addButton(Navigation.Home, Icons.Filled.Home, "Home")
-                homeNavbar.addButton(
-                    Navigation.Profile(auth.getCurrentUserId() ?: "NULL"),
-                    Icons.Filled.AccountCircle, "Account"
-                )
-
+                // Check navbar events
                 LaunchedEffect(Unit) {
-                    viewModel.events.collect { event ->
-                        when (event) {
-                            is NavbarEvent.NavigateTo -> navigator.navigate(event.route)
+                    navbarViewModel.events.collectLatest { event ->
+                        if (event is NavbarEvent.NavigateTo) {
+                            navigator.navigate(event.route)
                         }
                     }
                 }
-
+                // Actual page content
                 Scaffold(
                     snackbarHost = { SnackbarHost(globalViewModel.snackbarHostState) },
                     bottomBar = {
-                        homeNavbar.Navbar(state.currentPage) {
-                            viewModel.onChangePage(it)
+                        homeNavbar.Navbar(uiState.currentPage) { page ->
+                            navbarViewModel.onChangePage(page)
                         }
                     }) { innerPadding ->
                     Surface(
@@ -94,7 +90,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding)
                             .background(MaterialTheme.colorScheme.background)
                     ) {
-                        MainNavGraph(navigatorController)
+                        MainNavGraph(navController)
                     }
                 }
             }
