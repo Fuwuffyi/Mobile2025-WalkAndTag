@@ -1,6 +1,5 @@
 package com.github.walkandtag.ui.pages
 
-import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.AuthActivity
-import com.github.walkandtag.MainActivity
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
