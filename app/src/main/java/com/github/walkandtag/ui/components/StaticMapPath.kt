@@ -17,8 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import com.github.walkandtag.R
+import com.github.walkandtag.util.addPathStyle
+import com.github.walkandtag.util.buildBounds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -28,12 +32,6 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.geometry.LatLngBounds
 import org.maplibre.android.maps.Style
 import org.maplibre.android.snapshotter.MapSnapshotter
-import org.maplibre.android.style.layers.LineLayer
-import org.maplibre.android.style.layers.PropertyFactory.lineColor
-import org.maplibre.android.style.layers.PropertyFactory.lineWidth
-import org.maplibre.android.style.sources.GeoJsonSource
-import org.maplibre.geojson.LineString
-import org.maplibre.geojson.Point
 import kotlin.coroutines.resumeWithException
 import kotlin.math.ln
 import kotlin.math.min
@@ -60,21 +58,13 @@ private suspend fun generateMapSnapshot(
     context: Context, styleUri: String, width: Int, height: Int, path: Collection<LatLng>
 ): Bitmap = withContext(Dispatchers.Main) {
     suspendCancellableCoroutine { cont ->
-        val bounds = path.fold(LatLngBounds.Builder()) { builder, point ->
-            builder.include(point)
-        }.build()
-        val lineString = LineString.fromLngLats(path.map {
-            Point.fromLngLat(it.longitude, it.latitude)
-        })
-        val style =
-            Style.Builder().fromUri(styleUri).withSource(GeoJsonSource("route-source", lineString))
-                .withLayer(
-                    LineLayer("route-layer", "route-source").withProperties(
-                        lineColor(Color.Red.toArgb()), lineWidth(4f)
-                    )
-                )
+        val bounds = buildBounds(path)
         val cameraPosition = CameraPosition.Builder().target(bounds.center)
             .zoom(calculateZoomLevel(bounds, width, height)).build()
+        val startPin = ContextCompat.getDrawable(context, R.drawable.path_start_pin)!!.toBitmap()
+        val endPin = ContextCompat.getDrawable(context, R.drawable.path_end_pin)!!.toBitmap()
+        val style = Style.Builder().fromUri(styleUri).withImage("start-icon", startPin)
+            .withImage("end-icon", endPin).addPathStyle(path)
         val options = MapSnapshotter.Options(width, height)
             .withPixelRatio(context.resources.displayMetrics.density)
             .withCameraPosition(cameraPosition).withStyleBuilder(style)
