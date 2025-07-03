@@ -3,6 +3,8 @@ package com.github.walkandtag
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -53,7 +55,11 @@ abstract class BaseActivity : ComponentActivity() {
             val context = remember(globalState.language) {
                 baseContext.updateLocale(globalState.language.locale)
             }
-            CompositionLocalProvider(LocalContext provides context) {
+            CompositionLocalProvider(
+                LocalContext provides context,
+                LocalActivity provides this,
+                LocalActivityResultRegistryOwner provides this
+            ) {
                 WalkAndTagTheme(theme = globalState.theme) {
                     // Get navbar stuff
                     val navigator: Navigator = koinInject()
