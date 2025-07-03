@@ -2,6 +2,32 @@
 <resources>
     <string name="app_name" translatable="false">WalkAndTag</string>
     <string name="server_client_id" translatable="false">911703362279-qkd33maq6vv29pj5gfj8aldoq6fkosah.apps.googleusercontent.com</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password" translatable="false">Password</string>
+
     <!-- Language stuff: ENGLISH -->
     <string name="deleted_account">Deleted User</string>
+    <string name="login">Login</string>
+
+    <string name="no_location_permissions">You do not have location permissions</string>
+    <string name="path_details">Path Details</string>
+    <string name="title">Title</string>
+    <string name="desc">Description</string>
+    <string name="error_title">Title must contain at least 4 characters.</string>
+    <string name="propic">Profile picture</string>
+    <string name="save_path">Save Path</string>
+    <string name="rec_path">Record Path</string>
+
+    <string name="username">Username</string>
+    <string name="rep_pw">Repeat Password</string>
+    <string name="register">Register</string>
+
+    <string name="appearance">Appearance</string>
+    <string name="sys_mode">Use system mode</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="regional">Regional</string>
+    <string name="lang">Language</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete account</string>
+    <string name="settings">Settings</string>
 </resources>
