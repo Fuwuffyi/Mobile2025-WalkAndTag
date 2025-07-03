@@ -10,12 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.walkandtag.R
 import com.github.walkandtag.ui.components.StaticMapFavorite
+import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
+import com.github.walkandtag.util.Navigator
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun PathDetails(
-    pathId: String, viewModel: PathDetailsViewModel = koinViewModel()
+    pathId: String,
+    navigator: Navigator = koinInject(),
+    viewModel: PathDetailsViewModel = koinViewModel()
 ) {
 
     LaunchedEffect(pathId) {
@@ -33,7 +38,7 @@ fun PathDetails(
             StaticMapFavorite(
                 path = state.value.path!!.data.points,
                 modifier = Modifier.fillMaxWidth(),
-                onPathClick = { /* @TODO: Redirect to full screen map */ },
+                onPathClick = { navigator.navigate(Navigation.FullMap(pathId)) },
                 onFavoriteClick = { /* @TODO: Add path to favorites */ })
             Text(text = state.value.path!!.data.description)
         }

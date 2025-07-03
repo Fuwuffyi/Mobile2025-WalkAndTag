@@ -41,60 +41,50 @@ import kotlin.math.sin
 
 // @TODO(): Clean up code and try to remove ExperimentalCoroutinesApi
 private fun latRad(lat: Double): Double {
-    val sin = sin(lat * Math.PI / 180.0)
-    return ln((1 + sin) / (1 - sin)) / 2.0
+    val sinLat = sin(lat * Math.PI / 180.0f)
+    return ln((1.0f + sinLat) / (1.0f - sinLat)) / 2.0f
 }
 
 private fun calculateZoomLevel(bounds: LatLngBounds, width: Int, height: Int): Double {
-    val worldWidth = 256
+    val worldWidth = 256.0f
     val latFraction = (latRad(bounds.latitudeNorth) - latRad(bounds.latitudeSouth)) / Math.PI
-    val lngFraction = (bounds.longitudeEast - bounds.longitudeWest) / 180.0
-    val latZoom = (ln(height * 1.0 / worldWidth / latFraction) / ln(2.0)).toFloat()
-    val lngZoom = (ln(width * 1.0 / worldWidth / lngFraction) / ln(2.0)).toFloat()
-    return min(latZoom, lngZoom).toDouble() - 0.2
+    val lngFraction = (bounds.longitudeEast - bounds.longitudeWest) / 180.0f
+    val latZoom = (ln(height * 1.0f / worldWidth / latFraction) / ln(2.0f)).toFloat()
+    val lngZoom = (ln(width * 1.0f / worldWidth / lngFraction) / ln(2.0f)).toFloat()
+    return min(latZoom, lngZoom).toDouble() - 0.2f
 }
 
+// Replace when MapSnapshotter is stable with suspend functions
 @OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun generateMapSnapshot(
     context: Context, styleUri: String, width: Int, height: Int, path: Collection<LatLng>
 ): Bitmap = withContext(Dispatchers.Main) {
-    suspendCancellableCoroutine { continuation ->
-        // Calculate bounding box for the path
+    suspendCancellableCoroutine { cont ->
         val bounds = path.fold(LatLngBounds.Builder()) { builder, point ->
-            builder.include(LatLng(point.latitude, point.longitude))
-            builder
+            builder.include(point)
         }.build()
-        // Convert path to GeoJSON LineString
-        val points = path.map { Point.fromLngLat(it.longitude, it.latitude) }
-        val lineString = LineString.fromLngLats(points)
-        // Create the line overlay
-        val geoJsonSource = GeoJsonSource("route-source", lineString)
-        val lineLayer = LineLayer("route-layer", "route-source").withProperties(
-            lineColor(Color.Red.toArgb()),  // use .toArgb() from androidx.compose.ui.graphics.Color
-            lineWidth(4f)
-        )
-        // Build the map style
-        val styleBuilder =
-            Style.Builder().fromUri(styleUri).withSource(geoJsonSource).withLayer(lineLayer)
-        // Create camera options to fit the bounds
+        val lineString = LineString.fromLngLats(path.map {
+            Point.fromLngLat(it.longitude, it.latitude)
+        })
+        val style =
+            Style.Builder().fromUri(styleUri).withSource(GeoJsonSource("route-source", lineString))
+                .withLayer(
+                    LineLayer("route-layer", "route-source").withProperties(
+                        lineColor(Color.Red.toArgb()), lineWidth(4f)
+                    )
+                )
         val cameraPosition = CameraPosition.Builder().target(bounds.center)
             .zoom(calculateZoomLevel(bounds, width, height)).build()
-        // Link everything together
-        val options = MapSnapshotter.Options(width, height).withStyleBuilder(styleBuilder)
+        val options = MapSnapshotter.Options(width, height)
             .withPixelRatio(context.resources.displayMetrics.density)
-            .withCameraPosition(cameraPosition)
-        // Create the map snapshot
+            .withCameraPosition(cameraPosition).withStyleBuilder(style)
         val snapshotter = MapSnapshotter(context, options)
-        snapshotter.start(callback = { snapshot ->
-            continuation.resume(
-                value = snapshot.bitmap
-            ) { cause, _, _ ->
-                snapshotter.cancel()
-            }
+        snapshotter.start({ snapshot ->
+            cont.resume(snapshot.bitmap) { _, _, _ -> snapshotter.cancel() }
             snapshotter.cancel()
-        }, errorHandler = {
+        }, {
             snapshotter.cancel()
-            continuation.resumeWithException(Throwable(it))
+            cont.resumeWithException(Throwable(it))
         })
     }
 }
@@ -106,21 +96,18 @@ fun StaticMapPath(
     path: Collection<LatLng>
 ) {
     val context = LocalContext.current
-    var bitmapState by remember { mutableStateOf<Bitmap?>(null) }
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(path, styleUri) {
         isLoading = true
         error = null
         try {
-            bitmapState = withContext(Dispatchers.IO) {
-                generateMapSnapshot(
-                    context,
-                    styleUri,
-                    context.resources.displayMetrics.widthPixels,
-                    (context.resources.displayMetrics.widthPixels * (4.0f / 6.0f)).toInt(),
-                    path
-                )
+            bitmap = withContext(Dispatchers.IO) {
+                val display = context.resources.displayMetrics
+                val width = display.widthPixels
+                val height = (width * 2 / 3f).toInt() // 4:6 = 2:3 ratio
+                generateMapSnapshot(context, styleUri, width, height, path)
             }
         } catch (e: Exception) {
             error = "Map load failed: ${e.message}"
@@ -128,28 +115,24 @@ fun StaticMapPath(
             isLoading = false
         }
     }
+
     Box(modifier = modifier) {
         when {
             isLoading -> LoadingScreen()
-
-            error != null -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(error ?: "Map load error")
-                }
+            error != null -> Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = error ?: "Map load error")
             }
 
-            bitmapState != null -> {
-                Image(
-                    bitmap = bitmapState!!.asImageBitmap(),
-                    contentDescription = "Static Map",
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            bitmap != null -> Image(
+                bitmap = bitmap!!.asImageBitmap(),
+                contentDescription = "Static Map",
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

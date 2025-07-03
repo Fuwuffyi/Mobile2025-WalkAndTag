@@ -22,4 +22,7 @@ sealed class Navigation {
     @Serializable
     data class PathDetails(val pathId: String) : Navigation()
 
+    @Serializable
+    data class FullMap(val pathId: String) : Navigation()
+
 }
