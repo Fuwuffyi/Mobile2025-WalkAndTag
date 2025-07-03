@@ -16,7 +16,7 @@ class ThemeRepository(private val dataStore: DataStore<Preferences>) {
     val theme = dataStore.data
         .map { preferences ->
             try {
-                Theme.valueOf(preferences[THEME_KEY] ?: "System")
+                Theme.valueOf(preferences[THEME_KEY] ?: Theme.System.name)
             } catch (_: Exception) {
                 Theme.System
             }

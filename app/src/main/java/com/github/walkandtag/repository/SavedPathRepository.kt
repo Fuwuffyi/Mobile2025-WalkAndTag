@@ -2,7 +2,7 @@ package com.github.walkandtag.repository
 
 import org.maplibre.android.geometry.LatLng
 
-class SavedPathRepository() {
+class SavedPathRepository {
     private val _points = mutableListOf<LatLng>()
     val points: Collection<LatLng>
         get() = _points.toList()

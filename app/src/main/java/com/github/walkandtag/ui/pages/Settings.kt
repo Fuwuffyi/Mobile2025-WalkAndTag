@@ -1,6 +1,7 @@
 package com.github.walkandtag.ui.pages
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,20 +39,27 @@ import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.Theme
+import com.github.walkandtag.ui.components.LanguageDialog
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import kotlinx.coroutines.runBlocking
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 
+enum class Languages {
+    System, Italiano, English
+}
+
 @Composable
 fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     // @TODO(): Implement settings viewModel (for all functionality)
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
     val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
     val theme = globalViewModel.themeState.collectAsStateWithLifecycle()
+    val lang = globalViewModel.languageState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -113,18 +125,29 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { }) {
+                .clickable { showLanguageDialog = true }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.GTranslate)
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Language", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "Language: ${lang.value.lang.name}",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null,
                 modifier = Modifier.size(36.dp)
+            )
+        }
+
+        if (showLanguageDialog) {
+            LanguageDialog(
+                currentLanguage = lang.value.lang,
+                onLanguageSelected = { globalViewModel.setLang(it) },
+                onDismiss = { showLanguageDialog = false }
             )
         }
 
