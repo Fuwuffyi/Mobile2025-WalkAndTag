@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.GTranslate
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -30,10 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.firebase.auth.Authentication
+import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
+import kotlinx.coroutines.runBlocking
 import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
 
 @Composable
 fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
@@ -41,6 +46,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
 
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
+    val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
     val theme = globalViewModel.themeState.collectAsStateWithLifecycle()
 
     Column(
@@ -69,8 +75,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.PhoneAndroid)
@@ -78,18 +83,15 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 Text("Use system mode", style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
-                checked = theme.value.theme == Theme.System,
-                onCheckedChange = {
+                checked = theme.value.theme == Theme.System, onCheckedChange = {
                     globalViewModel.toggleSystemTheme()
-                }
-            )
+                })
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Filled.DarkMode)
@@ -97,11 +99,9 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 Text("Dark Mode", style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
-                checked = theme.value.theme == Theme.Dark,
-                onCheckedChange = {
+                checked = theme.value.theme == Theme.Dark, onCheckedChange = {
                     globalViewModel.toggleTheme()
-                },
-                enabled = theme.value.theme != Theme.System
+                }, enabled = theme.value.theme != Theme.System
             )
         }
 
@@ -113,8 +113,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { }
-        ) {
+                .clickable { }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -141,10 +140,14 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                     val intent = Intent(context, AuthActivity::class.java)
                     context.startActivity(intent)
                     (context as? Activity)?.finish()
-                }
-        ) {
+                }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.AutoMirrored.Filled.Logout)
+                MaterialIconInCircle(
+                    Modifier.size(36.dp),
+                    icon = Icons.AutoMirrored.Filled.Logout,
+                    colorBack = MaterialTheme.colorScheme.error,
+                    colorFront = MaterialTheme.colorScheme.errorContainer
+                )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text("Logout", style = MaterialTheme.typography.bodyLarge)
             }
@@ -152,6 +155,41 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null,
                 modifier = Modifier.size(36.dp)
-            )        }
+            )
+        }
+
+        // Delete account
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    runBlocking {
+                        val userId = authentication.getCurrentUserId()!!
+                        userRepo.delete(userId)
+                        authentication.deleteCurrentUser()
+                        authentication.logout()
+                        val intent = Intent(context, AuthActivity::class.java)
+                        context.startActivity(intent)
+                        (context as? Activity)?.finish()
+                    }
+                }) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                MaterialIconInCircle(
+                    Modifier.size(36.dp),
+                    icon = Icons.Filled.Delete,
+                    colorBack = MaterialTheme.colorScheme.error,
+                    colorFront = MaterialTheme.colorScheme.errorContainer
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("Erase Account", style = MaterialTheme.typography.bodyLarge)
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = null,
+                modifier = Modifier.size(36.dp)
+            )
+        }
     }
 }
