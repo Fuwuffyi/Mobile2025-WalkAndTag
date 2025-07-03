@@ -1,6 +1,5 @@
 package com.github.walkandtag
 
-import android.app.Activity
 import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
@@ -49,9 +48,9 @@ class AuthActivity : BaseActivity() {
                             UserSchema(username = auth.getCurrentUserName().orEmpty()),
                             auth.getCurrentUserId().orEmpty()
                         )
-                        Intent(context, MainActivity::class.java).apply {
+                        startActivity(Intent(context, MainActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
+                        })
                     }
 
                     is AuthResult.Failure -> {
@@ -73,9 +72,9 @@ class AuthActivity : BaseActivity() {
         super.onStart()
         // Startup firebase authenticator
         if (FirebaseAuth.getInstance().currentUser != null) {
-            Intent(this, MainActivity::class.java).apply {
+            startActivity(Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
+            })
         }
     }
 }
