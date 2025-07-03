@@ -29,7 +29,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.walkandtag.R
 import com.github.walkandtag.service.PathRecordingService
 import com.github.walkandtag.ui.components.DialogBuilder
 import com.github.walkandtag.ui.components.EmptyFeed
@@ -108,7 +110,7 @@ fun Profile(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = state.value.user?.data?.username ?: "Loading...",
+                    text = state.value.user?.data?.username ?: stringResource(R.string.deleted_account),
                     style = MaterialTheme.typography.titleMedium
                 )
             }

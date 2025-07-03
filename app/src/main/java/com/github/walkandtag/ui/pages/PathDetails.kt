@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.github.walkandtag.R
 import com.github.walkandtag.ui.components.StaticMapFavorite
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -25,7 +27,7 @@ fun PathDetails(
     if (state.value.path != null) {
         Column {
             Text(text = "Name: ${state.value.path!!.data.name}")
-            Text(text = "Author: ${state.value.publisher?.data?.username ?: "Account Deleted"}")
+            Text(text = "Author: ${state.value.publisher?.data?.username ?: stringResource(R.string.deleted_account)}")
             Text(text = "Length: ${state.value.path!!.data.length}")
             Text(text = "Time: ${state.value.path!!.data.time}")
             StaticMapFavorite(
