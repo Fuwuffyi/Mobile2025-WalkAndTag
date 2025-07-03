@@ -44,8 +44,12 @@ class ProfileViewModel(
     }
 
     fun isOwnProfile(): Boolean {
-        val currentUserId = auth.getCurrentUserId()
-        return currentUserId == _uiState.value.user?.id
+        return if (_uiState.value.user == null) {
+            false
+        } else {
+            val currentUserId = auth.getCurrentUserId()
+            return currentUserId == _uiState.value.user!!.id
+        }
     }
 
     fun toggleRecording() {

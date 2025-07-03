@@ -1,5 +1,6 @@
 package com.github.walkandtag.repository
 
+import android.util.Log
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
@@ -51,7 +52,8 @@ class FirestoreRepository<T : Any>(
         } else {
             val networkSnapshot = docRef.document(id).get(Source.SERVER).await()
             if (!networkSnapshot.exists()) {
-                throw NoSuchElementException("Document $id not found")
+                Log.w("FirestoreRepository", "get: Document $id not found", )
+                return null
             }
             networkSnapshot
         }
