@@ -24,7 +24,6 @@ import com.github.walkandtag.R
 import com.github.walkandtag.util.addPathStyle
 import com.github.walkandtag.util.buildBounds
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.maplibre.android.camera.CameraPosition
@@ -37,7 +36,6 @@ import kotlin.math.ln
 import kotlin.math.min
 import kotlin.math.sin
 
-// @TODO(): Clean up code and try to remove ExperimentalCoroutinesApi
 private fun latRad(lat: Double): Double {
     val sinLat = sin(lat * Math.PI / 180.0f)
     return ln((1.0f + sinLat) / (1.0f - sinLat)) / 2.0f
@@ -52,8 +50,6 @@ private fun calculateZoomLevel(bounds: LatLngBounds, width: Int, height: Int): D
     return min(latZoom, lngZoom).toDouble() - 0.2f
 }
 
-// Replace when MapSnapshotter is stable with suspend functions
-@OptIn(ExperimentalCoroutinesApi::class)
 private suspend fun generateMapSnapshot(
     context: Context, styleUri: String, width: Int, height: Int, path: Collection<LatLng>
 ): Bitmap = withContext(Dispatchers.Main) {
