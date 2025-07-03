@@ -32,8 +32,7 @@ import org.koin.compose.koinInject
 
 @Composable
 fun Register(
-    globalViewModel: GlobalViewModel = koinInject(),
-    viewModel: RegisterViewModel = koinViewModel()
+    globalViewModel: GlobalViewModel = koinInject(), viewModel: RegisterViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
@@ -44,8 +43,7 @@ fun Register(
                 is RegisterEvent.ShowError -> globalViewModel.showSnackbar(event.message)
 
                 is RegisterEvent.RegisterSuccess -> {
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
+                    context.startActivity(Intent(context, MainActivity::class.java))
                     (context as? Activity)?.finish()
                 }
             }

@@ -49,9 +49,9 @@ class AuthActivity : BaseActivity() {
                             UserSchema(username = auth.getCurrentUserName().orEmpty()),
                             auth.getCurrentUserId().orEmpty()
                         )
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.startActivity(intent)
-                        (context as? Activity)?.finish()
+                        Intent(context, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
                     }
 
                     is AuthResult.Failure -> {
@@ -73,8 +73,9 @@ class AuthActivity : BaseActivity() {
         super.onStart()
         // Startup firebase authenticator
         if (FirebaseAuth.getInstance().currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
         }
     }
 }

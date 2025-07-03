@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.AuthActivity
+import com.github.walkandtag.MainActivity
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
@@ -138,13 +139,9 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
         }
 
         if (showLanguageDialog) {
-            LanguageDialog(
-                currentLanguage = globalState.value.language,
-                onLanguageSelected = {
-                    globalViewModel.setLang(it)
-                },
-                onDismiss = { showLanguageDialog = false }
-            )
+            LanguageDialog(currentLanguage = globalState.value.language, onLanguageSelected = {
+                globalViewModel.setLang(it)
+            }, onDismiss = { showLanguageDialog = false })
         }
 
         // Logout
@@ -156,9 +153,9 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 .padding(vertical = 24.dp)
                 .clickable {
                     authentication.logout()
-                    val intent = Intent(context, AuthActivity::class.java)
-                    context.startActivity(intent)
-                    (context as? Activity)?.finish()
+                    context.startActivity(Intent(context, AuthActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
                 }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(
@@ -189,9 +186,9 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                         userRepo.delete(userId)
                         authentication.deleteCurrentUser()
                         authentication.logout()
-                        val intent = Intent(context, AuthActivity::class.java)
-                        context.startActivity(intent)
-                        (context as? Activity)?.finish()
+                        context.startActivity(Intent(context, AuthActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
                     }
                 }) {
             Row(verticalAlignment = Alignment.CenterVertically) {

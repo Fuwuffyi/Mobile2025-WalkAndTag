@@ -42,8 +42,7 @@ fun Login(
                 is LoginEvent.ShowError -> globalViewModel.showSnackbar(event.message)
 
                 is LoginEvent.LoginSuccess -> {
-                    val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)
+                    context.startActivity(Intent(context, MainActivity::class.java))
                     (context as? Activity)?.finish()
                 }
             }
