@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 fun MaterialIconInCircle(
     modifier: Modifier = Modifier,
     icon: ImageVector,
+    contentDescription: String? = null,
     colorFront: Color = MaterialTheme.colorScheme.inversePrimary,
     colorBack: Color = MaterialTheme.colorScheme.primary
 ) {
@@ -28,7 +29,7 @@ fun MaterialIconInCircle(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = colorFront
         )
     }

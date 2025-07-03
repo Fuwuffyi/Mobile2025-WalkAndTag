@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.filled.StarBorder
@@ -47,8 +48,11 @@ fun FeedPathEntry(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.clickable { onProfileClick?.invoke() }) {
-                Icon(Icons.Filled.SupervisedUserCircle, "Profile Icon")
-                Text(it.data.username, modifier = Modifier.padding(start = 4.dp))
+                MaterialIconInCircle(
+                    icon = Icons.Filled.SupervisedUserCircle, modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(it.data.username)
             }
         }
     }, pathTitle = path.data.name, mapContent = {

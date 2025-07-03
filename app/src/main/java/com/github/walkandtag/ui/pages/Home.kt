@@ -1,10 +1,13 @@
 package com.github.walkandtag.ui.pages
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.walkandtag.ui.components.EmptyFeed
 import com.github.walkandtag.ui.components.FeedPathEntry
 import com.github.walkandtag.ui.components.LoadingScreen
@@ -45,7 +48,9 @@ fun Home(
                             path = feedItem.second,
                             onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
                             onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) },
-                            onFavoritePathClick = { /* @TODO: Add path to favorites */ })
+                            onFavoritePathClick = { /* @TODO: Add path to favorites */ },
+                            modifier = Modifier.padding(8.dp)
+                        )
                     }
                 }
             } else {
