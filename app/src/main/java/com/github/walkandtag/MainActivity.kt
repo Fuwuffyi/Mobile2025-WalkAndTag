@@ -1,5 +1,7 @@
 package com.github.walkandtag
 
+import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,10 +17,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.firebase.auth.Authentication
@@ -30,6 +35,7 @@ import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.NavbarEvent
 import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.util.Navigator
+import com.github.walkandtag.util.updateLocale
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -38,6 +44,11 @@ import org.maplibre.android.MapLibre
 import org.maplibre.android.WellKnownTileServer
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase: Context) {
+        val updatedContext =
+            newBase.updateLocale(Resources.getSystem().configuration.locales.get(0))
+        super.attachBaseContext(updatedContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,17 +60,21 @@ class MainActivity : ComponentActivity() {
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
             val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
-            WalkAndTagTheme(theme = globalState.theme) {
-                // Setup navbar
-                val navigator: Navigator = koinInject()
-                val navController = rememberNavController()
-                navigator.setController(navController)
-                val navbarViewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
-                val uiState by navbarViewModel.uiState.collectAsState()
-                // Setup authentication
-                val auth = koinInject<Authentication>()
-                // Build navbar buttons dynamically
-                val homeNavbar = NavbarBuilder().addButton(
+            val context = remember(globalState.language) {
+                baseContext.updateLocale(globalState.language.locale)
+            }
+            CompositionLocalProvider(LocalContext provides context) {
+                WalkAndTagTheme(theme = globalState.theme) {
+                    // Setup navbar
+                    val navigator: Navigator = koinInject()
+                    val navController = rememberNavController()
+                    navigator.setController(navController)
+                    val navbarViewModel = koinViewModel<NavbarViewModel>(qualifier = named("main"))
+                    val uiState by navbarViewModel.uiState.collectAsState()
+                    // Setup authentication
+                    val auth = koinInject<Authentication>()
+                    // Build navbar buttons dynamically
+                    val homeNavbar = NavbarBuilder().addButton(
                         Navigation.Settings,
                         Icons.Filled.Settings,
                         "Settings"
@@ -68,29 +83,30 @@ class MainActivity : ComponentActivity() {
                         Icons.Filled.AccountCircle,
                         "Account"
                     )
-                // Check navbar events
-                LaunchedEffect(Unit) {
-                    navbarViewModel.events.collectLatest { event ->
-                        if (event is NavbarEvent.NavigateTo) {
-                            navigator.navigate(event.route)
+                    // Check navbar events
+                    LaunchedEffect(Unit) {
+                        navbarViewModel.events.collectLatest { event ->
+                            if (event is NavbarEvent.NavigateTo) {
+                                navigator.navigate(event.route)
+                            }
                         }
                     }
-                }
-                // Actual page content
-                Scaffold(
-                    snackbarHost = { SnackbarHost(globalViewModel.snackbarHostState) },
-                    bottomBar = {
-                        homeNavbar.Navbar(uiState.currentPage) { page ->
-                            navbarViewModel.onChangePage(page)
+                    // Actual page content
+                    Scaffold(
+                        snackbarHost = { SnackbarHost(globalViewModel.snackbarHostState) },
+                        bottomBar = {
+                            homeNavbar.Navbar(uiState.currentPage) { page ->
+                                navbarViewModel.onChangePage(page)
+                            }
+                        }) { innerPadding ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                                .background(MaterialTheme.colorScheme.background)
+                        ) {
+                            MainNavGraph(navController)
                         }
-                    }) { innerPadding ->
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                            .background(MaterialTheme.colorScheme.background)
-                    ) {
-                        MainNavGraph(navController)
                     }
                 }
             }

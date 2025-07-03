@@ -5,12 +5,15 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.map
+import java.util.Locale
 
-enum class Language {
-    System, Italiano, English
+enum class Language(val locale: Locale?) {
+    System(null),
+    Italiano(Locale.ITALIAN),
+    English(Locale.ENGLISH)
 }
 
-class LanguageRepository (private val dataStore: DataStore<Preferences>) {
+class LanguageRepository(private val dataStore: DataStore<Preferences>) {
     companion object {
         private val LANG_KEY = stringPreferencesKey("language")
     }
