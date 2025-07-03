@@ -18,11 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.walkandtag.MainActivity
+import com.github.walkandtag.R
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.LoginEvent
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
@@ -66,7 +68,7 @@ fun Login(
         OutlinedTextField(
             value = state.email,
             onValueChange = viewModel::onEmailChanged,
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,7 +78,7 @@ fun Login(
         OutlinedTextField(
             value = state.password,
             onValueChange = viewModel::onPasswordChanged,
-            label = { Text("Password") },
+            label = { Text(stringResource(R.string.password)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
@@ -87,7 +89,7 @@ fun Login(
         ElevatedButton(
             onClick = { viewModel.onLogin() }, modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Login")
+            Text(stringResource(R.string.login))
         }
     }
 }

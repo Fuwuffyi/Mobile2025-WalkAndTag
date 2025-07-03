@@ -19,11 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.walkandtag.MainActivity
+import com.github.walkandtag.R
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterEvent
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
@@ -57,7 +59,7 @@ fun Register(
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            "Register",
+            stringResource(R.string.register),
             style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp),
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -67,7 +69,7 @@ fun Register(
         OutlinedTextField(
             value = state.username,
             onValueChange = viewModel::onUsernameChanged,
-            label = { Text("Username") },
+            label = { Text(stringResource(R.string.username)) },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,7 +79,7 @@ fun Register(
         OutlinedTextField(
             value = state.email,
             onValueChange = viewModel::onEmailChanged,
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,7 +89,7 @@ fun Register(
         OutlinedTextField(
             value = state.password,
             onValueChange = viewModel::onPasswordChanged,
-            label = { Text("Password") },
+            label = { Text(stringResource(R.string.password)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
@@ -98,7 +100,7 @@ fun Register(
         OutlinedTextField(
             value = state.confirmPassword,
             onValueChange = viewModel::onConfirmPasswordChanged,
-            label = { Text("Repeat Password") },
+            label = { Text(stringResource(R.string.rep_pw)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
@@ -109,7 +111,7 @@ fun Register(
         ElevatedButton(
             onClick = { viewModel.onRegister() }, modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Register")
+            Text(stringResource(R.string.register))
         }
     }
 }

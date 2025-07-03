@@ -31,10 +31,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.MainActivity
+import com.github.walkandtag.R
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
@@ -62,7 +64,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Text("Settings", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.settings), style = MaterialTheme.typography.headlineSmall)
 
         // Placeholder section
         Row(
@@ -77,7 +79,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
         }
 
         // Appearance section
-        Text("Appearance", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.appearance), style = MaterialTheme.typography.titleLarge)
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -87,7 +89,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.PhoneAndroid)
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Use system mode", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.sys_mode), style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
                 checked = globalState.value.theme == Theme.System, onCheckedChange = {
@@ -103,7 +105,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Filled.DarkMode)
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Dark Mode", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.dark_mode), style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
                 checked = globalState.value.theme == Theme.Dark, onCheckedChange = {
@@ -113,7 +115,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
         }
 
         // Regional section
-        Text("Regional", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.regional), style = MaterialTheme.typography.titleLarge)
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -127,7 +129,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.GTranslate)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Language: ${globalState.value.language.name}",
+                    text = "${stringResource(R.string.lang)}: ${globalState.value.language.name}",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -165,7 +167,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                     colorFront = MaterialTheme.colorScheme.errorContainer
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Logout", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.logout), style = MaterialTheme.typography.bodyLarge)
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
@@ -199,7 +201,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                     colorFront = MaterialTheme.colorScheme.errorContainer
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Erase Account", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.delete_account), style = MaterialTheme.typography.bodyLarge)
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,

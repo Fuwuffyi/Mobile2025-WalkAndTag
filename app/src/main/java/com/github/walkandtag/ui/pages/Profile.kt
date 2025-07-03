@@ -75,7 +75,7 @@ fun Profile(
             }
             viewModel.toggleRecording()
         } else {
-            globalViewModel.showSnackbar("You do not have location permissions")
+            globalViewModel.showSnackbar("You do not have location permissions") // stringResource(R.string.no_location_permissions)
         }
     }
     if (inDialog) {
@@ -83,7 +83,7 @@ fun Profile(
             val title = it["Title"]!!
             val description = it["Description"]!!
             if (title.length <= 4) {
-                globalViewModel.showSnackbar("Title must contain at least 4 characters.")
+                globalViewModel.showSnackbar("Title must contain at least 4 characters.") // stringResource(R.string.error_title)
                 return@DialogBuilder
             }
             viewModel.savePath(title, description)
@@ -105,19 +105,25 @@ fun Profile(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(
                     icon = Icons.Filled.AccountCircle,
-                    contentDescription = "Profile picture",
+                    contentDescription = stringResource(R.string.propic),
                     modifier = Modifier.size(64.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = state.value.user?.data?.username ?: stringResource(R.string.deleted_account),
+                    text = state.value.user?.data?.username
+                        ?: stringResource(R.string.deleted_account),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
             if (viewModel.isOwnProfile()) {
                 ElevatedButton(
                     onClick = { locationPermissionHandler.launchPermissionRequest() }) {
-                    Text(if (state.value.isRecording) "Save Path" else "Record Path")
+                    Text(
+                        if (state.value.isRecording)
+                            stringResource(R.string.save_path)
+                        else
+                            stringResource(R.string.rec_path)
+                    )
                 }
             }
         }
