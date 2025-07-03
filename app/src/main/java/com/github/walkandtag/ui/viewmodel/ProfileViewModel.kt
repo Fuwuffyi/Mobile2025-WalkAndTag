@@ -52,7 +52,7 @@ class ProfileViewModel(
         _uiState.update { current -> current.copy(isRecording = !current.isRecording) }
     }
 
-    fun savePath(pathName: String) {
+    fun savePath(pathName: String, pathDescription: String? = null) {
         if (!savedPathRepo.isValid) {
             return
         }
@@ -77,6 +77,7 @@ class ProfileViewModel(
                 PathSchema(
                     userId = auth.getCurrentUserId()!!,
                     name = pathName,
+                    description = pathDescription ?: "",
                     length = (lengthMeters / 1000.0).toFloat(),
                     time = (estTime / 3600).toFloat(),
                     points = pathPoints.toMutableList()

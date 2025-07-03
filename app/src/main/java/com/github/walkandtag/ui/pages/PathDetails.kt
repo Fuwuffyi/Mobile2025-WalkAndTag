@@ -33,6 +33,7 @@ fun PathDetails(
                 modifier = Modifier.fillMaxWidth(),
                 onPathClick = { /* @TODO: Redirect to full screen map */ },
                 onFavoriteClick = { /* @TODO: Add path to favorites */ })
+            Text(text = state.value.path!!.data.description)
         }
     }
 }

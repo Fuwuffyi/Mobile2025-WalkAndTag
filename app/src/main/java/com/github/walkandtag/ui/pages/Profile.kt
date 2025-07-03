@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.pages
 
+import android.Manifest
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,11 +22,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.walkandtag.service.PathRecordingService
+import com.github.walkandtag.ui.components.DialogBuilder
 import com.github.walkandtag.ui.components.EmptyFeed
 import com.github.walkandtag.ui.components.FeedPathEntry
 import com.github.walkandtag.ui.components.MaterialIconInCircle
@@ -51,11 +57,11 @@ fun Profile(
     val context = LocalContext.current
     val state = viewModel.uiState.collectAsState()
 
-    // @TODO(): Unsure if I should clean this up or move to viewModel
+    // @TODO(): Clean this up or move to viewModel
+    var inDialog by remember { mutableStateOf(false) }
     val locationPermissionHandler = rememberMultiplePermissions(
         permissions = listOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
         )
     ) { status ->
         if (status.values.any { it.isGranted }) {
@@ -63,13 +69,24 @@ fun Profile(
                 context.startForegroundService(Intent(context, PathRecordingService::class.java))
             } else {
                 context.stopService(Intent(context, PathRecordingService::class.java))
-                // @TODO(): Get the path name
-                viewModel.savePath("Temp path name")
+                inDialog = true
             }
             viewModel.toggleRecording()
         } else {
             globalViewModel.showSnackbar("You do not have location permissions")
         }
+    }
+    if (inDialog) {
+        DialogBuilder(title = "Path Details", onDismiss = { inDialog = false }, onConfirm = {
+            val title = it["Title"]!!
+            val description = it["Description"]!!
+            if (title.length <= 4) {
+                globalViewModel.showSnackbar("Title must contain at least 4 characters.")
+                return@DialogBuilder
+            }
+            viewModel.savePath(title, description)
+            inDialog = false
+        }).addInput("Title").addInput("Description", multiLine = true).Dialog()
     }
 
     Column(
