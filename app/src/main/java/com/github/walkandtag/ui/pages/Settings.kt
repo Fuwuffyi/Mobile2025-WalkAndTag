@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.pages
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -154,6 +155,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                     context.startActivity(Intent(context, AuthActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     })
+                    (context as? Activity)?.finish()
                 }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(
@@ -187,6 +189,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                         context.startActivity(Intent(context, AuthActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         })
+                        (context as? Activity)?.finish()
                     }
                 }) {
             Row(verticalAlignment = Alignment.CenterVertically) {
