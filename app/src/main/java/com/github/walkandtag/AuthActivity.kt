@@ -43,7 +43,7 @@ class AuthActivity : BaseActivity() {
         val userRepo = koinInject<FirestoreRepository<UserSchema>>(qualifier = named("users"))
         GoogleButton {
             coroutineScope.launch {
-                when (val result = auth.loginWithGoogle(context)) {
+                when (auth.loginWithGoogle(context)) {
                     is AuthResult.Success -> {
                         userRepo.create(
                             UserSchema(username = auth.getCurrentUserName().orEmpty()),
@@ -53,6 +53,7 @@ class AuthActivity : BaseActivity() {
                         context.startActivity(intent)
                         (context as? Activity)?.finish()
                     }
+
                     is AuthResult.Failure -> {
                         globalViewModel.showSnackbar("Could not login using google")
                     }

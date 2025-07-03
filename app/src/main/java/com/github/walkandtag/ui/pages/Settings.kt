@@ -41,7 +41,6 @@ import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.LanguageDialog
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
-import com.github.walkandtag.util.updateLocale
 import kotlinx.coroutines.runBlocking
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named

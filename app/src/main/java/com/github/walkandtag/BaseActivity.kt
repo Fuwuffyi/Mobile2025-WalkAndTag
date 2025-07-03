@@ -1,7 +1,6 @@
 package com.github.walkandtag
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,8 +37,7 @@ import org.koin.core.qualifier.Qualifier
 abstract class BaseActivity : ComponentActivity() {
     override fun attachBaseContext(newBase: Context) {
         // Set base language as sytstem
-        val updatedContext =
-            newBase.updateLocale(Resources.getSystem().configuration.locales.get(0))
+        val updatedContext = newBase.updateLocale(null)
         super.attachBaseContext(updatedContext)
     }
 
