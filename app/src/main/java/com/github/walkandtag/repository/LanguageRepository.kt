@@ -4,8 +4,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.github.walkandtag.ui.pages.Languages
 import kotlinx.coroutines.flow.map
+
+enum class Language {
+    System, Italiano, English
+}
 
 class LanguageRepository (private val dataStore: DataStore<Preferences>) {
     companion object {
@@ -15,13 +18,13 @@ class LanguageRepository (private val dataStore: DataStore<Preferences>) {
     val language = dataStore.data
         .map { preferences ->
             try {
-                Languages.valueOf(preferences[LANG_KEY] ?: Languages.System.name)
+                Language.valueOf(preferences[LANG_KEY] ?: Language.System.name)
             } catch (_: Exception) {
-                Languages.System
+                Language.System
             }
         }
 
-    suspend fun setLang(lang: Languages) =
+    suspend fun setLang(lang: Language) =
         dataStore.edit { it[LANG_KEY] = lang.toString() }
 
 }

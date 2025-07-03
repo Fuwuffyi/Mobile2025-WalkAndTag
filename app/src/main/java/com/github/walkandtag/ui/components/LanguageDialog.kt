@@ -20,13 +20,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.walkandtag.ui.pages.Languages
+import com.github.walkandtag.repository.Language
 import java.util.EnumSet
 
 @Composable
 fun LanguageDialog(
-    currentLanguage: Languages,
-    onLanguageSelected: (Languages) -> Unit,
+    currentLanguage: Language,
+    onLanguageSelected: (Language) -> Unit,
     onDismiss: () -> Unit
 ) {
     var selectedLanguage by remember { mutableStateOf(currentLanguage) }
@@ -41,7 +41,7 @@ fun LanguageDialog(
         },
         text = {
             Column {
-                EnumSet.allOf(Languages::class.java).forEach { language ->
+                EnumSet.allOf(Language::class.java).forEach { language ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier

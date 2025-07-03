@@ -55,10 +55,10 @@ class AuthActivity : ComponentActivity() {
         setContent {
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
-            val themeState by globalViewModel.themeState.collectAsStateWithLifecycle()
+            val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
             // Use theme
             WalkAndTagTheme(
-                theme = themeState.theme
+                theme = globalState.theme
             ) {
                 // @TODO(), Should I move this to a viewmodel??? Unsure
                 // Init navigator and navbar

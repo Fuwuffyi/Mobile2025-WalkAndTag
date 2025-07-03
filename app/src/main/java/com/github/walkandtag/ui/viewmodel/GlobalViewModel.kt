@@ -3,17 +3,16 @@ package com.github.walkandtag.ui.viewmodel
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.walkandtag.repository.Language
 import com.github.walkandtag.repository.LanguageRepository
 import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.repository.ThemeRepository
-import com.github.walkandtag.ui.pages.Languages
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class ThemeState(val theme: Theme)
-data class LanguageState(val lang: Languages)
+data class GlobalState(val theme: Theme, val language: Language)
 
 class GlobalViewModel(
     private val themeRepo: ThemeRepository,
@@ -21,15 +20,14 @@ class GlobalViewModel(
 
     ) : ViewModel() {
     val snackbarHostState = SnackbarHostState()
-    val themeState = themeRepo.theme.map { ThemeState(it) }.stateIn(
+    val globalState = combine(
+        themeRepo.theme, langRepo.language
+    ) { theme, language ->
+        GlobalState(theme, language)
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = ThemeState(Theme.System)
-    )
-    val languageState = langRepo.language.map { LanguageState(it) }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = LanguageState(Languages.System)
+        initialValue = GlobalState(Theme.System, Language.System)
     )
 
     fun showSnackbar(message: String) {
@@ -39,7 +37,7 @@ class GlobalViewModel(
     }
 
     fun toggleTheme() {
-        val currTheme = themeState.value.theme
+        val currTheme = globalState.value.theme
         viewModelScope.launch {
             if (currTheme == Theme.Dark) {
                 themeRepo.setTheme(Theme.Light)
@@ -50,7 +48,7 @@ class GlobalViewModel(
     }
 
     fun toggleSystemTheme() {
-        val currTheme = themeState.value.theme
+        val currTheme = globalState.value.theme
         viewModelScope.launch {
             if (currTheme == Theme.System) {
                 themeRepo.setTheme(Theme.Light)
@@ -60,7 +58,7 @@ class GlobalViewModel(
         }
     }
 
-    fun setLang(newLang: Languages) {
+    fun setLang(newLang: Language) {
         viewModelScope.launch {
             langRepo.setLang(newLang)
         }

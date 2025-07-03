@@ -1,7 +1,6 @@
 package com.github.walkandtag.ui.pages
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,10 +45,6 @@ import kotlinx.coroutines.runBlocking
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 
-enum class Languages {
-    System, Italiano, English
-}
-
 @Composable
 fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     // @TODO(): Implement settings viewModel (for all functionality)
@@ -58,8 +53,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val context = LocalContext.current
     val authentication = koinInject<Authentication>()
     val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
-    val theme = globalViewModel.themeState.collectAsStateWithLifecycle()
-    val lang = globalViewModel.languageState.collectAsStateWithLifecycle()
+    val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -95,7 +89,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 Text("Use system mode", style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
-                checked = theme.value.theme == Theme.System, onCheckedChange = {
+                checked = globalState.value.theme == Theme.System, onCheckedChange = {
                     globalViewModel.toggleSystemTheme()
                 })
         }
@@ -111,9 +105,9 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 Text("Dark Mode", style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
-                checked = theme.value.theme == Theme.Dark, onCheckedChange = {
+                checked = globalState.value.theme == Theme.Dark, onCheckedChange = {
                     globalViewModel.toggleTheme()
-                }, enabled = theme.value.theme != Theme.System
+                }, enabled = globalState.value.theme != Theme.System
             )
         }
 
@@ -132,7 +126,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.GTranslate)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Language: ${lang.value.lang.name}",
+                    text = "Language: ${globalState.value.language.name}",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -145,7 +139,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
 
         if (showLanguageDialog) {
             LanguageDialog(
-                currentLanguage = lang.value.lang,
+                currentLanguage = globalState.value.language,
                 onLanguageSelected = { globalViewModel.setLang(it) },
                 onDismiss = { showLanguageDialog = false }
             )

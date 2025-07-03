@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Get global view model
             val globalViewModel: GlobalViewModel = koinInject()
-            val themeState by globalViewModel.themeState.collectAsStateWithLifecycle()
-            WalkAndTagTheme(theme = themeState.theme) {
+            val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
+            WalkAndTagTheme(theme = globalState.theme) {
                 // Setup navbar
                 val navigator: Navigator = koinInject()
                 val navController = rememberNavController()
