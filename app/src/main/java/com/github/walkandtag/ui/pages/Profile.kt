@@ -2,6 +2,7 @@ package com.github.walkandtag.ui.pages
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -88,7 +89,11 @@ fun Profile(
         }).addInput("title", "Title").addInput("desc", "Description", multiLine = true)
 
     val locationPermissionHandler = rememberMultiplePermissions(
-        permissions = listOf(
+        permissions = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) else listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
         )
     ) { status ->
@@ -101,7 +106,7 @@ fun Profile(
             }
             viewModel.toggleRecording()
         } else {
-            globalViewModel.showSnackbar("You do not have location permissions") // stringResource(R.string.no_location_permissions)
+            globalViewModel.showSnackbar("You did not provide location nor notification permissions") // stringResource(R.string.no_location_permissions)
         }
     }
     if (inDialog) {
