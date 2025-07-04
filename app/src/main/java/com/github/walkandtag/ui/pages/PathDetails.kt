@@ -1,12 +1,10 @@
 package com.github.walkandtag.ui.pages
 
-import android.content.res.Resources
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +23,8 @@ import com.github.walkandtag.ui.components.StaticMapFavorite
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import com.github.walkandtag.util.Navigator
+import com.github.walkandtag.util.getDistanceString
+import com.github.walkandtag.util.getTimeString
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -33,8 +34,6 @@ fun PathDetails(
     navigator: Navigator = koinInject(),
     viewModel: PathDetailsViewModel = koinViewModel()
 ) {
-    // @TODO(): Change locale to get current one
-    val locale = Resources.getSystem().configuration.locales.get(0)
     LaunchedEffect(pathId) {
         viewModel.loadData(pathId)
     }
@@ -57,8 +56,11 @@ fun PathDetails(
             )
             HorizontalDivider()
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Length: ${String.format(locale, "%.2f", path.length)}km", fontSize = 14.sp)
-                Text("Time: ${String.format(locale, "%.2f", path.time)}h", fontSize = 14.sp)
+                Text(
+                    "Length: ${getDistanceString(LocalContext.current, path.length.toDouble())}",
+                    fontSize = 14.sp
+                )
+                Text("Time: ${getTimeString(path.time.toDouble())}", fontSize = 14.sp)
             }
             StaticMapFavorite(
                 path = path.points,
