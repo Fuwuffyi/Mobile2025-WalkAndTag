@@ -135,7 +135,7 @@ fun Profile(
                     onClick = { locationPermissionHandler.launchPermissionRequest() }) {
                     Text(
                         if (state.isRecording) stringResource(R.string.save_path)
-                        else stringResource(R.string.rec_path)
+                        else stringResource(R.string.record_path)
                     )
                 }
             }

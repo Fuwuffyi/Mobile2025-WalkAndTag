@@ -102,7 +102,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.PhoneAndroid)
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(stringResource(R.string.sys_mode), style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.system_mode), style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
                 checked = globalState.value.theme == Theme.System, onCheckedChange = {

@@ -7,20 +7,20 @@
     <string name="no_location_permissions">Non sono attivi i permetti di posizione</string>
     <string name="path_details">Dettagli percorso</string>
     <string name="title">Titolo</string>
-    <string name="desc">Descrizione</string>
+    <string name="description">Descrizione</string>
     <string name="error_title">Il titolo deve contenere almeno 4 caratteri.</string>
     <string name="profile_picture">Immagine profilo</string>
     <string name="save_path">Salva percorso</string>
-    <string name="rec_path">Registra percorso</string>
+    <string name="record_path">Registra percorso</string>
 
     <string name="username">Nome Utente</string>
-    <string name="rep_pw">Ripeti Password</string>
+    <string name="repeat_password">Ripeti Password</string>
     <string name="register">Registrati</string>
 
     <string name="by_author">Creato da %1$s</string>
 
     <string name="appearance">Aspetto</string>
-    <string name="sys_mode">Usa modalità di sistema</string>
+    <string name="system_mode">Usa modalità di sistema</string>
     <string name="dark_mode">Modalità scura</string>
     <string name="regional">Regione</string>
     <string name="language">Lingua</string>
@@ -38,4 +38,5 @@
     <string name="favourite">Preferiti</string>
     <string name="map_fail">Errore durante il caricamento della mappa</string>
     <string name="static_map">Mappa statica</string>
+    <string name="confirm">Conferma</string>
 </resources>

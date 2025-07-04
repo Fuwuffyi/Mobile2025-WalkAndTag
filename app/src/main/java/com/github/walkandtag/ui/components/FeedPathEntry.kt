@@ -27,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.github.walkandtag.R
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
@@ -90,7 +92,7 @@ fun FeedPathEntry(
                 }
             }
         }
-    }, length = path.data.length.toDouble(), time = path.data.time.toDouble()
+    }, length = path.data.length, time = path.data.time
     )
 }
 
@@ -144,10 +146,10 @@ private fun PathDetailsRow(
                 text = getDistanceString(LocalContext.current, length),
                 modifier = Modifier.padding(end = 4.dp)
             )
-            Icon(Icons.Filled.PinDrop, contentDescription = "Length")
+            Icon(Icons.Filled.PinDrop, contentDescription =  stringResource(R.string.length))
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Timer, contentDescription = "Duration")
+            Icon(Icons.Filled.Timer, contentDescription =  stringResource(R.string.duration))
             Text(
                 text = getTimeString(time),
                 modifier = Modifier.padding(start = 4.dp)

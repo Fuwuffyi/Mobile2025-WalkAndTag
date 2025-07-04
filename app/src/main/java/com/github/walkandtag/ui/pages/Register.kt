@@ -100,7 +100,7 @@ fun Register(
         OutlinedTextField(
             value = state.confirmPassword,
             onValueChange = viewModel::onConfirmPasswordChanged,
-            label = { Text(stringResource(R.string.rep_pw)) },
+            label = { Text(stringResource(R.string.repeat_password)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
