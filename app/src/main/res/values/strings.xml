@@ -17,7 +17,7 @@
     <string name="title">Title</string>
     <string name="desc">Description</string>
     <string name="error_title">Title must contain at least 4 characters.</string>
-    <string name="propic">Profile picture</string>
+    <string name="profile_picture">Profile picture</string>
     <string name="save_path">Save Path</string>
     <string name="rec_path">Record Path</string>
 
@@ -31,7 +31,7 @@
     <string name="sys_mode">Use system mode</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="regional">Regional</string>
-    <string name="lang">Language</string>
+    <string name="language">Language</string>
     <string name="logout">Logout</string>
     <string name="delete_account">Delete account</string>
     <string name="settings">Settings</string>
@@ -41,7 +41,7 @@
     <string name="length">Length</string>
     <string name="duration">Duration</string>
     <string name="google_login">Google login</string>
-    <string name="choose_lang">Choose Language</string>
+    <string name="choose_language">Choose Language</string>
     <string name="cancel">Cancel</string>
     <string name="favourite">Favourite</string>
     <string name="map_fail">Map load error</string>

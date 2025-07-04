@@ -27,64 +27,66 @@ sealed class InputType {
 class DialogBuilder(
     val title: String, val onDismiss: () -> Unit, val onConfirm: (Map<String, String>) -> Unit
 ) {
-    private val inputFields: MutableMap<String, InputType> = mutableMapOf()
+    private val inputFields: MutableMap<String, Pair<String, InputType>> = mutableMapOf()
 
     fun addInput(
-        name: String, initialValue: String = "", multiLine: Boolean = false
+        id: String, label: String, initialValue: String = "", multiLine: Boolean = false
     ): DialogBuilder {
-        inputFields[name] = InputType.TextField(initialValue, multiLine)
+        inputFields[id] = label to InputType.TextField(initialValue, multiLine)
         return this
     }
 
     fun addRadioGroup(
-        name: String, options: Collection<String>, initialSelection: String? = null
+        id: String, label: String, options: Collection<String>, initialSelection: String? = null
     ): DialogBuilder {
         require(options.isNotEmpty()) { "RadioGroup must have at least one option." }
-        inputFields[name] = InputType.RadioGroup(options, initialSelection ?: options.first())
+        inputFields[id] =
+            label to InputType.RadioGroup(options, initialSelection ?: options.first())
         return this
     }
 
     @Composable
     fun Dialog() {
         val textFieldStates = remember {
-            inputFields.filterValues { it is InputType.TextField }
-                .mapValues { mutableStateOf((it.value as InputType.TextField).initialValue) }
+            inputFields.filterValues { it.second is InputType.TextField }
+                .mapValues { mutableStateOf((it.value.second as InputType.TextField).initialValue) }
                 .toMutableMap()
         }
-
         val radioGroupStates = remember {
-            inputFields.filterValues { it is InputType.RadioGroup }.mapValues {
+            inputFields.filterValues { it.second is InputType.RadioGroup }.mapValues {
                 mutableStateOf(
-                    (it.value as InputType.RadioGroup).initialSelection ?: ""
+                    (it.value.second as InputType.RadioGroup).initialSelection ?: ""
                 )
             }.toMutableMap()
         }
-
         AlertDialog(onDismissRequest = onDismiss, title = { Text(title) }, text = {
             Column {
-                inputFields.forEach { (name, inputType) ->
+                inputFields.forEach { (id, pair) ->
+                    val (label, inputType) = pair
                     when (inputType) {
                         is InputType.TextField -> {
                             OutlinedTextField(
-                                value = textFieldStates[name]?.value ?: "",
-                                onValueChange = { textFieldStates[name]?.value = it },
-                                label = { Text(name) },
+                                value = textFieldStates[id]?.value ?: "",
+                                onValueChange = { textFieldStates[id]?.value = it },
+                                label = { Text(label) },
                                 maxLines = if (inputType.multiLine) 5 else 1,
                                 singleLine = !inputType.multiLine
                             )
                         }
 
                         is InputType.RadioGroup -> {
-                            Text(name)
+                            Text(label)
                             inputType.options.forEach { option ->
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.clickable {
-                                        radioGroupStates[name]?.value = option
+                                        radioGroupStates[id]?.value = option
                                     }) {
                                     RadioButton(
-                                        selected = radioGroupStates[name]?.value == option,
-                                        onClick = { radioGroupStates[name]?.value = option })
+                                        selected = radioGroupStates[id]?.value == option,
+                                        onClick = {
+                                            radioGroupStates[id]?.value = option
+                                        })
                                     Text(option)
                                 }
                             }

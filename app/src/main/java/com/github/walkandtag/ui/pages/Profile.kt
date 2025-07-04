@@ -74,6 +74,19 @@ fun Profile(
 
     // @TODO(): Clean this up or move to viewModel
     var inDialog by remember { mutableStateOf(false) }
+
+    val pathRecDialog =
+        DialogBuilder(title = "Path Details", onDismiss = { inDialog = false }, onConfirm = {
+            val title = it["title"]!!
+            val description = it["desc"]!!
+            if (title.length <= 4) {
+                globalViewModel.showSnackbar("Title must contain at least 4 characters.") // stringResource(R.string.error_title)
+                return@DialogBuilder
+            }
+            viewModel.savePath(title, description)
+            inDialog = false
+        }).addInput("title", "Title").addInput("desc", "Description", multiLine = true)
+
     val locationPermissionHandler = rememberMultiplePermissions(
         permissions = listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
@@ -92,18 +105,8 @@ fun Profile(
         }
     }
     if (inDialog) {
-        DialogBuilder(title = "Path Details", onDismiss = { inDialog = false }, onConfirm = {
-            val title = it["Title"]!!
-            val description = it["Description"]!!
-            if (title.length <= 4) {
-                globalViewModel.showSnackbar("Title must contain at least 4 characters.") // stringResource(R.string.error_title)
-                return@DialogBuilder
-            }
-            viewModel.savePath(title, description)
-            inDialog = false
-        }).addInput("Title").addInput("Description", multiLine = true).Dialog()
+        pathRecDialog.Dialog()
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -118,7 +121,7 @@ fun Profile(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(
                     icon = Icons.Filled.AccountCircle,
-                    contentDescription = stringResource(R.string.propic),
+                    contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier.size(64.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))

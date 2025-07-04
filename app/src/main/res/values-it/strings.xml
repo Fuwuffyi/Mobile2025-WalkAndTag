@@ -9,7 +9,7 @@
     <string name="title">Titolo</string>
     <string name="desc">Descrizione</string>
     <string name="error_title">Il titolo deve contenere almeno 4 caratteri.</string>
-    <string name="propic">Immagine profilo</string>
+    <string name="profile_picture">Immagine profilo</string>
     <string name="save_path">Salva percorso</string>
     <string name="rec_path">Registra percorso</string>
 
@@ -23,7 +23,7 @@
     <string name="sys_mode">Usa modalità di sistema</string>
     <string name="dark_mode">Modalità scura</string>
     <string name="regional">Regione</string>
-    <string name="lang">Lingua</string>
+    <string name="language">Lingua</string>
     <string name="logout">Esci</string>
     <string name="delete_account">Elimina Account</string>
     <string name="settings">Impostazioni</string>
@@ -33,7 +33,7 @@
     <string name="length">Distanza</string>
     <string name="duration">Durata</string>
     <string name="google_login">Login con Google</string>
-    <string name="choose_lang">Scegli Lingua</string>
+    <string name="choose_language">Scegli Lingua</string>
     <string name="cancel">Indietro</string>
     <string name="favourite">Preferiti</string>
     <string name="map_fail">Errore durante il caricamento della mappa</string>

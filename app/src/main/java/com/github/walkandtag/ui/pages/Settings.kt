@@ -60,12 +60,13 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
 
     val languageDialog = DialogBuilder(
-        title = stringResource(R.string.choose_lang), onDismiss = { showLanguageDialog = false }) {
-        val langStr = it["Language"]!!
+        title = stringResource(R.string.choose_language), onDismiss = { showLanguageDialog = false }) {
+        val langStr = it["lang"]!!
         globalViewModel.setLang(Language.valueOf(langStr))
         showLanguageDialog = false
     }.addRadioGroup(
-        stringResource(R.string.lang),
+        id = "lang",
+        stringResource(R.string.language),
         EnumSet.allOf(Language::class.java).map { it.name },
         globalState.value.language.name
     )
@@ -141,7 +142,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.GTranslate)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "${stringResource(R.string.lang)}: ${globalState.value.language.name}",
+                    text = "${stringResource(R.string.language)}: ${globalState.value.language.name}",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
