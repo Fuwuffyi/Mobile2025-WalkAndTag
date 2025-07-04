@@ -58,6 +58,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val authentication = koinInject<Authentication>()
     val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
     val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
+    val name = runBlocking { userRepo.get(authentication.getCurrentUserId()!!) }
 
     val languageDialog = DialogBuilder(
         title = stringResource(R.string.choose_language), onDismiss = { showLanguageDialog = false }) {
@@ -88,7 +89,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
         ) {
             MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Filled.Person)
             Spacer(modifier = Modifier.width(12.dp))
-            Text("Placeholder", style = MaterialTheme.typography.bodyLarge)
+            Text(name!!.data.username, style = MaterialTheme.typography.bodyLarge)
         }
 
         // Appearance section
