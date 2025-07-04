@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.DrawerValue
@@ -20,9 +21,11 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.walkandtag.ui.components.EmptyFeed
@@ -46,6 +49,17 @@ fun Home(
     val uiState by viewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+            val lastVisibleItem = visibleItems.lastOrNull()
+            val totalItems = listState.layoutInfo.totalItemsCount
+            if (lastVisibleItem != null && lastVisibleItem.index >= totalItems - 3) {
+                viewModel.loadNextPage()
+            }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState, drawerContent = {
@@ -55,13 +69,10 @@ fun Home(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(16.dp)
                 )
-                // TODO: Add filter/search UI here
-                Text("• Filter by location", modifier = Modifier.padding(8.dp))
-                Text("• Search by tag", modifier = Modifier.padding(8.dp))
+                // @TODO: Add filter/search UI here
             }
         }) {
         Column(Modifier.fillMaxSize()) {
-            // Simple header with filter button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,7 +85,6 @@ fun Home(
                     Icon(Icons.Default.FilterList, contentDescription = "Open Filters")
                 }
             }
-
             // Content area
             Box(Modifier.weight(1f)) {
                 when (uiState) {
@@ -87,14 +97,14 @@ fun Home(
                     is HomeState.Success -> {
                         val items = (uiState as HomeState.Success).items
                         if (items.isNotEmpty()) {
-                            LazyColumn {
+                            LazyColumn(state = listState) {
                                 items(items) { feedItem ->
                                     FeedPathEntry(
                                         user = feedItem.first,
                                         path = feedItem.second,
                                         onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
                                         onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) },
-                                        onFavoritePathClick = { /* TODO: Add to favorites */ },
+                                        onFavoritePathClick = { /* TODO */ },
                                         modifier = Modifier.padding(8.dp)
                                     )
                                 }

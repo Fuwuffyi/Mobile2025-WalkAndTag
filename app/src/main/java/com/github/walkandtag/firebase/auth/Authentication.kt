@@ -36,7 +36,7 @@ class Authentication(private val auth: FirebaseAuth) {
             val request = GetCredentialRequest.Builder().addCredentialOption(options).build()
             val result = CredentialManager.create(context).getCredential(context, request)
             val custom = result.credential as? CustomCredential
-                ?: throw IllegalStateException("Unexpected credential type")
+                ?: error("Unexpected credential type")
             val gid = GoogleIdTokenCredential.createFrom(custom.data)
             val token = gid.idToken
             val cred = GoogleAuthProvider.getCredential(token, null)

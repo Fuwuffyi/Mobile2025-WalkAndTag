@@ -4,7 +4,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -30,11 +29,11 @@ fun StaticMapFavorite(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .aspectRatio(6f / 4f)
+            .aspectRatio(3f / 2f)
             .clickable(onClick = onPathClick)
     ) {
         StaticMapPath(
-            path = path, modifier = Modifier.fillMaxSize()
+            path = path, modifier = Modifier.matchParentSize()
         )
         IconButton(
             onClick = onFavoriteClick,

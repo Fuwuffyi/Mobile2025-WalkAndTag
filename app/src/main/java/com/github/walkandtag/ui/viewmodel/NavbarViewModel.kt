@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+// @TODO(): Fix navbar when using back button during navigation
 data class NavbarState(
     val currentPage: Navigation
 )

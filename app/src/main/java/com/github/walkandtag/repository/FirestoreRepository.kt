@@ -2,6 +2,7 @@ package com.github.walkandtag.repository
 
 import android.util.Log
 import com.github.walkandtag.firebase.db.FirestoreDocument
+import com.github.walkandtag.firebase.db.PagedResult
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,7 +19,6 @@ data class Filter(
     val field: String, val value: Any
 )
 
-// @TODO(): Add a paging system for big gets
 class FirestoreRepository<T : Any>(
     private val docRef: CollectionReference,
     private val classType: Class<T>,
@@ -52,7 +52,7 @@ class FirestoreRepository<T : Any>(
         } else {
             val networkSnapshot = docRef.document(id).get(Source.SERVER).await()
             if (!networkSnapshot.exists()) {
-                Log.w("FirestoreRepository", "get: Document $id not found", )
+                Log.w("FirestoreRepository", "get: Document $id not found")
                 return null
             }
             networkSnapshot
@@ -85,7 +85,7 @@ class FirestoreRepository<T : Any>(
         return cachedDocs + fetchedDocs
     }
 
-    suspend fun getFiltered(filter: Filter, limit: UInt = 200u): FirestoreDocument<T> {
+    suspend fun getFiltered(filter: Filter, limit: UInt = 1000u): FirestoreDocument<T> {
         val query = docRef.limit(limit.toLong()).whereEqualTo(filter.field, filter.value)
         val snapshot = query.get().await()
         val now = System.currentTimeMillis()
@@ -99,7 +99,7 @@ class FirestoreRepository<T : Any>(
     }
 
     suspend fun getFiltered(
-        filters: Collection<Filter>, limit: UInt = 200u
+        filters: Collection<Filter>, limit: UInt = 1000u
     ): Collection<FirestoreDocument<T>> {
         var query = docRef.limit(limit.toLong())
         for (filter in filters) {
@@ -116,7 +116,32 @@ class FirestoreRepository<T : Any>(
         }
     }
 
-    suspend fun getAll(limit: UInt = 200u): List<FirestoreDocument<T>> {
+    suspend fun getFilteredPaged(
+        filters: Collection<Filter>, limit: UInt = 15u, startAfterId: String? = null
+    ): PagedResult<T> {
+        var query = docRef.limit(limit.toLong())
+        for (filter in filters) {
+            query = query.whereEqualTo(filter.field, filter.value)
+        }
+        if (startAfterId != null) {
+            val startAfterDoc = docRef.document(startAfterId).get().await()
+            if (startAfterDoc.exists()) {
+                query = query.startAfter(startAfterDoc)
+            }
+        }
+        val snapshot = query.get().await()
+        val now = System.currentTimeMillis()
+        val docs = snapshot.documents.mapNotNull { doc ->
+            doc.toObject(classType)?.let {
+                cache[doc.id] = CachedData(it, now)
+                FirestoreDocument(doc.id, it)
+            }
+        }
+        val lastDocId = snapshot.documents.lastOrNull()?.id
+        return PagedResult(docs, lastDocId)
+    }
+
+    suspend fun getAll(limit: UInt = 1000u): List<FirestoreDocument<T>> {
         val snapshot = docRef.limit(limit.toLong()).get().await()
         val now = System.currentTimeMillis()
         return snapshot.documents.mapNotNull { doc ->
@@ -126,6 +151,28 @@ class FirestoreRepository<T : Any>(
                 FirestoreDocument(doc.id, it)
             }
         }
+    }
+
+    suspend fun getAllPaged(
+        limit: UInt = 15u, startAfterId: String? = null
+    ): PagedResult<T> {
+        var query = docRef.limit(limit.toLong())
+        if (startAfterId != null) {
+            val startAfterDoc = docRef.document(startAfterId).get().await()
+            if (startAfterDoc.exists()) {
+                query = query.startAfter(startAfterDoc)
+            }
+        }
+        val snapshot = query.get().await()
+        val now = System.currentTimeMillis()
+        val docs = snapshot.documents.mapNotNull { doc ->
+            doc.toObject(classType)?.let {
+                cache[doc.id] = CachedData(it, now)
+                FirestoreDocument(doc.id, it)
+            }
+        }
+        val lastDocId = snapshot.documents.lastOrNull()?.id
+        return PagedResult(docs, lastDocId)
     }
 
     suspend fun update(item: T, id: String) {

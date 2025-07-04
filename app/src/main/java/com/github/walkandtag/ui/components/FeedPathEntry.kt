@@ -1,6 +1,5 @@
 package com.github.walkandtag.ui.components
 
-import android.content.res.Resources
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,13 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.walkandtag.R
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.util.getDistanceString
+import com.github.walkandtag.util.getTimeString
 
 @Composable
 fun FeedPathEntry(
@@ -70,7 +70,7 @@ fun FeedPathEntry(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(6f / 4f)
+                    .aspectRatio(3f / 2f)
                     .clickable(onClick = onPathClick)
             ) {
                 StaticMapPath(path = path.data.points, modifier = Modifier.fillMaxSize())
@@ -131,8 +131,9 @@ private fun FeedPathEntryLayout(
 }
 
 @Composable
-private fun PathDetailsRow(length: Double, time: Double) {
-    val locale = Resources.getSystem().configuration.locales.get(0)
+private fun PathDetailsRow(
+    length: Double, time: Double
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -140,15 +141,15 @@ private fun PathDetailsRow(length: Double, time: Double) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "${String.format(locale, "%.2f", length)}km",
+                text = getDistanceString(LocalContext.current, length),
                 modifier = Modifier.padding(end = 4.dp)
             )
-            Icon(Icons.Filled.PinDrop, contentDescription = stringResource(R.string.length))
+            Icon(Icons.Filled.PinDrop, contentDescription = "Length")
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Timer, contentDescription = "${stringResource(R.string.duration)} (h)")
+            Icon(Icons.Filled.Timer, contentDescription = "Duration")
             Text(
-                text = "${String.format(locale, "%.2f", time)}h",
+                text = getTimeString(time),
                 modifier = Modifier.padding(start = 4.dp)
             )
         }

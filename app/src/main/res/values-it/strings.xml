@@ -17,6 +17,8 @@
     <string name="rep_pw">Ripeti Password</string>
     <string name="register">Registrati</string>
 
+    <string name="by_author">Creato da %1$s</string>
+
     <string name="appearance">Aspetto</string>
     <string name="sys_mode">Usa modalità di sistema</string>
     <string name="dark_mode">Modalità scura</string>

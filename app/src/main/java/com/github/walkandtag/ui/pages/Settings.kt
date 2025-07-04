@@ -39,13 +39,15 @@ import com.github.walkandtag.R
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
+import com.github.walkandtag.repository.Language
 import com.github.walkandtag.repository.Theme
-import com.github.walkandtag.ui.components.LanguageDialog
+import com.github.walkandtag.ui.components.DialogBuilder
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import kotlinx.coroutines.runBlocking
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
+import java.util.EnumSet
 
 @Composable
 fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
@@ -56,6 +58,17 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val authentication = koinInject<Authentication>()
     val userRepo = koinInject<FirestoreRepository<UserSchema>>(named("users"))
     val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
+
+    val languageDialog = DialogBuilder(
+        title = stringResource(R.string.choose_lang), onDismiss = { showLanguageDialog = false }) {
+        val langStr = it["Language"]!!
+        globalViewModel.setLang(Language.valueOf(langStr))
+        showLanguageDialog = false
+    }.addRadioGroup(
+        stringResource(R.string.lang),
+        EnumSet.allOf(Language::class.java).map { it.name },
+        globalState.value.language.name
+    )
 
     Column(
         modifier = Modifier
@@ -140,9 +153,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
         }
 
         if (showLanguageDialog) {
-            LanguageDialog(currentLanguage = globalState.value.language, onLanguageSelected = {
-                globalViewModel.setLang(it)
-            }, onDismiss = { showLanguageDialog = false })
+            languageDialog.Dialog()
         }
 
         // Logout
@@ -202,7 +213,10 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                     colorFront = MaterialTheme.colorScheme.errorContainer
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(stringResource(R.string.delete_account), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    stringResource(R.string.delete_account),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,

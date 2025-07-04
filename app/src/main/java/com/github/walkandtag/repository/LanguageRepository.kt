@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.map
 import java.util.Locale
 
 enum class Language(val locale: Locale?) {
-    System(null),
-    Italiano(Locale.ITALIAN),
-    English(Locale.ENGLISH)
+    System(null), Italiano(Locale.ITALIAN), English(Locale.ENGLISH)
 }
 
 class LanguageRepository(private val dataStore: DataStore<Preferences>) {
@@ -18,8 +16,7 @@ class LanguageRepository(private val dataStore: DataStore<Preferences>) {
         private val LANG_KEY = stringPreferencesKey("language")
     }
 
-    val language = dataStore.data
-        .map { preferences ->
+    val language = dataStore.data.map { preferences ->
             try {
                 Language.valueOf(preferences[LANG_KEY] ?: Language.System.name)
             } catch (_: Exception) {
@@ -27,7 +24,5 @@ class LanguageRepository(private val dataStore: DataStore<Preferences>) {
             }
         }
 
-    suspend fun setLang(lang: Language) =
-        dataStore.edit { it[LANG_KEY] = lang.toString() }
-
+    suspend fun setLang(lang: Language) = dataStore.edit { it[LANG_KEY] = lang.toString() }
 }

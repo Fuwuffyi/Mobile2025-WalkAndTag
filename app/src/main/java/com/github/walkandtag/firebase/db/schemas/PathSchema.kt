@@ -6,7 +6,7 @@ data class PathSchema(
     var userId: String = "",
     var name: String = "",
     var description: String = "",
-    var length: Float = 0.0f,
-    var time: Float = 0.0f,
+    var length: Double = 0.0,
+    var time: Double = 0.0,
     var points: MutableList<LatLng> = mutableListOf()
 )

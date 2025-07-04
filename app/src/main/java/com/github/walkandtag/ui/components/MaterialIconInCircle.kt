@@ -28,9 +28,7 @@ fun MaterialIconInCircle(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-            tint = colorFront
+            imageVector = icon, contentDescription = contentDescription, tint = colorFront
         )
     }
 }
