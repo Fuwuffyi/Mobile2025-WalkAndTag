@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.ElevatedButton
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -57,7 +59,18 @@ fun Profile(
     }
 
     val context = LocalContext.current
-    val state = viewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
+            val lastVisibleItem = visibleItems.lastOrNull()
+            val totalItems = listState.layoutInfo.totalItemsCount
+            if (lastVisibleItem != null && lastVisibleItem.index >= totalItems - 3) {
+                viewModel.loadNextPage()
+            }
+        }
+    }
 
     // @TODO(): Clean this up or move to viewModel
     var inDialog by remember { mutableStateOf(false) }
@@ -67,7 +80,7 @@ fun Profile(
         )
     ) { status ->
         if (status.values.any { it.isGranted }) {
-            if (!state.value.isRecording) {
+            if (!state.isRecording) {
                 context.startForegroundService(Intent(context, PathRecordingService::class.java))
             } else {
                 context.stopService(Intent(context, PathRecordingService::class.java))
@@ -110,8 +123,7 @@ fun Profile(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = state.value.user?.data?.username
-                        ?: stringResource(R.string.deleted_account),
+                    text = state.user?.data?.username ?: stringResource(R.string.deleted_account),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -119,20 +131,19 @@ fun Profile(
                 ElevatedButton(
                     onClick = { locationPermissionHandler.launchPermissionRequest() }) {
                     Text(
-                        if (state.value.isRecording)
-                            stringResource(R.string.save_path)
-                        else
-                            stringResource(R.string.rec_path)
+                        if (state.isRecording) stringResource(R.string.save_path)
+                        else stringResource(R.string.rec_path)
                     )
                 }
             }
         }
-        if (state.value.paths.isNotEmpty()) {
+        if (state.paths.isNotEmpty()) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 64.dp)
+                contentPadding = PaddingValues(bottom = 64.dp),
+                state = listState
             ) {
-                items(state.value.paths.toList()) { path ->
+                items(state.paths.toList()) { path ->
                     FeedPathEntry(
                         path = path,
                         onPathClick = { nav.navigate(Navigation.PathDetails(path.id)) },

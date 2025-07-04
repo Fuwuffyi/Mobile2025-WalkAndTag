@@ -28,32 +28,66 @@ class ProfileViewModel(
     private val pathRepo: FirestoreRepository<PathSchema>,
     private val savedPathRepo: SavedPathRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ProfileState())
-    val uiState: StateFlow<ProfileState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(ProfileState())
+    val state: StateFlow<ProfileState> = _state.asStateFlow()
+    private val loadedPaths = mutableListOf<FirestoreDocument<PathSchema>>()
+    private var lastPathId: String? = null
+    private var isLoading = false
+    private var endReached = false
+    private val pageSize = 10u
+    private var currentUserId: String? = null
 
     fun loadUserProfile(userId: String) {
+        currentUserId = userId
+        loadedPaths.clear()
+        lastPathId = null
+        endReached = false
+        isLoading = false
+        _state.value = ProfileState(user = null, paths = emptyList(), isRecording = false)
+
         viewModelScope.launch {
             val userDoc = userRepo.get(userId)
-            _uiState.update { current -> current.copy(user = userDoc) }
+            _state.update { it.copy(user = userDoc) }
+            loadNextPage() // Load first page of paths for user
+        }
+    }
 
-            userDoc?.let {
-                val userPaths = pathRepo.getFiltered(listOf(Filter("userId", it.id)))
-                _uiState.update { current -> current.copy(paths = userPaths.toList()) }
+    fun loadNextPage() {
+        val userId = currentUserId ?: return
+        if (isLoading || endReached) return
+        isLoading = true
+        viewModelScope.launch {
+            try {
+                val page = pathRepo.getFilteredPaged(
+                    filters = listOf(Filter("userId", userId)),
+                    limit = pageSize,
+                    startAfterId = lastPathId
+                )
+                val paths = page.documents
+                if (paths.isEmpty()) {
+                    endReached = true
+                } else {
+                    lastPathId = page.lastDocumentId
+                    loadedPaths += paths
+                    _state.update { it.copy(paths = loadedPaths.toList()) }
+                }
+            } finally {
+                isLoading = false
             }
         }
     }
 
     fun isOwnProfile(): Boolean {
-        return if (_uiState.value.user == null) {
+        return if (_state.value.user == null) {
             false
         } else {
             val currentUserId = auth.getCurrentUserId()
-            return currentUserId == _uiState.value.user!!.id
+            return currentUserId == _state.value.user!!.id
         }
     }
 
     fun toggleRecording() {
-        _uiState.update { current -> current.copy(isRecording = !current.isRecording) }
+        _state.update { current -> current.copy(isRecording = !current.isRecording) }
     }
 
     fun savePath(pathName: String, pathDescription: String? = null) {
