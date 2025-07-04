@@ -25,4 +25,15 @@
     <string name="logout">Esci</string>
     <string name="delete_account">Elimina Account</string>
     <string name="settings">Impostazioni</string>
+
+    <string name="empty_feed">"Non c'è nulla qui…"</string>
+
+    <string name="length">Distanza</string>
+    <string name="duration">Durata</string>
+    <string name="google_login">Login con Google</string>
+    <string name="choose_lang">Scegli Lingua</string>
+    <string name="cancel">Indietro</string>
+    <string name="favourite">Preferiti</string>
+    <string name="map_fail">Errore durante il caricamento della mappa</string>
+    <string name="static_map">Mappa statica</string>
 </resources>

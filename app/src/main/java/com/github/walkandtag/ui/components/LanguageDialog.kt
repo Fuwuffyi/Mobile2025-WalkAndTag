@@ -19,7 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.walkandtag.R
 import com.github.walkandtag.repository.Language
 import java.util.EnumSet
 
@@ -35,7 +37,7 @@ fun LanguageDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Choose Language",
+                text = stringResource(R.string.choose_lang),
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -69,12 +71,12 @@ fun LanguageDialog(
                     onDismiss()
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

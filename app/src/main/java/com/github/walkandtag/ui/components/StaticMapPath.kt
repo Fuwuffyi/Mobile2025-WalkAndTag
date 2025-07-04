@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.github.walkandtag.R
@@ -96,7 +97,7 @@ fun StaticMapPath(
                 generateMapSnapshot(context, styleUri, width, height, path)
             }
         } catch (e: Exception) {
-            error = "Map load failed: ${e.message}"
+            error = "Map load failed: ${e.message}" //"${stringResource(R.string.map_fail)}:
         } finally {
             isLoading = false
         }
@@ -111,12 +112,12 @@ fun StaticMapPath(
                     .background(Color.LightGray),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = error ?: "Map load error")
+                Text(text = error ?: stringResource(R.string.map_fail))
             }
 
             bitmap != null -> Image(
                 bitmap = bitmap!!.asImageBitmap(),
-                contentDescription = "Static Map",
+                contentDescription = stringResource(R.string.static_map),
                 modifier = Modifier.fillMaxSize()
             )
         }

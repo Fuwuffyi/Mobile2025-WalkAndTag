@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.walkandtag.R
 
@@ -17,7 +18,7 @@ fun GoogleButton(registerCallback: () -> Unit) {
             painter = painterResource(R.drawable.google_logo),
             modifier = Modifier.size(24.dp),
             tint = Color.Unspecified,
-            contentDescription = "Google login"
+            contentDescription = stringResource(R.string.google_login)
         )
     }
 }

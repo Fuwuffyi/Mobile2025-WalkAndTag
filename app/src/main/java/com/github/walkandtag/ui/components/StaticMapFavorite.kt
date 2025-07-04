@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.walkandtag.R
 import org.maplibre.android.geometry.LatLng
 
 @Composable
@@ -43,7 +45,7 @@ fun StaticMapFavorite(
         ) {
             Icon(
                 imageVector = Icons.Filled.StarBorder,
-                contentDescription = "Favorite",
+                contentDescription = stringResource(R.string.favourite),
                 tint = Color(255, 127, 0),
                 modifier = Modifier.size(50.dp)
             )
