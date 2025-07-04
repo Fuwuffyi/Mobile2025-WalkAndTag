@@ -82,8 +82,8 @@ class ProfileViewModel(
                     userId = auth.getCurrentUserId()!!,
                     name = pathName,
                     description = pathDescription ?: "",
-                    length = (lengthMeters / 1000.0).toFloat(),
-                    time = (estTime / 3600).toFloat(),
+                    length = (lengthMeters / 1000.0),
+                    time = (estTime / 3600),
                     points = pathPoints.toMutableList()
                 )
             )
