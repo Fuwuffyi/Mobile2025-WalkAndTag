@@ -1,40 +1,40 @@
-## WalkShare
+# WalkAndTag
 
-*A forward-thinking social walking app built on Android 8.0 using Kotlin and Jetpack Compose.*
+A modern social walking and tagging app for Android, built with Kotlin and Jetpack Compose.
 
-### Overview
+## Overview
 
-WalkShare is a no-nonsense platform where users can record, share, favorite, and comment on walking paths. Whether you’re a casual stroller or a dedicated hiker, WalkShare gives you the tools to document your journeys, engage with a community, and level up your walking game.
+**WalkAndTag** is a platform for discovering, recording, and sharing walking paths. The app features a social feed, GPS tracking, map integration, and user profiles. Users can favorite, and attach photos to their walks. WalkAndTag aims to gamify outdoor activity while providing a seamless, modern Android experience.
 
-### Table of Contents
+## Features
 
-1. [Features](#features)
-2. [Tech Stack](#tech-stack)
-3. [License](#license)
+- **User Authentication**: Secure account creation and login (Firebase)
+- **Social Feed**: Browse and favorite walking paths
+- **GPS Path Recording**: Real-time route recording with background service
+- **Map Integration**: Live map view of walks and user location
+- **User Profiles**: Track your own walks and stats
+- **Light/Dark Themes**: Dynamic theme switching
+- **Localization**: Multi-language support (Italian, English, and system default)
 
-### Features
+## Tech Stack
 
-* **User Authentication**: Account creation and login.
-* **Social Feed**: Browse, favorite, and comment on walking paths.
-* **GPS Tracking**: Real-time recording of routes.
-* **Map Integration**: View walks on maps.
-* **Camera Support**: Attach photos to your walks.
-* **User Profiles**: Showcase your own routes and stats.
-* **Dark / Light Theme**: Switch between themes on the fly.
-* **Notifications**: In-app and push notifications for gamification.
-* **Graphical Stats**: Visualize your walking history in charts.
-* **Wearable Integration**: Sync with smartwatches and fitness bands.
+- **Language**: Kotlin
+- **UI**: Jetpack Compose
+- **Mapping**: OpenStreetMap SDK
+- **Authentication & Database**: Firebase (with planned custom backend support)
+- **Storage**: Firebase Storage
+- **Location**: Android Location Services
+- **Dependency Injection**: Koin
 
-### Tech Stack
+## Project Roadmap
 
-* **Language**: Kotlin
-* **UI**: Jetpack Compose
-* **Map**: Google Maps SDK
-* **Auth & DB**: Firebase / Custom backend (TBD)
-* **Storage**: Firebase Storage / Local SQLite
-* **Tracking**: Android Location Services
-* **Notifications**: Firebase Cloud Messaging
+See [TODO.md](TODO.md) for planned features and progress, including:
+- Quest and reward system
+- Enhanced gamification (badges, challenges)
+- Smartwatch and fitness band integration
+- Augmented Reality (AR) for 3D path visualization
+- Biometric login options
 
-### License
+## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the [MIT License](LICENSE).
