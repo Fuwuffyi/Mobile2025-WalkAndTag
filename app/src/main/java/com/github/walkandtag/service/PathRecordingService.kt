@@ -54,7 +54,6 @@ class PathRecordingService : Service() {
         stopLocationUpdates()
         notifier.cancel(pathRecordingNotificationId)
         coroutineScope.cancel()
-        // @TODO(): Persist each point for crash safety
     }
 
     override fun onBind(intent: Intent?): IBinder? = null

@@ -55,9 +55,7 @@ fun Home(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(16.dp)
                 )
-                // TODO: Add filter/search UI here
-                Text("• Filter by location", modifier = Modifier.padding(8.dp))
-                Text("• Search by tag", modifier = Modifier.padding(8.dp))
+                // @TODO: Add filter/search UI here
             }
         }) {
         Column(Modifier.fillMaxSize()) {

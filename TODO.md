@@ -10,17 +10,18 @@
 - [ ] Pagina dei reward e delle quest di un profilo
 - [-] Pagina del profile (con i propri percorsi)
 - [-] Pagina di un singolo percorso
-- [ ] Pagina della mappa di un percorso
+- [X] Pagina della mappa di un percorso
 
 ## Integrazioni
 - [ ] Telecamera per aggiungere foto ad I percorsi
-- [ ] Maps per vedere tutto
+- [X] Maps per vedere tutto
 - [X] GPS per recording dei percorsi/visualizzazione utente
 
 ## Funzionalitá generali
-- [-] Notifiche in app e/o push (per gamification)
-- [-] Tema chiaro scuro
-- [ ] Preferenze
+- [X] Notifiche in app e/o push
+- [ ] Notifiche gamification
+- [X] Tema chiaro scuro
+- [X] Preferenze
 - [ ] Grafici (pag. utente)
 - [X] Salvataggio dati su DB
 - [ ] Integrazione con wearable

@@ -52,7 +52,7 @@ class FirestoreRepository<T : Any>(
         } else {
             val networkSnapshot = docRef.document(id).get(Source.SERVER).await()
             if (!networkSnapshot.exists()) {
-                Log.w("FirestoreRepository", "get: Document $id not found", )
+                Log.w("FirestoreRepository", "get: Document $id not found")
                 return null
             }
             networkSnapshot

@@ -28,7 +28,6 @@ class HomeViewModel(
         loadFeed()
     }
 
-    // @TODO(): Setup in a better way for deleted user (in ui?)
     private fun loadFeed() {
         viewModelScope.launch {
             try {

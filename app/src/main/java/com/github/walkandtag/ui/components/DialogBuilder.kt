@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
+// @TODO(): Merge language dialog with this
 class DialogBuilder(
     val title: String, val onDismiss: () -> Unit, val onConfirm: (Map<String, String>) -> Unit
 ) {
