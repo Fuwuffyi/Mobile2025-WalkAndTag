@@ -9,7 +9,7 @@
 - [ ] Pagina delle quest
 - [ ] Pagina dei reward e delle quest di un profilo
 - [-] Pagina del profile (con i propri percorsi)
-- [-] Pagina di un singolo percorso
+- [X] Pagina di un singolo percorso
 - [X] Pagina della mappa di un percorso
 
 ## Integrazioni

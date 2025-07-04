@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.components
 
+import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,14 +25,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun FeedPathEntry(
@@ -68,7 +74,7 @@ fun FeedPathEntry(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(6f / 4f)
+                    .aspectRatio(3f / 2f)
                     .clickable(onClick = onPathClick)
             ) {
                 StaticMapPath(path = path.data.points, modifier = Modifier.fillMaxSize())
@@ -129,7 +135,10 @@ private fun FeedPathEntryLayout(
 }
 
 @Composable
-private fun PathDetailsRow(length: Double, time: Double) {
+private fun PathDetailsRow(
+    length: Double, time: Double
+) {
+    // @TODO(): Change locale to get current one
     val locale = Resources.getSystem().configuration.locales.get(0)
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
