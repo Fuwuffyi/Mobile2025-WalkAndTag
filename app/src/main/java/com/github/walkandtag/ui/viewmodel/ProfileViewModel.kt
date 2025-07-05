@@ -116,6 +116,7 @@ class ProfileViewModel(
                     points = pathPoints.toMutableList()
                 )
             )
+            savedPathRepo.clear()
         }
     }
 }
