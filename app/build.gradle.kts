@@ -94,7 +94,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     // Maplibre
-    implementation("org.maplibre.gl:android-sdk:10.2.0") // Changing version breaks Android 8 compat
+    implementation("org.maplibre.gl:android-sdk:10.3.4") // Changing version breaks Android 8 compatibility
     // Firebase document database
     implementation(libs.google.firebase.firestore)
     // Checkstyle
