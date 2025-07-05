@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.walkandtag.R
@@ -75,101 +76,104 @@ fun Home(
 
     ModalNavigationDrawer(
         drawerState = drawerState, gesturesEnabled = false, drawerContent = {
-            ModalDrawerSheet {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            stringResource(R.string.filter_search_title),
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.weight(1.0f)
-                        )
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            IconButton(onClick = {
-                                scope.launch { drawerState.close() }
-                            }) {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = stringResource(R.string.button_close_filters)
-                                )
+            if (drawerState.isOpen || drawerState.isAnimationRunning) {
+                ModalDrawerSheet {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                stringResource(R.string.filter_search_title),
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.weight(1.0f)
+                            )
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                IconButton(onClick = {
+                                    scope.launch { drawerState.close() }
+                                }) {
+                                    Icon(
+                                        Icons.Default.Close,
+                                        contentDescription = stringResource(R.string.button_close_filters)
+                                    )
+                                }
                             }
                         }
-                    }
-                    Spacer(Modifier.padding(8.dp))
-                    OutlinedTextField(
-                        value = filters.nameQuery,
-                        onValueChange = { viewModel.updateFilters { copy(nameQuery = it) } },
-                        label = { Text(stringResource(R.string.filter_name)) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    OutlinedTextField(
-                        value = filters.authorQuery,
-                        onValueChange = { viewModel.updateFilters { copy(authorQuery = it) } },
-                        label = { Text(stringResource(R.string.filter_author)) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.padding(8.dp))
-                    Text(
-                        stringResource(
-                            R.string.filter_path_length, filters.minLength, filters.maxLength
+                        Spacer(Modifier.padding(8.dp))
+                        OutlinedTextField(
+                            value = filters.nameQuery,
+                            onValueChange = { viewModel.updateFilters { copy(nameQuery = it) } },
+                            label = { Text(stringResource(R.string.filter_name)) },
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    )
-                    RangeSlider(
-                        value = filters.minLength.toFloat()..filters.maxLength.toFloat(),
-                        onValueChange = {
-                            viewModel.updateFilters {
-                                copy(
-                                    minLength = it.start.toInt(),
-                                    maxLength = it.endInclusive.toInt()
-                                )
-                            }
-                        },
-                        valueRange = 0f..10000f
-                    )
-                    Spacer(Modifier.padding(8.dp))
-                    Text(
-                        stringResource(
-                            R.string.filter_path_duration, filters.minTime, filters.maxTime
+                        OutlinedTextField(
+                            value = filters.authorQuery,
+                            onValueChange = { viewModel.updateFilters { copy(authorQuery = it) } },
+                            label = { Text(stringResource(R.string.filter_author)) },
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    )
-                    RangeSlider(
-                        value = filters.minTime.toFloat()..filters.maxTime.toFloat(),
-                        onValueChange = {
-                            viewModel.updateFilters {
-                                copy(
-                                    minTime = it.start.toInt(), maxTime = it.endInclusive.toInt()
-                                )
-                            }
-                        },
-                        valueRange = 0f..1440f
-                    )
-                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = filters.showFavorites, onCheckedChange = {
-                                viewModel.updateFilters { copy(showFavorites = it) }
-                            })
-                        Text(stringResource(R.string.filter_favourite_only))
-                    }
-                    Spacer(Modifier.padding(8.dp))
-                    Text(stringResource(R.string.sort_by))
-                    val allSortOptions = SortOption.entries
-                    FlowRow {
-                        allSortOptions.forEach { option ->
-                            FilterChip(selected = option in filters.sortOptions, onClick = {
+                        Spacer(Modifier.padding(8.dp))
+                        Text(
+                            stringResource(
+                                R.string.filter_path_length, filters.minLength, filters.maxLength
+                            )
+                        )
+                        RangeSlider(
+                            value = filters.minLength.toFloat()..filters.maxLength.toFloat(),
+                            onValueChange = {
                                 viewModel.updateFilters {
                                     copy(
-                                        sortOptions = sortOptions.toMutableSet().apply {
-                                            if (contains(option)) remove(option) else add(
-                                                option
-                                            )
-                                        })
+                                        minLength = it.start.toInt(),
+                                        maxLength = it.endInclusive.toInt()
+                                    )
                                 }
-                            }, label = {
-                                Text(
-                                    option.name.lowercase().replaceFirstChar { it.uppercase() })
-                            })
+                            },
+                            valueRange = 0f..10000f
+                        )
+                        Spacer(Modifier.padding(8.dp))
+                        Text(
+                            stringResource(
+                                R.string.filter_path_duration, filters.minTime, filters.maxTime
+                            )
+                        )
+                        RangeSlider(
+                            value = filters.minTime.toFloat()..filters.maxTime.toFloat(),
+                            onValueChange = {
+                                viewModel.updateFilters {
+                                    copy(
+                                        minTime = it.start.toInt(),
+                                        maxTime = it.endInclusive.toInt()
+                                    )
+                                }
+                            },
+                            valueRange = 0f..1440f
+                        )
+                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = filters.showFavorites, onCheckedChange = {
+                                    viewModel.updateFilters { copy(showFavorites = it) }
+                                })
+                            Text(stringResource(R.string.filter_favourite_only))
+                        }
+                        Spacer(Modifier.padding(8.dp))
+                        Text(stringResource(R.string.sort_by))
+                        val allSortOptions = SortOption.entries
+                        FlowRow {
+                            allSortOptions.forEach { option ->
+                                FilterChip(selected = option in filters.sortOptions, onClick = {
+                                    viewModel.updateFilters {
+                                        copy(
+                                            sortOptions = sortOptions.toMutableSet().apply {
+                                                if (contains(option)) remove(option) else add(
+                                                    option
+                                                )
+                                            })
+                                    }
+                                }, label = {
+                                    Text(
+                                        option.name.lowercase().replaceFirstChar { it.uppercase() })
+                                })
+                            }
                         }
                     }
                 }

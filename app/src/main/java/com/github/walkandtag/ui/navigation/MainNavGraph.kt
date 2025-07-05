@@ -54,25 +54,59 @@ fun MainNavGraph(navigationController: NavHostController) {
 private const val slideDuration = 300
 private const val scaleDuration = 250
 
-fun getEnterTransition(
-    from: NavBackStackEntry, to: NavBackStackEntry
-): EnterTransition {
+private val bottomNavOrder = listOf(
+    Navigation.Settings::class.qualifiedName!!,
+    Navigation.Home::class.qualifiedName!!,
+    Navigation.Profile::class.qualifiedName!!
+)
+
+private fun getSlideDirection(from: NavBackStackEntry, to: NavBackStackEntry): SlideDirection {
+    val fromIndex = bottomNavOrder.indexOfFirst { from.destination.route?.startsWith(it) == true }
+    val toIndex = bottomNavOrder.indexOfFirst { to.destination.route?.startsWith(it) == true }
+
+    return if (fromIndex < toIndex) SlideDirection.LEFT else SlideDirection.RIGHT
+}
+
+private enum class SlideDirection {
+    LEFT, RIGHT
+}
+
+fun getEnterTransition(from: NavBackStackEntry, to: NavBackStackEntry): EnterTransition {
     return when {
-        isBottomNavTransition(from, to) -> slideInHorizontally(
-            initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(slideDuration)
-        )
+        isBottomNavTransition(from, to) -> {
+            when (getSlideDirection(from, to)) {
+                SlideDirection.LEFT -> slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(slideDuration)
+                )
+
+                SlideDirection.RIGHT -> slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(slideDuration)
+                )
+            }
+        }
+
         isScaleTransition(to) -> scaleIn(animationSpec = tween(scaleDuration))
         else -> fadeIn(animationSpec = tween(150))
     }
 }
 
-fun getExitTransition(
-    from: NavBackStackEntry, to: NavBackStackEntry
-): ExitTransition {
+fun getExitTransition(from: NavBackStackEntry, to: NavBackStackEntry): ExitTransition {
     return when {
-        isBottomNavTransition(from, to) -> slideOutHorizontally(
-            targetOffsetX = { fullWidth -> -fullWidth }, animationSpec = tween(slideDuration)
-        )
+        isBottomNavTransition(from, to) -> {
+            when (getSlideDirection(from, to)) {
+                SlideDirection.LEFT -> slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(slideDuration)
+                )
+
+                SlideDirection.RIGHT -> slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(slideDuration)
+                )
+            }
+        }
+
         isScaleTransition(from) -> scaleOut(animationSpec = tween(scaleDuration))
         else -> fadeOut(animationSpec = tween(150))
     }
