@@ -10,6 +10,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+data class HomeFilters(
+    val nameQuery: String = "",
+    val authorQuery: String = "",
+    val minLength: Int = 0,
+    val maxLength: Int = 10000,
+    val minTime: Int = 0,
+    val maxTime: Int = 1440,
+    val showFavorites: Boolean = false,
+    val sortOptions: Set<SortOption> = emptySet()
+)
+
+enum class SortOption {
+    NAME, AUTHOR, LENGTH, TIME, NEAREST
+}
+
 sealed class HomeState {
     object Loading : HomeState()
     data class Success(val items: List<Pair<FirestoreDocument<UserSchema>, FirestoreDocument<PathSchema>>>) :
@@ -18,30 +33,44 @@ sealed class HomeState {
     data class Error(val message: String) : HomeState()
 }
 
+// @TODO(): Implement filter functionality
 class HomeViewModel(
     private val pathRepo: FirestoreRepository<PathSchema>,
     private val userRepo: FirestoreRepository<UserSchema>
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<HomeState>(HomeState.Loading)
-    val uiState: StateFlow<HomeState> = _uiState
+    private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
+    val state: StateFlow<HomeState> = _state
+    private val _filters = MutableStateFlow(HomeFilters())
+    val filters: StateFlow<HomeFilters> = _filters
     private val loadedItems =
         mutableListOf<Pair<FirestoreDocument<UserSchema>, FirestoreDocument<PathSchema>>>()
     private var lastPathId: String? = null
     private var isLoading = false
     private var endReached = false
-    private val pageSize = 10u
 
     init {
+        loadNextPage()
+    }
+
+    fun updateFilters(update: HomeFilters.() -> HomeFilters) {
+        _filters.value = _filters.value.update()
+        refresh()
+    }
+
+    private fun refresh() {
+        lastPathId = null
+        endReached = false
+        loadedItems.clear()
         loadNextPage()
     }
 
     fun loadNextPage() {
         if (isLoading || endReached) return
         isLoading = true
-        _uiState.value = if (loadedItems.isEmpty()) HomeState.Loading else _uiState.value
+        _state.value = if (loadedItems.isEmpty()) HomeState.Loading else _state.value
         viewModelScope.launch {
             try {
-                val page = pathRepo.getAllPaged(limit = pageSize, startAfterId = lastPathId)
+                val page = pathRepo.getAllPaged(startAfterId = lastPathId)
                 val paths = page.documents
                 if (paths.isEmpty()) {
                     endReached = true
@@ -56,13 +85,12 @@ class HomeViewModel(
                     Pair(FirestoreDocument(path.data.userId, user), path)
                 }
                 loadedItems += newItems
-                _uiState.value = HomeState.Success(loadedItems.toList())
+                _state.value = HomeState.Success(loadedItems.toList())
             } catch (e: Exception) {
-                _uiState.value = HomeState.Error(e.message ?: "Unknown error")
+                _state.value = HomeState.Error(e.message ?: "Unknown error")
             } finally {
                 isLoading = false
             }
         }
     }
 }
-

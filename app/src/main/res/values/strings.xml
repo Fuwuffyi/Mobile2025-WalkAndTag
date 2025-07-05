@@ -38,8 +38,17 @@
     <string name="confirm">Confirm</string>
 
     <!-- Generics -->
-    <string name="empty_feed">"There's nothing here…"</string>
+    <string name="empty_feed">There\'s nothing here…</string>
     <string name="deleted_account">[Deleted Account]</string>
+
+    <!-- Home page -->
+    <string name="filter_search_title">Filters &amp; Search</string>
+    <string name="filter_name">Search by Name</string>
+    <string name="filter_author">Search by Author</string>
+    <string name="filter_favourite_only">Show Favorites Only</string>
+    <string name="filter_path_length">Path Length (m): %1$d - %2$d</string>
+    <string name="filter_path_duration">Path Time (min): %1$d - %2$d</string>
+    <string name="sort_by">"Sort by: </string>
 
     <!-- Profile page -->
     <string name="record_path">Record Path</string>

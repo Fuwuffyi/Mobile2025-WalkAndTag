@@ -31,7 +31,16 @@
 
     <!-- Generics -->
     <string name="deleted_account">[Account Eliminato]</string>
-    <string name="empty_feed">"Non c'è nulla qui…"</string>
+    <string name="empty_feed">Non c\'è nulla qui…</string>
+
+    <!-- Home page -->
+    <string name="filter_search_title">Filtri &amp; Ricerca</string>
+    <string name="filter_name">Ricerca per Nome</string>
+    <string name="filter_author">Ricerca per Autore</string>
+    <string name="filter_favourite_only">Mostra solo Preferiti</string>
+    <string name="filter_path_length">Lunghezza del Percorso (m): %1$d - %2$d</string>
+    <string name="filter_path_duration">Durata del Percorso (min): %1$d - %2$d</string>
+    <string name="sort_by">"Ordina per: </string>
 
     <!-- Profile page -->
     <string name="record_path">Registra Percorso</string>
