@@ -37,7 +37,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WalkAndTag"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        >
         <!-- Service to get background position while recording a path -->
         <service
             android:name=".service.PathRecordingService"
