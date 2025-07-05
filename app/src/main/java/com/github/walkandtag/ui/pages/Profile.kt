@@ -55,49 +55,56 @@ fun Profile(
     viewModel: ProfileViewModel = koinViewModel(),
     globalViewModel: GlobalViewModel = koinInject()
 ) {
-    LaunchedEffect(userId) {
-        viewModel.loadUserProfile(userId)
-    }
-
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val listState = rememberLazyListState()
-
+    var inDialog by remember { mutableStateOf(false) }
+    // Load profile
+    LaunchedEffect(userId) {
+        viewModel.loadUserProfile(userId)
+    }
+    // Pagination
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }.collect { visibleItems ->
-            val lastVisibleItem = visibleItems.lastOrNull()
-            val totalItems = listState.layoutInfo.totalItemsCount
-            if (lastVisibleItem != null && lastVisibleItem.index >= totalItems - 3) {
+            val lastItem = visibleItems.lastOrNull()
+            val total = listState.layoutInfo.totalItemsCount
+            if (lastItem != null && lastItem.index >= total - 3) {
                 viewModel.loadNextPage()
             }
         }
     }
-
-    // @TODO(): Clean this up or move to viewModel
-    var inDialog by remember { mutableStateOf(false) }
-
-    val pathRecDialog =
-        DialogBuilder(title = "Path Details", onDismiss = { inDialog = false }, onConfirm = {
+    // Dialog to save path
+    val errorText = stringResource(R.string.error_title)
+    val noPermissionText = stringResource(R.string.no_location_permissions)
+    val pathDialog = DialogBuilder(
+        title = stringResource(R.string.path_details),
+        onDismiss = { inDialog = false },
+        onConfirm = {
             val title = it["title"]!!
             val description = it["desc"]!!
-            if (title.length <= 4) {
-                globalViewModel.showSnackbar("Title must contain at least 4 characters.") // stringResource(R.string.error_title)
+            if (title.length < 4) {
+                globalViewModel.showSnackbar(errorText)
                 return@DialogBuilder
             }
             viewModel.savePath(title, description)
             inDialog = false
-        }).addInput("title", "Title").addInput("desc", "Description", multiLine = true)
-
-    val locationPermissionHandler = rememberMultiplePermissions(
+        }).addInput("title", stringResource(R.string.title))
+        .addInput("desc", stringResource(R.string.description), multiLine = true)
+    if (inDialog) {
+        pathDialog.Dialog()
+    }
+    // Handle location + notification permissions
+    val locationPermissions = rememberMultiplePermissions(
         permissions = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.POST_NOTIFICATIONS
-        ) else listOf(
+        )
+        else listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
         )
-    ) { status ->
-        if (status.values.any { it.isGranted }) {
+    ) { results ->
+        if (results.values.any { it.isGranted }) {
             if (!state.isRecording) {
                 context.startForegroundService(Intent(context, PathRecordingService::class.java))
             } else {
@@ -106,12 +113,10 @@ fun Profile(
             }
             viewModel.toggleRecording()
         } else {
-            globalViewModel.showSnackbar("You did not provide location nor notification permissions") // stringResource(R.string.no_location_permissions)
+            globalViewModel.showSnackbar(noPermissionText)
         }
     }
-    if (inDialog) {
-        pathRecDialog.Dialog()
-    }
+    // UI Layout
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -137,9 +142,9 @@ fun Profile(
             }
             if (viewModel.isOwnProfile()) {
                 ElevatedButton(
-                    onClick = { locationPermissionHandler.launchPermissionRequest() }) {
+                    onClick = { locationPermissions.launchPermissionRequest() }) {
                     Text(
-                        if (state.isRecording) stringResource(R.string.save_path)
+                        text = if (state.isRecording) stringResource(R.string.save_path)
                         else stringResource(R.string.record_path)
                     )
                 }
@@ -151,11 +156,13 @@ fun Profile(
                 contentPadding = PaddingValues(bottom = 64.dp),
                 state = listState
             ) {
-                items(state.paths.toList()) { path ->
+                items(state.paths) { path ->
                     FeedPathEntry(
                         path = path,
                         onPathClick = { nav.navigate(Navigation.PathDetails(path.id)) },
-                        onFavoritePathClick = { /* @TODO: Add path to favorites */ })
+                        onFavoritePathClick = {
+                            // TODO: Implement favorites logic
+                        })
                 }
             }
         } else {

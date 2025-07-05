@@ -30,8 +30,7 @@ android {
         release {
             isMinifyEnabled = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -95,7 +94,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     // Maplibre
-    implementation(libs.gl.android.sdk)
+    implementation("org.maplibre.gl:android-sdk:10.3.4") // Changing version breaks Android 8 compatibility
     // Firebase document database
     implementation(libs.google.firebase.firestore)
     // Checkstyle

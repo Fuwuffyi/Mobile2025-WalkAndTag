@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Add camera feature -->
     <uses-feature
         android:name="android.hardware.camera"
@@ -42,7 +41,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WalkAndTag"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        >
         <!-- Service to get background position while recording a path -->
         <service
             android:name=".service.PathRecordingService"

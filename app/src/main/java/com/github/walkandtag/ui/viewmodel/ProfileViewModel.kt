@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ProfileState(
-    var user: FirestoreDocument<UserSchema>? = null,
-    var paths: Collection<FirestoreDocument<PathSchema>> = emptyList(),
-    var isRecording: Boolean = false
+    val user: FirestoreDocument<UserSchema>? = null,
+    val paths: List<FirestoreDocument<PathSchema>> = emptyList(),
+    val isRecording: Boolean = false
 )
 
 class ProfileViewModel(
@@ -30,7 +30,6 @@ class ProfileViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state.asStateFlow()
-    private val loadedPaths = mutableListOf<FirestoreDocument<PathSchema>>()
     private var lastPathId: String? = null
     private var isLoading = false
     private var endReached = false
@@ -39,16 +38,14 @@ class ProfileViewModel(
 
     fun loadUserProfile(userId: String) {
         currentUserId = userId
-        loadedPaths.clear()
         lastPathId = null
         endReached = false
         isLoading = false
-        _state.value = ProfileState(user = null, paths = emptyList(), isRecording = false)
-
+        _state.value = ProfileState()
         viewModelScope.launch {
             val userDoc = userRepo.get(userId)
             _state.update { it.copy(user = userDoc) }
-            loadNextPage() // Load first page of paths for user
+            loadNextPage()
         }
     }
 
@@ -63,13 +60,15 @@ class ProfileViewModel(
                     limit = pageSize,
                     startAfterId = lastPathId
                 )
+
                 val paths = page.documents
                 if (paths.isEmpty()) {
                     endReached = true
                 } else {
                     lastPathId = page.lastDocumentId
-                    loadedPaths += paths
-                    _state.update { it.copy(paths = loadedPaths.toList()) }
+                    _state.update { current ->
+                        current.copy(paths = current.paths + paths)
+                    }
                 }
             } finally {
                 isLoading = false
@@ -78,24 +77,21 @@ class ProfileViewModel(
     }
 
     fun isOwnProfile(): Boolean {
-        return if (_state.value.user == null) {
-            false
-        } else {
-            val currentUserId = auth.getCurrentUserId()
-            return currentUserId == _state.value.user!!.id
-        }
+        val userId = _state.value.user?.id ?: return false
+        return auth.getCurrentUserId() == userId
     }
 
     fun toggleRecording() {
-        _state.update { current -> current.copy(isRecording = !current.isRecording) }
+        _state.update { it.copy(isRecording = !it.isRecording) }
     }
 
     fun savePath(pathName: String, pathDescription: String? = null) {
-        if (!savedPathRepo.isValid) {
+        val userId = auth.getCurrentUserId() ?: return
+        val pathPoints = savedPathRepo.points
+        if (pathPoints.size < 2) {
             return
         }
-        val pathPoints = savedPathRepo.points
-        // Calculate distance (meters) for the path
+        // Calculate distance (meters)
         val lengthMeters = pathPoints.zipWithNext().sumOf {
             val result = FloatArray(1)
             Location.distanceBetween(
@@ -107,20 +103,20 @@ class ProfileViewModel(
             )
             result[0].toDouble()
         }
-        // Calculate estimated walking time (in seconds)
-        val estTime = lengthMeters / 1.39
-        // Save the new path to the database
+        // Estimate walking time (in seconds)
+        val estimatedSeconds = lengthMeters / 1.39
         viewModelScope.launch {
             pathRepo.create(
                 PathSchema(
-                    userId = auth.getCurrentUserId()!!,
+                    userId = userId,
                     name = pathName,
-                    description = pathDescription ?: "",
-                    length = (lengthMeters / 1000.0),
-                    time = (estTime / 3600),
+                    description = pathDescription.orEmpty(),
+                    length = lengthMeters / 1000.0,   // in km
+                    time = estimatedSeconds / 3600.0, // in hours
                     points = pathPoints.toMutableList()
                 )
             )
+            savedPathRepo.clear()
         }
     }
 }

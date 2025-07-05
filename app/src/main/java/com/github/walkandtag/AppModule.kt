@@ -21,6 +21,7 @@ import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
 import com.github.walkandtag.ui.viewmodel.ProfileViewModel
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
+import com.github.walkandtag.ui.viewmodel.SettingsViewModel
 import com.github.walkandtag.util.Navigator
 import com.github.walkandtag.util.Notifier
 import com.google.firebase.auth.FirebaseAuth
@@ -34,8 +35,7 @@ val appModule = module {
     single<DataStore<Preferences>> {
         val context: Context = get()
         PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile("settings") }
-        )
+            produceFile = { context.preferencesDataStoreFile("settings") })
     }
     // Firebase singleton
     single { FirebaseAuth.getInstance() }
@@ -61,6 +61,7 @@ val appModule = module {
     viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
+    viewModel { SettingsViewModel(get(), get(named("users"))) }
     viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(named("users")), get(named("paths"))) }

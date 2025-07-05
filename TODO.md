@@ -5,7 +5,7 @@
 - [X] Pagina login
 - [X] Pagina di registrazione
 - [X] Pagina impostazioni
-- [-] Pagina home e ricerca percorsi (con preferiti)
+- [X] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
 - [ ] Pagina dei reward e delle quest di un profilo
 - [-] Pagina del profile (con i propri percorsi)
@@ -22,6 +22,7 @@
 - [ ] Notifiche gamification
 - [X] Tema chiaro scuro
 - [X] Preferenze
+- [ ] Ricerca Percorsi
 - [ ] Grafici (pag. utente)
 - [X] Salvataggio dati su DB
 - [ ] Integrazione con wearable
