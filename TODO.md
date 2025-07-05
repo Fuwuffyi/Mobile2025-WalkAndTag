@@ -22,7 +22,7 @@
 - [ ] Notifiche gamification
 - [X] Tema chiaro scuro
 - [X] Preferenze
-- [ ] Ricerca Percorsi
+- [-] Ricerca Percorsi
 - [ ] Grafici (pag. utente)
 - [X] Salvataggio dati su DB
 - [ ] Integrazione con wearable
@@ -30,6 +30,6 @@
 ### Feature (maybe)
 - [ ] Login senza account
 - [ ] Salvataggio dati in locale (no account)
-- [ ] Sensori biometrici per il login
+- [-] Sensori biometrici per il login
 - [ ] Modifica dati utenti
 - [ ] AR per visualizzare i percorsi in 3D
