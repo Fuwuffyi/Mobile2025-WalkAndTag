@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Language stuff: ITALIAN -->
-    <string name="deleted_account">Account Eliminato</string>
     <string name="login">Accedi</string>
-
-    <string name="no_location_permissions">Non sono attivi i permetti di posizione</string>
-    <string name="path_details">Dettagli percorso</string>
-    <string name="title">Titolo</string>
-    <string name="description">Descrizione</string>
-    <string name="error_title">Il titolo deve contenere almeno 4 caratteri.</string>
     <string name="profile_picture">Immagine profilo</string>
-    <string name="save_path">Salva percorso</string>
-    <string name="record_path">Registra percorso</string>
 
     <string name="username">Nome Utente</string>
     <string name="repeat_password">Ripeti Password</string>
@@ -39,4 +30,14 @@
     <string name="map_fail">Errore durante il caricamento della mappa</string>
     <string name="static_map">Mappa statica</string>
     <string name="confirm">Conferma</string>
+
+    <!-- Profile page -->
+    <string name="record_path">Registra Percorso</string>
+    <string name="save_path">Salva Percorso</string>
+    <string name="deleted_account">[Account Eliminato]</string>
+    <string name="path_details">Dettagli del Percorso</string>
+    <string name="title">Titolo</string>
+    <string name="description">Descrizione</string>
+    <string name="error_title">Il titolo deve contenere almeno 4 caretteri.</string>
+    <string name="no_location_permissions">Non hai dato permessi di locazione ne di notifiche</string>
 </resources>

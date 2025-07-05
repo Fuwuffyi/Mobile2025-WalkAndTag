@@ -9,23 +9,14 @@
     <string name="home" translatable="false">Home</string>
     <string name="account" translatable="false">Account</string>
     <!-- Language stuff: ENGLISH -->
-    <string name="deleted_account">Deleted User</string>
     <string name="login">Login</string>
-
-    <string name="no_location_permissions">You do not have location permissions</string>
-    <string name="path_details">Path Details</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
-    <string name="error_title">Title must contain at least 4 characters.</string>
     <string name="profile_picture">Profile picture</string>
-    <string name="save_path">Save Path</string>
-    <string name="record_path">Record Path</string>
-
-    <string name="by_author">By %1$s</string>
 
     <string name="username">Username</string>
     <string name="repeat_password">Repeat Password</string>
     <string name="register">Register</string>
+
+    <string name="by_author">By %1$s</string>
 
     <string name="appearance">Appearance</string>
     <string name="system_mode">Use system mode</string>
@@ -48,4 +39,13 @@
     <string name="static_map">Static map</string>
     <string name="confirm">Confirm</string>
 
+    <!-- Profile page -->
+    <string name="record_path">Record Path</string>
+    <string name="save_path">Save Path</string>
+    <string name="deleted_account">[Deleted Account]</string>
+    <string name="path_details">Path Details</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="error_title">Title must contain at least 4 characters.</string>
+    <string name="no_location_permissions">You did not provide location nor notification permissions</string>
 </resources>
