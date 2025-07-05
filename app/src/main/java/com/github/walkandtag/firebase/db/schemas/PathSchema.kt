@@ -1,6 +1,6 @@
 package com.github.walkandtag.firebase.db.schemas
 
-import org.maplibre.android.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLng
 
 data class PathSchema(
     var userId: String = "",

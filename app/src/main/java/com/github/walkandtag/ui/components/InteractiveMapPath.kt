@@ -11,10 +11,10 @@ import androidx.core.graphics.drawable.toBitmap
 import com.github.walkandtag.R
 import com.github.walkandtag.util.addPathStyle
 import com.github.walkandtag.util.buildBounds
-import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.maps.MapView
-import org.maplibre.android.maps.Style
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.maps.MapView
+import com.mapbox.mapboxsdk.maps.Style
 
 @Composable
 fun InteractiveMapPath(

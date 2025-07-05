@@ -1,6 +1,6 @@
 package com.github.walkandtag.repository
 
-import org.maplibre.android.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLng
 
 class SavedPathRepository {
     private val _points = mutableListOf<LatLng>()

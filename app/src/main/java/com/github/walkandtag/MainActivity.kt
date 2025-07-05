@@ -11,16 +11,20 @@ import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
+import com.mapbox.mapboxsdk.Mapbox
+import com.mapbox.mapboxsdk.WellKnownTileServer
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
-import org.maplibre.android.MapLibre
-import org.maplibre.android.WellKnownTileServer
 
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Initialize MapLibre
-        MapLibre.getInstance(this, null, WellKnownTileServer.MapTiler)
         super.onCreate(savedInstanceState)
+        Mapbox.getInstance(
+            this,
+            null,
+            WellKnownTileServer.MapTiler
+        )
     }
 
     @Composable

@@ -2,24 +2,24 @@ package com.github.walkandtag.util
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.geometry.LatLngBounds
-import org.maplibre.android.maps.Style
-import org.maplibre.android.style.expressions.Expression.get
-import org.maplibre.android.style.expressions.Expression.literal
-import org.maplibre.android.style.expressions.Expression.match
-import org.maplibre.android.style.layers.LineLayer
-import org.maplibre.android.style.layers.PropertyFactory.iconAllowOverlap
-import org.maplibre.android.style.layers.PropertyFactory.iconIgnorePlacement
-import org.maplibre.android.style.layers.PropertyFactory.iconImage
-import org.maplibre.android.style.layers.PropertyFactory.lineColor
-import org.maplibre.android.style.layers.PropertyFactory.lineWidth
-import org.maplibre.android.style.layers.SymbolLayer
-import org.maplibre.android.style.sources.GeoJsonSource
-import org.maplibre.geojson.Feature
-import org.maplibre.geojson.FeatureCollection
-import org.maplibre.geojson.LineString
-import org.maplibre.geojson.Point
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.LineString
+import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
+import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.style.expressions.Expression.get
+import com.mapbox.mapboxsdk.style.expressions.Expression.literal
+import com.mapbox.mapboxsdk.style.expressions.Expression.match
+import com.mapbox.mapboxsdk.style.layers.LineLayer
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 
 fun buildBounds(path: Collection<LatLng>): LatLngBounds =
     path.fold(LatLngBounds.Builder()) { builder, point -> builder.include(point) }.build()
