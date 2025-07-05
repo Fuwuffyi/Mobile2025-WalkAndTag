@@ -34,6 +34,8 @@
     <string name="empty_feed">Non c\'è nulla qui…</string>
 
     <!-- Home page -->
+    <string name="button_close_filters">Apri Filtri</string>
+    <string name="button_open_filters">Chiudi Filtri</string>
     <string name="filter_search_title">Filtri &amp; Ricerca</string>
     <string name="filter_name">Ricerca per Nome</string>
     <string name="filter_author">Ricerca per Autore</string>

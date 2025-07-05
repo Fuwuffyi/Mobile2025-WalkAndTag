@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DrawerValue
@@ -32,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -75,10 +77,26 @@ fun Home(
         drawerState = drawerState, gesturesEnabled = false, drawerContent = {
             ModalDrawerSheet {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        stringResource(R.string.filter_search_title),
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.filter_search_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.weight(1.0f)
+                        )
+                        Row(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            IconButton(onClick = {
+                                scope.launch { drawerState.close() }
+                            }) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = stringResource(R.string.button_close_filters)
+                                )
+                            }
+                        }
+                    }
                     Spacer(Modifier.padding(8.dp))
                     OutlinedTextField(
                         value = filters.nameQuery,
@@ -93,8 +111,11 @@ fun Home(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(Modifier.padding(8.dp))
-                    Text(stringResource(R.string.filter_path_length, filters.minLength, filters.maxLength))
-                    // Text("Path Length (m): ${filters.minLength} - ${filters.maxLength}")
+                    Text(
+                        stringResource(
+                            R.string.filter_path_length, filters.minLength, filters.maxLength
+                        )
+                    )
                     RangeSlider(
                         value = filters.minLength.toFloat()..filters.maxLength.toFloat(),
                         onValueChange = {
@@ -108,8 +129,11 @@ fun Home(
                         valueRange = 0f..10000f
                     )
                     Spacer(Modifier.padding(8.dp))
-                    Text(stringResource(R.string.filter_path_duration, filters.minTime, filters.maxTime))
-                    // Text("Path Time (min): ${filters.minTime} - ${filters.maxTime}")
+                    Text(
+                        stringResource(
+                            R.string.filter_path_duration, filters.minTime, filters.maxTime
+                        )
+                    )
                     RangeSlider(
                         value = filters.minTime.toFloat()..filters.maxTime.toFloat(),
                         onValueChange = {
@@ -156,12 +180,15 @@ fun Home(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.Start
             ) {
                 IconButton(onClick = {
                     scope.launch { drawerState.open() }
                 }) {
-                    Icon(Icons.Default.FilterList, contentDescription = "Open Filters")
+                    Icon(
+                        Icons.Default.FilterList,
+                        contentDescription = stringResource(R.string.button_open_filters)
+                    )
                 }
             }
             // Content area

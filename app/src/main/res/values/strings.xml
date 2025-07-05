@@ -42,6 +42,8 @@
     <string name="deleted_account">[Deleted Account]</string>
 
     <!-- Home page -->
+    <string name="button_close_filters">Open Filters</string>
+    <string name="button_open_filters">Close Filters</string>
     <string name="filter_search_title">Filters &amp; Search</string>
     <string name="filter_name">Search by Name</string>
     <string name="filter_author">Search by Author</string>
