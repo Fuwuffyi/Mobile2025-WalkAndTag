@@ -2,7 +2,6 @@ package com.github.walkandtag
 
 import android.content.Context
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
@@ -22,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.github.walkandtag.ui.navigation.Navigation
@@ -36,7 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.Qualifier
 
-abstract class BaseActivity : ComponentActivity() {
+abstract class BaseActivity : FragmentActivity() {
     override fun attachBaseContext(newBase: Context) {
         // Set base language as sytstem
         val updatedContext = newBase.updateLocale(null)

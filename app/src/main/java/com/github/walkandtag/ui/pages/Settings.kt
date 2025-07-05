@@ -68,30 +68,6 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
     val name = runBlocking { userRepo.get(authentication.getCurrentUserId()!!) }
 
-    /*
-    val hasBiometricPermission = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
-            // API 28+ → USE_BIOMETRIC
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.USE_BIOMETRIC
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-            // API 23–27 → USE_FINGERPRINT
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.USE_FINGERPRINT
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-
-        else -> {
-            // Versioni più vecchie → non supportato
-            false
-        }
-    }
-*/
     val languageDialog = DialogBuilder(
         title = stringResource(R.string.choose_language),
         onDismiss = { showLanguageDialog = false }) {
@@ -194,27 +170,6 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             languageDialog.Dialog()
         }
 
-        // Se manca il permesso → chiedi
-        /*
-        // Va messo qui?
-        if (!hasBiometricPermission) {
-            val permissions = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> arrayOf(Manifest.permission.USE_BIOMETRIC)
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> arrayOf(Manifest.permission.USE_FINGERPRINT)
-                else -> emptyArray()
-            }
-
-            if (permissions.isNotEmpty()) {
-                ActivityCompat.requestPermissions(
-                    context,
-                    permissions,
-                    1003 // requestCode
-                )
-            }
-        } else {
-            // Permesso già concesso → procedi con biometrico
-        }
-        */
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -236,18 +191,6 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 enabled = true // hasBiometricPermission
             )
         }
-
-        /*
-        val locationPermissionHandler = rememberMultiplePermissions(
-            permissions = listOf(Manifest.permission.USE_BIOMETRIC, Manifest.permission.USE_FINGERPRINT)
-        ) { status ->
-            if (status.values.any { it.isGranted }) {
-                val biometricManager = BiometricManager.from(this)
-            } else {
-
-            }
-        }
-        */
 
         // Logout
         Row(

@@ -58,7 +58,7 @@ fun Login(
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            "Login",
+            stringResource(R.string.login),
             style = MaterialTheme.typography.headlineMedium.copy(fontSize = 30.sp),
             textAlign = TextAlign.Center,
             modifier = Modifier

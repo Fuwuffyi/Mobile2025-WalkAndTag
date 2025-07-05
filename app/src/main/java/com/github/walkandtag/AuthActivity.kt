@@ -1,37 +1,33 @@
 package com.github.walkandtag
 
-import android.Manifest
 import android.content.Intent
-import android.os.Build
+import android.util.Log
 import android.widget.Toast
-import androidx.biometric.BiometricManager
+import androidx.activity.compose.LocalActivity
 import androidx.biometric.BiometricPrompt
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
-import com.github.walkandtag.service.PathRecordingService
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
-import com.github.walkandtag.util.rememberMultiplePermissions
+import com.github.walkandtag.util.BiometricPromptManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
 import java.util.concurrent.Executor
@@ -79,19 +75,38 @@ class AuthActivity : BaseActivity() {
 
     @Composable
     override fun NavigationContent(navController: androidx.navigation.NavHostController) {
+        val globalViewModel = koinInject<GlobalViewModel>()
+        val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
+
+        if (globalState.value.enabledBiometric) {
+            BiometricPromptManager(this).authenticate(
+                {
+                    // Startup firebase authenticator
+                    if (FirebaseAuth.getInstance().currentUser != null) {
+                        startActivity(Intent(this, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
+
+                        finish()
+                    }
+                },
+                { Log.e("Fail", "NavigationContent: Fail") },
+                { Log.e("Error", "NavigationContent: Error $it") }
+            )
+        }
+
+        // Startup firebase authenticator
+        if (FirebaseAuth.getInstance().currentUser != null && !globalState.value.enabledBiometric) {
+
+            startActivity(Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            })
+
+            finish()
+        }
+
         LoginNavGraph(navController)
     }
 
     override fun navbarQualifier() = named("login")
-
-    override fun onStart() {
-        super.onStart()
-        // Startup firebase authenticator
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            })
-            finish()
-        }
-    }
 }
