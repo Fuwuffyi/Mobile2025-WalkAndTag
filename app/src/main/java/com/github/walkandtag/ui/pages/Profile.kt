@@ -82,7 +82,7 @@ fun Profile(
         onConfirm = {
             val title = it["title"]!!
             val description = it["desc"]!!
-            if (title.length <= 4) {
+            if (title.length < 4) {
                 globalViewModel.showSnackbar(errorText)
                 return@DialogBuilder
             }

@@ -19,8 +19,6 @@
     <string name="delete_account">Elimina Account</string>
     <string name="settings">Impostazioni</string>
 
-    <string name="empty_feed">"Non c'è nulla qui…"</string>
-
     <string name="length">Distanza</string>
     <string name="duration">Durata</string>
     <string name="google_login">Login con Google</string>
@@ -31,10 +29,13 @@
     <string name="static_map">Mappa statica</string>
     <string name="confirm">Conferma</string>
 
+    <!-- Generics -->
+    <string name="deleted_account">[Account Eliminato]</string>
+    <string name="empty_feed">"Non c'è nulla qui…"</string>
+
     <!-- Profile page -->
     <string name="record_path">Registra Percorso</string>
     <string name="save_path">Salva Percorso</string>
-    <string name="deleted_account">[Account Eliminato]</string>
     <string name="path_details">Dettagli del Percorso</string>
     <string name="title">Titolo</string>
     <string name="description">Descrizione</string>
