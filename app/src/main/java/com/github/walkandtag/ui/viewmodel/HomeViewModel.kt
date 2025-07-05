@@ -18,11 +18,21 @@ data class HomeFilters(
     val minTime: Int = 0,
     val maxTime: Int = 1440,
     val showFavorites: Boolean = false,
-    val sortOptions: Set<SortOption> = emptySet()
+    val sortOptions: Map<SortOption, SortDirection> = emptyMap()
 )
 
 enum class SortOption {
     NAME, AUTHOR, LENGTH, TIME, NEAREST
+}
+
+enum class SortDirection {
+    NONE, ASC, DESC;
+
+    fun next(): SortDirection = when (this) {
+        NONE -> ASC
+        ASC -> DESC
+        DESC -> NONE
+    }
 }
 
 sealed class HomeState {

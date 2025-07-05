@@ -45,6 +45,7 @@ import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeState
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
+import com.github.walkandtag.ui.viewmodel.SortDirection
 import com.github.walkandtag.ui.viewmodel.SortOption
 import com.github.walkandtag.util.Navigator
 import kotlinx.coroutines.launch
@@ -147,7 +148,7 @@ fun Home(
                             },
                             valueRange = 0f..1440f
                         )
-                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 checked = filters.showFavorites, onCheckedChange = {
                                     viewModel.updateFilters { copy(showFavorites = it) }
@@ -159,19 +160,29 @@ fun Home(
                         val allSortOptions = SortOption.entries
                         FlowRow {
                             allSortOptions.forEach { option ->
-                                FilterChip(selected = option in filters.sortOptions, onClick = {
-                                    viewModel.updateFilters {
-                                        copy(
-                                            sortOptions = sortOptions.toMutableSet().apply {
-                                                if (contains(option)) remove(option) else add(
-                                                    option
-                                                )
+                                FilterChip(
+                                    selected = filters.sortOptions[option] != SortDirection.NONE,
+                                    onClick = {
+                                        viewModel.updateFilters {
+                                            val current = sortOptions[option] ?: SortDirection.NONE
+                                            val next = current.next()
+                                            copy(sortOptions = sortOptions.toMutableMap().apply {
+                                                if (next == SortDirection.NONE) remove(option)
+                                                else put(option, next)
                                             })
-                                    }
-                                }, label = {
-                                    Text(
-                                        option.name.lowercase().replaceFirstChar { it.uppercase() })
-                                })
+                                        }
+                                    },
+                                    label = {
+                                        val dir = filters.sortOptions[option] ?: SortDirection.NONE
+                                        val suffix = when (dir) {
+                                            SortDirection.ASC -> " ↑"
+                                            SortDirection.DESC -> " ↓"
+                                            else -> ""
+                                        }
+                                        Text(
+                                            option.name.lowercase()
+                                            .replaceFirstChar { it.uppercase() } + suffix)
+                                    })
                             }
                         }
                     }
