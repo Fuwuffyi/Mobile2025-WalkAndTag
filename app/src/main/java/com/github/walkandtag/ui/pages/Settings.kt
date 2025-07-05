@@ -1,7 +1,11 @@
 package com.github.walkandtag.ui.pages
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.biometric.BiometricManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +20,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.GTranslate
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -33,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.R
@@ -44,6 +51,7 @@ import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.DialogBuilder
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
+import com.github.walkandtag.util.rememberMultiplePermissions
 import kotlinx.coroutines.runBlocking
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.named
@@ -60,8 +68,33 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
     val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
     val name = runBlocking { userRepo.get(authentication.getCurrentUserId()!!) }
 
+    /*
+    val hasBiometricPermission = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
+            // API 28+ → USE_BIOMETRIC
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.USE_BIOMETRIC
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+            // API 23–27 → USE_FINGERPRINT
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.USE_FINGERPRINT
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+
+        else -> {
+            // Versioni più vecchie → non supportato
+            false
+        }
+    }
+*/
     val languageDialog = DialogBuilder(
-        title = stringResource(R.string.choose_language), onDismiss = { showLanguageDialog = false }) {
+        title = stringResource(R.string.choose_language),
+        onDismiss = { showLanguageDialog = false }) {
         val langStr = it["lang"]!!
         globalViewModel.setLang(Language.valueOf(langStr))
         showLanguageDialog = false
@@ -103,7 +136,10 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.PhoneAndroid)
                 Spacer(modifier = Modifier.width(12.dp))
-                Text(stringResource(R.string.system_mode), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    stringResource(R.string.system_mode),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
             Switch(
                 checked = globalState.value.theme == Theme.System, onCheckedChange = {
@@ -158,6 +194,61 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             languageDialog.Dialog()
         }
 
+        // Se manca il permesso → chiedi
+        /*
+        // Va messo qui?
+        if (!hasBiometricPermission) {
+            val permissions = when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> arrayOf(Manifest.permission.USE_BIOMETRIC)
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> arrayOf(Manifest.permission.USE_FINGERPRINT)
+                else -> emptyArray()
+            }
+
+            if (permissions.isNotEmpty()) {
+                ActivityCompat.requestPermissions(
+                    context,
+                    permissions,
+                    1003 // requestCode
+                )
+            }
+        } else {
+            // Permesso già concesso → procedi con biometrico
+        }
+        */
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.Fingerprint)
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    stringResource(R.string.biometric_access),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            Switch(
+                checked = globalState.value.enabledBiometric,
+                onCheckedChange = {
+                    globalViewModel.toggleBiometricEnabled()
+                },
+                enabled = true // hasBiometricPermission
+            )
+        }
+
+        /*
+        val locationPermissionHandler = rememberMultiplePermissions(
+            permissions = listOf(Manifest.permission.USE_BIOMETRIC, Manifest.permission.USE_FINGERPRINT)
+        ) { status ->
+            if (status.values.any { it.isGranted }) {
+                val biometricManager = BiometricManager.from(this)
+            } else {
+
+            }
+        }
+        */
+
         // Logout
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -166,6 +257,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
                 .fillMaxWidth()
                 .padding(vertical = 24.dp)
                 .clickable {
+                    globalViewModel.setBiometricEnabled(false)
                     authentication.logout()
                     context.startActivity(Intent(context, AuthActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -196,6 +288,7 @@ fun Settings(globalViewModel: GlobalViewModel = koinInject()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
+                    globalViewModel.setBiometricEnabled(false)
                     runBlocking {
                         val userId = authentication.getCurrentUserId()!!
                         userRepo.delete(userId)

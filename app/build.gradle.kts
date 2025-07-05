@@ -102,4 +102,6 @@ dependencies {
     implementation(libs.io.gitlab.arturbosch.detekt.gradle.plugin)
     // Datastore
     implementation(libs.androidx.datastore.preferences)
+    // Biometric fingerprint
+    implementation(libs.androidx.biometric)
 }

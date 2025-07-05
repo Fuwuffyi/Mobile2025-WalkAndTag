@@ -47,5 +47,6 @@
     <string name="map_fail">Map load error</string>
     <string name="static_map">Static map</string>
     <string name="confirm">Confirm</string>
+    <string name="biometric_access">Use biometric access</string>
 
 </resources>

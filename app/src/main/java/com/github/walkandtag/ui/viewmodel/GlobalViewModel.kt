@@ -3,6 +3,7 @@ package com.github.walkandtag.ui.viewmodel
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.walkandtag.repository.BiometricRepository
 import com.github.walkandtag.repository.Language
 import com.github.walkandtag.repository.LanguageRepository
 import com.github.walkandtag.repository.Theme
@@ -12,22 +13,22 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class GlobalState(val theme: Theme, val language: Language)
+data class GlobalState(val theme: Theme, val language: Language, val enabledBiometric: Boolean)
 
 class GlobalViewModel(
     private val themeRepo: ThemeRepository,
     private val langRepo: LanguageRepository,
-
-    ) : ViewModel() {
+    private val biometricRepo: BiometricRepository
+) : ViewModel() {
     val snackbarHostState = SnackbarHostState()
     val globalState = combine(
-        themeRepo.theme, langRepo.language
-    ) { theme, language ->
-        GlobalState(theme, language)
+        themeRepo.theme, langRepo.language, biometricRepo.biometricEnabledFlow
+    ) { theme, language, enabledBiometric ->
+        GlobalState(theme, language, enabledBiometric)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = GlobalState(Theme.System, Language.System)
+        initialValue = GlobalState(Theme.System, Language.System, false)
     )
 
     fun showSnackbar(message: String) {
@@ -61,6 +62,19 @@ class GlobalViewModel(
     fun setLang(newLang: Language) {
         viewModelScope.launch {
             langRepo.setLang(newLang)
+        }
+    }
+
+    fun setBiometricEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            biometricRepo.setBiometricEnabled(enabled)
+        }
+    }
+
+    fun toggleBiometricEnabled() {
+        viewModelScope.launch {
+            val current = globalState.value.enabledBiometric
+            biometricRepo.setBiometricEnabled(!current)
         }
     }
 }

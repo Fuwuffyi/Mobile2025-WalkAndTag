@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
+import com.github.walkandtag.repository.BiometricRepository
 import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.LanguageRepository
 import com.github.walkandtag.repository.SavedPathRepository
@@ -46,6 +47,7 @@ val appModule = module {
     // Repository singletons
     single<ThemeRepository> { ThemeRepository(get()) }
     single<LanguageRepository> { LanguageRepository(get()) }
+    single<BiometricRepository> { BiometricRepository(get()) }
     single<SavedPathRepository> { SavedPathRepository() }
     single<FirestoreRepository<UserSchema>>(named("users")) {
         FirestoreRepository.create("users")
@@ -54,7 +56,7 @@ val appModule = module {
         FirestoreRepository.create("paths")
     }
     // View models
-    single { GlobalViewModel(get(), get()) } // Singleton per evitare di ricrearlo per tutte le pagine
+    single { GlobalViewModel(get(), get(), get()) } // Singleton per evitare di ricrearlo per tutte le pagine
     viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
     viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
     viewModel { LoginViewModel(get()) }
