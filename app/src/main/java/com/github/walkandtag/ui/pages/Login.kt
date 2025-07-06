@@ -59,7 +59,10 @@ fun Login(
                 }
 
                 is LoginEvent.LoginSuccess -> {
-                    context.startActivity(Intent(context, MainActivity::class.java))
+                    val intent = Intent(context, MainActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    context.startActivity(intent)
                     (context as? Activity)?.finish()
                 }
             }
