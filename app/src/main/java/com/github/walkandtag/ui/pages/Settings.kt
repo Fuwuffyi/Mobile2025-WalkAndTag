@@ -144,7 +144,7 @@ fun Settings(
             )
         }
         // Language
-        Text(stringResource(R.string.regional), style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.other), style = MaterialTheme.typography.titleLarge)
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,

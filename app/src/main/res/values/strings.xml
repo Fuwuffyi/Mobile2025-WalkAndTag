@@ -23,7 +23,7 @@
     <string name="appearance">Appearance</string>
     <string name="system_mode">Use system mode</string>
     <string name="dark_mode">Dark Mode</string>
-    <string name="regional">Regional</string>
+    <string name="other">Other</string>
     <string name="language">Language</string>
     <string name="choose_language">Choose Language</string>
     <string name="biometric_access">Use biometric access</string>
