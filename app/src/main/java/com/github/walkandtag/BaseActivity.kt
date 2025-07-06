@@ -32,11 +32,14 @@ import com.github.walkandtag.ui.viewmodel.NavbarViewModel
 import com.github.walkandtag.util.Navigator
 import com.github.walkandtag.util.updateLocale
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.qualifier.Qualifier
 
 abstract class BaseActivity : FragmentActivity() {
+    protected val globalViewModel by inject<GlobalViewModel>()
+
     override fun attachBaseContext(newBase: Context) {
         // Set base language as sytstem
         val updatedContext = newBase.updateLocale(null)
@@ -48,8 +51,6 @@ abstract class BaseActivity : FragmentActivity() {
         enableEdgeToEdge()
         setContent {
             // @TODO(), Should I move this to a viewmodel??? Unsure
-            // Get global controller
-            val globalViewModel: GlobalViewModel = koinInject()
             val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
             // Update language
             val context = remember(globalState.language) {

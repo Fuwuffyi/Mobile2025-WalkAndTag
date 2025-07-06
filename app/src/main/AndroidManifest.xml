@@ -18,8 +18,6 @@
     <!-- Biometric & fingerprint permissions -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-
-    <uses-feature android:name="android.hardware.fingerprint" android:required="true"/>
     <!-- Query for location permissions  -->
     <queries>
         <intent>

@@ -17,8 +17,9 @@ import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
 import com.github.walkandtag.ui.navigation.Navigation
-import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.util.BiometricPromptManager
+import com.github.walkandtag.util.BiometricStatus
+import com.github.walkandtag.util.checkBiometricAvailability
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -36,8 +37,6 @@ class AuthActivity : BaseActivity() {
 
     @Composable
     override fun FloatingActionButtonContent() {
-        // Get global view model
-        val globalViewModel: GlobalViewModel = koinInject()
         // @TODO(), Should I move this to a viewmodel??? Unsure
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
@@ -67,36 +66,38 @@ class AuthActivity : BaseActivity() {
 
     @Composable
     override fun NavigationContent(navController: androidx.navigation.NavHostController) {
-        val globalViewModel = koinInject<GlobalViewModel>()
         val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
-
         if (globalState.value.enabledBiometric) {
-            BiometricPromptManager(this).authenticate(
-                {
-                    // Startup firebase authenticator
-                    if (FirebaseAuth.getInstance().currentUser != null) {
-                        startActivity(Intent(this, MainActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        })
-
-                        finish()
-                    }
-                },
-                { Log.e("Fail", "NavigationContent: Fail") },
-                { Log.e("Error", "NavigationContent: Error $it") }
-            )
+            // Check if device supports biometric check
+            when (checkBiometricAvailability(this)) {
+                BiometricStatus.NO_ENROLLED -> globalViewModel.showSnackbar("You have not setup any biometric device on your device.")
+                BiometricStatus.NO_HARDWARE -> globalViewModel.showSnackbar("You do not have biometric support on your device.")
+                BiometricStatus.FAILURE -> globalViewModel.showSnackbar("Unknown biometric error.")
+                BiometricStatus.SUCCESS -> {
+                    // Run biometric prompt
+                    BiometricPromptManager(this).authenticate(
+                        {
+                        // Startup firebase authenticator
+                        if (FirebaseAuth.getInstance().currentUser != null) {
+                            startActivity(Intent(this, MainActivity::class.java).apply {
+                                flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            })
+                            finish()
+                        }
+                    },
+                        { Log.e("Fail", "NavigationContent: Fail") },
+                        { Log.e("Error", "NavigationContent: Error $it") })
+                }
+            }
         }
-
         // Startup firebase authenticator
         if (FirebaseAuth.getInstance().currentUser != null && !globalState.value.enabledBiometric) {
-
             startActivity(Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             })
-
             finish()
         }
-
         LoginNavGraph(navController)
     }
 

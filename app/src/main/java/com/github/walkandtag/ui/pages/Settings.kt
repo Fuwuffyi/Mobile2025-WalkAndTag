@@ -42,6 +42,8 @@ import com.github.walkandtag.ui.components.DialogBuilder
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.SettingsViewModel
+import com.github.walkandtag.util.BiometricStatus
+import com.github.walkandtag.util.checkBiometricAvailability
 import org.koin.compose.koinInject
 import java.util.EnumSet
 
@@ -159,7 +161,9 @@ fun Settings(
                 )
             }
             Switch(
-                checked = globalState.value.enabledBiometric, onCheckedChange = {
+                checked = globalState.value.enabledBiometric,
+                enabled = checkBiometricAvailability(context) == BiometricStatus.SUCCESS,
+                onCheckedChange = {
                     globalViewModel.toggleBiometricEnabled()
                 })
         }
