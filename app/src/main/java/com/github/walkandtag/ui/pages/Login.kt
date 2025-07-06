@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.github.walkandtag.MainActivity
 import com.github.walkandtag.R
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
+import com.github.walkandtag.ui.viewmodel.LoginError
 import com.github.walkandtag.ui.viewmodel.LoginEvent
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -41,7 +42,10 @@ fun Login(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is LoginEvent.ShowError -> globalViewModel.showSnackbar(event.message)
+                is LoginEvent.ShowError -> when (event.err) {
+                    LoginError.INVALID_CREDENTIALS -> globalViewModel.showSnackbar("Invalid credentials.")
+                    LoginError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar("All fields are required.")
+                }
 
                 is LoginEvent.LoginSuccess -> {
                     context.startActivity(Intent(context, MainActivity::class.java))

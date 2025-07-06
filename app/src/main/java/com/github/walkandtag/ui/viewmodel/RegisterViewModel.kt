@@ -18,58 +18,69 @@ data class RegisterState(
     val username: String = "",
     val email: String = "",
     val password: String = "",
-    val confirmPassword: String = "",
-    val errorMessage: String? = null
+    val confirmPassword: String = ""
 )
+
+enum class RegisterError {
+    ALL_FIELDS_REQUIRED, REPEAT_PASSWORD_INCORRECT, GENERIC_ERROR
+}
 
 sealed class RegisterEvent {
     object RegisterSuccess : RegisterEvent()
-    data class ShowError(val message: String) : RegisterEvent()
+    data class ShowError(val err: RegisterError) : RegisterEvent()
 }
 
 class RegisterViewModel(
     private val auth: Authentication, private val userRepo: FirestoreRepository<UserSchema>
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(RegisterState())
     val uiState: StateFlow<RegisterState> = _uiState.asStateFlow()
+
     private val _events = Channel<RegisterEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
-    fun onUsernameChanged(value: String) {
-        _uiState.update { current -> current.copy(username = value) }
-    }
+    fun onUsernameChanged(value: String) = updateState { copy(username = value) }
 
-    fun onEmailChanged(value: String) {
-        _uiState.update { current -> current.copy(email = value) }
-    }
+    fun onEmailChanged(value: String) = updateState { copy(email = value) }
 
-    fun onPasswordChanged(value: String) {
-        _uiState.update { current -> current.copy(password = value) }
-    }
+    fun onPasswordChanged(value: String) = updateState { copy(password = value) }
 
-    fun onConfirmPasswordChanged(value: String) {
-        _uiState.update { current -> current.copy(confirmPassword = value) }
-    }
+    fun onConfirmPasswordChanged(value: String) = updateState { copy(confirmPassword = value) }
 
     fun onRegister() {
         val (username, email, password, confirmPassword) = _uiState.value
-        if (username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
-            viewModelScope.launch { _events.send(RegisterEvent.ShowError("All fields are required")) }
-            return
-        }
-        if (password != confirmPassword) {
-            viewModelScope.launch { _events.send(RegisterEvent.ShowError("Passwords do not match")) }
-            return
-        }
-        viewModelScope.launch {
-            when (auth.registerWithEmail(email, password)) {
-                is AuthResult.Success -> {
-                    userRepo.create(UserSchema(username), auth.getCurrentUserId().orEmpty())
-                    _events.send(RegisterEvent.RegisterSuccess)
-                }
 
-                is AuthResult.Failure -> _events.send(RegisterEvent.ShowError("Could not register your account"))
+        when {
+            username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() -> sendEvent(
+                RegisterEvent.ShowError(RegisterError.ALL_FIELDS_REQUIRED)
+            )
+
+            password != confirmPassword -> sendEvent(RegisterEvent.ShowError(RegisterError.REPEAT_PASSWORD_INCORRECT))
+
+            else -> {
+                viewModelScope.launch {
+                    when (auth.registerWithEmail(email, password)) {
+                        is AuthResult.Success -> {
+                            val uid = auth.getCurrentUserId().orEmpty()
+                            userRepo.create(UserSchema(username), uid)
+                            sendEvent(RegisterEvent.RegisterSuccess)
+                        }
+
+                        is AuthResult.Failure -> sendEvent(RegisterEvent.ShowError(RegisterError.GENERIC_ERROR))
+                    }
+                }
             }
+        }
+    }
+
+    private fun updateState(reducer: RegisterState.() -> RegisterState) {
+        _uiState.update(reducer)
+    }
+
+    private fun sendEvent(event: RegisterEvent) {
+        viewModelScope.launch {
+            _events.send(event)
         }
     }
 }

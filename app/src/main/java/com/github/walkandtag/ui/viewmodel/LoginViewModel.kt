@@ -13,42 +13,55 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LoginState(
-    val email: String = "", val password: String = "", val errorMessage: String? = null
+    val email: String = "", val password: String = ""
 )
+
+enum class LoginError {
+    ALL_FIELDS_REQUIRED, INVALID_CREDENTIALS
+}
 
 sealed class LoginEvent {
     object LoginSuccess : LoginEvent()
-    data class ShowError(val message: String) : LoginEvent()
+    data class ShowError(val err: LoginError) : LoginEvent()
 }
 
 class LoginViewModel(
     private val auth: Authentication
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(LoginState())
     val uiState: StateFlow<LoginState> = _uiState.asStateFlow()
+
     private val _events = Channel<LoginEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
-    fun onEmailChanged(value: String) {
-        _uiState.update { current -> current.copy(email = value) }
-    }
+    fun onEmailChanged(value: String) = updateState { copy(email = value) }
 
-    fun onPasswordChanged(value: String) {
-        _uiState.update { current -> current.copy(password = value) }
-    }
+    fun onPasswordChanged(value: String) = updateState { copy(password = value) }
 
     fun onLogin() {
         val (email, password) = _uiState.value
+
         if (email.isBlank() || password.isBlank()) {
-            viewModelScope.launch { _events.send(LoginEvent.ShowError("All fields are required")) }
+            sendEvent(LoginEvent.ShowError(LoginError.ALL_FIELDS_REQUIRED))
             return
         }
 
         viewModelScope.launch {
             when (auth.loginWithEmail(email, password)) {
-                is AuthResult.Success -> _events.send(LoginEvent.LoginSuccess)
-                is AuthResult.Failure -> _events.send(LoginEvent.ShowError("Invalid credentials"))
+                is AuthResult.Success -> sendEvent(LoginEvent.LoginSuccess)
+                is AuthResult.Failure -> sendEvent(LoginEvent.ShowError(LoginError.INVALID_CREDENTIALS))
             }
+        }
+    }
+
+    private fun updateState(reducer: LoginState.() -> LoginState) {
+        _uiState.update(reducer)
+    }
+
+    private fun sendEvent(event: LoginEvent) {
+        viewModelScope.launch {
+            _events.send(event)
         }
     }
 }

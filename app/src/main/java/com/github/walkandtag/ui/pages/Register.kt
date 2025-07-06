@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.github.walkandtag.MainActivity
 import com.github.walkandtag.R
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
+import com.github.walkandtag.ui.viewmodel.RegisterError
 import com.github.walkandtag.ui.viewmodel.RegisterEvent
 import com.github.walkandtag.ui.viewmodel.RegisterViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -42,7 +43,11 @@ fun Register(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is RegisterEvent.ShowError -> globalViewModel.showSnackbar(event.message)
+                is RegisterEvent.ShowError -> when (event.err) {
+                    RegisterError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar("All fields are required.")
+                    RegisterError.REPEAT_PASSWORD_INCORRECT -> globalViewModel.showSnackbar("Repeated password is incorrect.")
+                    RegisterError.GENERIC_ERROR -> globalViewModel.showSnackbar("Could not register your account.")
+                }
 
                 is RegisterEvent.RegisterSuccess -> {
                     context.startActivity(Intent(context, MainActivity::class.java))
