@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,10 +22,11 @@ import com.mapbox.mapboxsdk.geometry.LatLng
 
 @Composable
 fun StaticMapFavorite(
+    modifier: Modifier = Modifier,
     path: Collection<LatLng>,
     onPathClick: () -> Unit,
     onFavoriteClick: () -> Unit,
-    modifier: Modifier = Modifier
+    isFavorite: Boolean = false
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -43,7 +45,7 @@ fun StaticMapFavorite(
                 .border(2.dp, Color(255, 127, 0))
         ) {
             Icon(
-                imageVector = Icons.Filled.StarBorder,
+                imageVector = if (isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder,
                 contentDescription = stringResource(R.string.favourite),
                 tint = Color(255, 127, 0),
                 modifier = Modifier.size(50.dp)

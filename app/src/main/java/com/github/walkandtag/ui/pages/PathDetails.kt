@@ -65,8 +65,9 @@ fun PathDetails(
             StaticMapFavorite(
                 path = path.points,
                 modifier = Modifier.fillMaxWidth(),
+                isFavorite = state.value.isFavorite,
                 onPathClick = { navigator.navigate(Navigation.FullMap(pathId)) },
-                onFavoriteClick = { /* @TODO: Add path to favorites */ })
+                onFavoriteClick = { viewModel.toggleFavorite() })
             HorizontalDivider()
             Text(text = path.description, style = MaterialTheme.typography.bodyLarge)
         }
