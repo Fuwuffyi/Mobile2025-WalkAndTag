@@ -71,4 +71,7 @@
     <string name="repeated_password_error">Repeated password is incorrect.</string>
     <string name="generic_register_error">Could not register your account.</string>
     <string name="error_login_google">Could not login using Google</string>
+    <!--Notifier.kt-->
+    <string name="path_saved_successfully">Path saved</string>
+    <string name="path_saved_successfully_message">Path has been saved successfully.</string>
 </resources>

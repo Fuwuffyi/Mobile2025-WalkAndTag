@@ -63,4 +63,7 @@
     <string name="repeated_password_error">La password ripetuta non è corretta.</string>
     <string name="generic_register_error">Non è stato possibile registrare il tuo account.</string>
     <string name="error_login_google">Non è stato possibile accedere con Google</string>
+    <!--Notifier.kt-->
+    <string name="path_saved_successfully">Percorso salvato</string>
+    <string name="path_saved_successfully_message">Il percorso è stato salvato con successo.</string>
 </resources>

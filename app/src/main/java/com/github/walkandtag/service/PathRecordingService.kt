@@ -87,6 +87,11 @@ class PathRecordingService : Service() {
             savedPathRepo.clear()
             return;
         }
+        notifier.notify(
+            title = resources.getString(R.string.path_saved_successfully),
+            text = resources.getString(R.string.path_saved_successfully_message),
+            notificationId = pathRecordingNotificationId + 2
+        )
     }
 
     private fun addPoint(location: Location) {
