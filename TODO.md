@@ -18,6 +18,7 @@
 - [X] GPS per recording dei percorsi/visualizzazione utente
 
 ## Funzionalitá generali
+- [X] Aggiunta di percorso a i referiti
 - [X] Notifiche in app e/o push
 - [ ] Notifiche gamification
 - [X] Tema chiaro scuro
@@ -30,6 +31,6 @@
 ### Feature (maybe)
 - [ ] Login senza account
 - [ ] Salvataggio dati in locale (no account)
-- [-] Sensori biometrici per il login
+- [X] Sensori biometrici per il login
 - [ ] Modifica dati utenti
 - [ ] AR per visualizzare i percorsi in 3D
