@@ -32,8 +32,8 @@ class LoginViewModel(
     private val _uiState = MutableStateFlow(LoginState())
     val uiState: StateFlow<LoginState> = _uiState.asStateFlow()
 
-    private val _events = Channel<LoginEvent>(Channel.BUFFERED)
-    val events = _events.receiveAsFlow()
+    private val _uiEvent = Channel<LoginEvent>(Channel.BUFFERED)
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onEmailChanged(value: String) = updateState { copy(email = value) }
 
@@ -61,7 +61,7 @@ class LoginViewModel(
 
     private fun sendEvent(event: LoginEvent) {
         viewModelScope.launch {
-            _events.send(event)
+            _uiEvent.send(event)
         }
     }
 }

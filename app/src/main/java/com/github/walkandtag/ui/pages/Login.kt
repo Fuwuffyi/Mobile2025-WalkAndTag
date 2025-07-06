@@ -40,7 +40,7 @@ fun Login(
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+        viewModel.uiEvent.collect { event ->
             when (event) {
                 is LoginEvent.ShowError -> when (event.err) {
                     LoginError.INVALID_CREDENTIALS -> globalViewModel.showSnackbar("Invalid credentials.")

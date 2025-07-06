@@ -41,7 +41,7 @@ fun Register(
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+        viewModel.uiEvent.collect { event ->
             when (event) {
                 is RegisterEvent.ShowError -> when (event.err) {
                     RegisterError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar("All fields are required.")

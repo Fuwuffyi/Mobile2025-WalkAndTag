@@ -37,8 +37,8 @@ class RegisterViewModel(
     private val _uiState = MutableStateFlow(RegisterState())
     val uiState: StateFlow<RegisterState> = _uiState.asStateFlow()
 
-    private val _events = Channel<RegisterEvent>(Channel.BUFFERED)
-    val events = _events.receiveAsFlow()
+    private val _uiEvent = Channel<RegisterEvent>(Channel.BUFFERED)
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onUsernameChanged(value: String) = updateState { copy(username = value) }
 
@@ -80,7 +80,7 @@ class RegisterViewModel(
 
     private fun sendEvent(event: RegisterEvent) {
         viewModelScope.launch {
-            _events.send(event)
+            _uiEvent.send(event)
         }
     }
 }

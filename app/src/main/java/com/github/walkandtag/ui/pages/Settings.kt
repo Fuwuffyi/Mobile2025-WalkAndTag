@@ -1,7 +1,7 @@
 package com.github.walkandtag.ui.pages
 
-import android.app.Activity
 import android.content.Intent
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.DialogBuilder
 import com.github.walkandtag.ui.components.MaterialIconInCircle
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
+import com.github.walkandtag.ui.viewmodel.SettingsEvent
 import com.github.walkandtag.ui.viewmodel.SettingsViewModel
 import com.github.walkandtag.util.BiometricStatus
 import com.github.walkandtag.util.checkBiometricAvailability
@@ -53,8 +55,26 @@ fun Settings(
     settingsViewModel: SettingsViewModel = koinInject()
 ) {
     val context = LocalContext.current
+    val activity = LocalActivity.current!!
     val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
     val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        settingsViewModel.uiEvent.collect { event ->
+            when (event) {
+                is SettingsEvent.NavigateToAuth -> {
+                    globalViewModel.setBiometricEnabled(false)
+                    context.startActivity(Intent(context, AuthActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                    activity.finish()
+                }
+
+                is SettingsEvent.ShowError -> globalViewModel.showSnackbar(event.message)
+            }
+        }
+    }
+
     val languageDialog = DialogBuilder(
         title = stringResource(R.string.choose_language),
         onDismiss = { settingsViewModel.toggleLanguageDialog(false) }) {
@@ -67,6 +87,7 @@ fun Settings(
         EnumSet.allOf(Language::class.java).map { it.name },
         globalState.value.language.name
     )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,7 +108,7 @@ fun Settings(
             Spacer(modifier = Modifier.width(12.dp))
             Text(settingsState.username, style = MaterialTheme.typography.bodyLarge)
         }
-        // Theme
+        // Theme (System)
         Text(stringResource(R.string.appearance), style = MaterialTheme.typography.titleLarge)
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -105,6 +126,7 @@ fun Settings(
                 checked = globalState.value.theme == Theme.System,
                 onCheckedChange = { globalViewModel.toggleSystemTheme() })
         }
+        // Theme (Dark/Light)
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -147,6 +169,7 @@ fun Settings(
         if (settingsState.showLanguageDialog) {
             languageDialog.Dialog()
         }
+        // Biometrics
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -163,9 +186,7 @@ fun Settings(
             Switch(
                 checked = globalState.value.enabledBiometric,
                 enabled = checkBiometricAvailability(context) == BiometricStatus.SUCCESS,
-                onCheckedChange = {
-                    globalViewModel.toggleBiometricEnabled()
-                })
+                onCheckedChange = { globalViewModel.toggleBiometricEnabled() })
         }
         // Logout
         Row(
@@ -173,15 +194,7 @@ fun Settings(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp)
-                .clickable {
-                    globalViewModel.setBiometricEnabled(false)
-                    settingsViewModel.logout {
-                        context.startActivity(Intent(context, AuthActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        })
-                        (context as? Activity)?.finish()
-                    }
-                }) {
+                .clickable { settingsViewModel.logout() }) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                 MaterialIconInCircle(
                     Modifier.size(36.dp),
@@ -203,15 +216,7 @@ fun Settings(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    globalViewModel.setBiometricEnabled(false)
-                    settingsViewModel.deleteAccount {
-                        context.startActivity(Intent(context, AuthActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        })
-                        (context as? Activity)?.finish()
-                    }
-                }) {
+                .clickable { settingsViewModel.deleteAccount() }) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                 MaterialIconInCircle(
                     Modifier.size(36.dp),
