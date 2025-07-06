@@ -2,6 +2,7 @@ package com.github.walkandtag.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
@@ -37,19 +38,24 @@ enum class SortDirection {
 
 sealed class HomeState {
     object Loading : HomeState()
-    data class Success(val items: List<Pair<FirestoreDocument<UserSchema>, FirestoreDocument<PathSchema>>>) :
-        HomeState()
+    data class Success(
+        val items: List<Pair<FirestoreDocument<UserSchema>, FirestoreDocument<PathSchema>>>,
+        val favoritePathIds: Collection<String>
+    ) : HomeState()
 
     data class Error(val message: String) : HomeState()
 }
 
 // @TODO(): Implement filter functionality
 class HomeViewModel(
+    private val auth: Authentication,
     private val pathRepo: FirestoreRepository<PathSchema>,
     private val userRepo: FirestoreRepository<UserSchema>
 ) : ViewModel() {
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
     val state: StateFlow<HomeState> = _state
+    private val _favoritePathIds = MutableStateFlow<List<String>>(emptyList())
+    val favoritePathIds: StateFlow<List<String>> = _favoritePathIds
     private val _filters = MutableStateFlow(HomeFilters())
     val filters: StateFlow<HomeFilters> = _filters
     private val loadedItems =
@@ -59,7 +65,15 @@ class HomeViewModel(
     private var endReached = false
 
     init {
+        loadCurrentUserFavorites()
         loadNextPage()
+    }
+
+    private fun loadCurrentUserFavorites() {
+        viewModelScope.launch {
+            val currentUser = userRepo.get(auth.getCurrentUserId()!!)
+            _favoritePathIds.value = currentUser?.data?.favoritePathIds ?: emptyList()
+        }
     }
 
     fun updateFilters(update: HomeFilters.() -> HomeFilters) {
@@ -95,11 +109,35 @@ class HomeViewModel(
                     Pair(FirestoreDocument(path.data.userId, user), path)
                 }
                 loadedItems += newItems
-                _state.value = HomeState.Success(loadedItems.toList())
+                val filteredItems = if (filters.value.showFavorites) {
+                    loadedItems.filter { feedItem -> _favoritePathIds.value.contains(feedItem.second.id) }
+                } else loadedItems
+                _state.value = HomeState.Success(filteredItems.toList(), _favoritePathIds.value)
             } catch (e: Exception) {
                 _state.value = HomeState.Error(e.message ?: "Unknown error")
             } finally {
                 isLoading = false
+            }
+        }
+    }
+
+    fun toggleFavorite(pathId: String) {
+        viewModelScope.launch {
+            val currentUserDoc = userRepo.get(auth.getCurrentUserId()!!) ?: return@launch
+            val favorites = currentUserDoc.data.favoritePathIds.toMutableList()
+            val isFavorite = favorites.contains(pathId)
+            if (isFavorite) {
+                favorites.remove(pathId)
+            } else {
+                favorites.add(pathId)
+            }
+            userRepo.update(
+                currentUserDoc.data.copy(favoritePathIds = favorites), currentUserDoc.id
+            )
+            _favoritePathIds.value = favorites
+            _state.value = when (val currentState = _state.value) {
+                is HomeState.Success -> currentState.copy(favoritePathIds = favorites)
+                else -> _state.value
             }
         }
     }

@@ -62,7 +62,7 @@ val appModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
     viewModel { SettingsViewModel(get(), get(named("users"))) }
-    viewModel { HomeViewModel(get(named("paths")), get(named("users"))) }
+    viewModel { HomeViewModel(get(), get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(), get(named("users")), get(named("paths"))) }
 }

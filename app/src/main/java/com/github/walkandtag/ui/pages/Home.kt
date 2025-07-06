@@ -59,6 +59,7 @@ fun Home(
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val favorites by viewModel.favoritePathIds.collectAsState()
     val filters by viewModel.filters.collectAsState()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -222,9 +223,10 @@ fun Home(
                                     FeedPathEntry(
                                         user = feedItem.first,
                                         path = feedItem.second,
+                                        isFavorite = favorites.contains(feedItem.second.id),
                                         onProfileClick = { nav.navigate(Navigation.Profile(feedItem.first.id)) },
                                         onPathClick = { nav.navigate(Navigation.PathDetails(feedItem.second.id)) },
-                                        onFavoritePathClick = { /* @TODO(): Add favorites */ },
+                                        onFavoritePathClick = { viewModel.toggleFavorite(feedItem.second.id) },
                                         modifier = Modifier.padding(8.dp)
                                     )
                                 }
