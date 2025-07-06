@@ -3,7 +3,6 @@ package com.github.walkandtag.service
 import android.Manifest
 import android.app.Service
 import android.content.Intent
-import android.content.res.Resources
 import android.location.Location
 import android.os.IBinder
 import androidx.annotation.RequiresPermission
@@ -36,8 +35,8 @@ class PathRecordingService : Service() {
     override fun onCreate() {
         super.onCreate()
         val notification = notifier.notifyPersistent(
-            title = getResources().getString(R.string.recording_path),
-            text = getResources().getString(R.string.walk_recording),
+            title = resources.getString(R.string.recording_path),
+            text = resources.getString(R.string.walk_recording),
             priority = NotificationCompat.PRIORITY_LOW
         )
         startForeground(pathRecordingNotificationId, notification)
@@ -81,8 +80,8 @@ class PathRecordingService : Service() {
         }
         if (!savedPathRepo.isValid) {
             notifier.notify(
-                title =getResources().getString(R.string.path_not_saved),
-                text = getResources().getString(R.string.error_saving_path),
+                title = resources.getString(R.string.path_not_saved),
+                text = resources.getString(R.string.error_saving_path),
                 notificationId = pathRecordingNotificationId + 1
             )
             savedPathRepo.clear()

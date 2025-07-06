@@ -1,7 +1,6 @@
 package com.github.walkandtag
 
 import android.content.Intent
-import android.content.res.Resources
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
