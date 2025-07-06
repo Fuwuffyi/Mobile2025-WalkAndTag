@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Language stuff: ITALIAN -->
-    <string name="login">Accedi</string>
     <string name="profile_picture">Immagine profilo</string>
-
     <string name="username">Nome Utente</string>
     <string name="repeat_password">Ripeti Password</string>
     <string name="register">Registrati</string>
-
     <string name="by_author">Creato da %1$s</string>
-
     <string name="appearance">Aspetto</string>
     <string name="system_mode">Usa modalità di sistema</string>
     <string name="dark_mode">Modalità scura</string>
@@ -18,23 +14,38 @@
     <string name="logout">Esci</string>
     <string name="delete_account">Elimina Account</string>
     <string name="settings">Impostazioni</string>
-
-    <string name="length">Distanza</string>
-    <string name="duration">Durata</string>
-    <string name="google_login">Login con Google</string>
     <string name="choose_language">Scegli Lingua</string>
-    <string name="cancel">Indietro</string>
-    <string name="favourite">Preferiti</string>
-    <string name="map_fail">Errore durante il caricamento della mappa: %1$s</string>
-    <string name="static_map">Mappa statica</string>
-    <string name="confirm">Conferma</string>
     <string name="biometric_access">Usa accesso biometrico</string>
-
     <!-- Generics -->
     <string name="deleted_account">[Account Eliminato]</string>
+    <!-- Profile page -->
+    <string name="record_path">Registra Percorso</string>
+    <string name="save_path">Salva Percorso</string>
+    <string name="path_details">Dettagli del Percorso</string>
+    <string name="title">Titolo</string>
+    <string name="description">Descrizione</string>
+    <string name="error_title">Il titolo deve contenere almeno 4 caretteri.</string>
+    <string name="no_location_permissions">Non hai dato permessi di locazione ne di notifiche</string>
+    <!-- PathRecordingService.kt -->
+    <string name="recording_path">Registrando percorso</string>
+    <string name="walk_recording">Il tuo percorso sta venendo registrato.</string>
+    <string name="path_not_saved">Percorso non salvato</string>
+    <string name="error_saving_path">Non si può salvare il percorso, troppi pochi punti registrati.</string>
+    <!-- DialogBuilder.kt (manca roba che non posso mettere) -->
+    <string name="confirm">Conferma</string>
+    <string name="cancel">Indietro</string>
+    <!-- EmptyFeed.kt -->
     <string name="empty_feed">Non c\'è nulla qui…</string>
-
-    <!-- Home page -->
+    <!-- FeedPathEntry.kt -->
+    <string name="favourite">Preferiti</string>
+    <string name="length">Distanza</string>
+    <string name="duration">Durata</string>
+    <!-- GoogleButton.kt -->
+    <string name="google_login">Login con Google</string>
+    <!-- StaticMapPath.kt -->
+    <string name="map_fail">Errore durante il caricamento della mappa: %1$s</string>
+    <string name="static_map">Mappa statica</string>
+    <!-- Home.kt -->
     <string name="button_close_filters">Apri Filtri</string>
     <string name="button_open_filters">Chiudi Filtri</string>
     <string name="filter_search_title">Filtri &amp; Ricerca</string>
@@ -44,23 +55,8 @@
     <string name="filter_path_length">Lunghezza del Percorso (m): %1$d - %2$d</string>
     <string name="filter_path_duration">Durata del Percorso (min): %1$d - %2$d</string>
     <string name="sort_by">"Ordina per: </string>
-
-    <!-- Profile page -->
-    <string name="record_path">Registra Percorso</string>
-    <string name="save_path">Salva Percorso</string>
-    <string name="path_details">Dettagli del Percorso</string>
-    <string name="title">Titolo</string>
-    <string name="description">Descrizione</string>
-    <string name="error_title">Il titolo deve contenere almeno 4 caretteri.</string>
-    <string name="no_location_permissions">Non hai dato permessi di locazione ne di notifiche</string>
-
-    <!-- PathRecordingService.kt -->
-    <string name="recording_path">Registrando percorso</string>
-    <string name="walk_recording">Il tuo percorso sta venendo registrato.</string>
-    <string name="path_not_saved">Percorso non salvato</string>
-    <string name="error_saving_path">Non si può salvare il percorso, troppi pochi punti registrati.</string>
-
     <!-- Login.kt -->
+    <string name="login">Accedi</string>
     <string name="invalid_credential">Credenziali invalide.</string>
     <string name="all_fields_required">Tutti i campi devono essere riempiti.</string>
     <string name="repeated_password_error">La password ripetuta non è corretta.</string>
