@@ -182,7 +182,7 @@ fun Home(
                                         }
                                         Text(
                                             option.name.lowercase()
-                                            .replaceFirstChar { it.uppercase() } + suffix)
+                                                .replaceFirstChar { it.uppercase() } + suffix)
                                     })
                             }
                         }

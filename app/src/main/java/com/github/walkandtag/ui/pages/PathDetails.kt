@@ -57,10 +57,10 @@ fun PathDetails(
             HorizontalDivider()
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
-                    "Length: ${getDistanceString(LocalContext.current, path.length.toDouble())}",
+                    "Length: ${getDistanceString(LocalContext.current, path.length)}",
                     fontSize = 14.sp
                 )
-                Text("Time: ${getTimeString(path.time.toDouble())}", fontSize = 14.sp)
+                Text("Time: ${getTimeString(path.time)}", fontSize = 14.sp)
             }
             StaticMapFavorite(
                 path = path.points,

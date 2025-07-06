@@ -25,9 +25,10 @@
     <string name="choose_language">Scegli Lingua</string>
     <string name="cancel">Indietro</string>
     <string name="favourite">Preferiti</string>
-    <string name="map_fail">Errore durante il caricamento della mappa</string>
+    <string name="map_fail">Errore durante il caricamento della mappa: %1$s</string>
     <string name="static_map">Mappa statica</string>
     <string name="confirm">Conferma</string>
+    <string name="biometric_access">Usa accesso biometrico</string>
 
     <!-- Generics -->
     <string name="deleted_account">[Account Eliminato]</string>
@@ -52,4 +53,17 @@
     <string name="description">Descrizione</string>
     <string name="error_title">Il titolo deve contenere almeno 4 caretteri.</string>
     <string name="no_location_permissions">Non hai dato permessi di locazione ne di notifiche</string>
+
+    <!-- PathRecordingService.kt -->
+    <string name="recording_path">Registrando percorso</string>
+    <string name="walk_recording">Il tuo percorso sta venendo registrato.</string>
+    <string name="path_not_saved">Percorso non salvato</string>
+    <string name="error_saving_path">Non si può salvare il percorso, troppi pochi punti registrati.</string>
+
+    <!-- Login.kt -->
+    <string name="invalid_credential">Credenziali invalide.</string>
+    <string name="all_fields_required">Tutti i campi devono essere riempiti.</string>
+    <string name="repeated_password_error">La password ripetuta non è corretta.</string>
+    <string name="generic_register_error">Non è stato possibile registrare il tuo account.</string>
+    <string name="error_login_google">Non è stato possibile accedere con Google</string>
 </resources>

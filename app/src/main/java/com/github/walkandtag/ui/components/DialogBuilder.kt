@@ -29,6 +29,7 @@ class DialogBuilder(
 ) {
     private val inputFields: MutableMap<String, Pair<String, InputType>> = mutableMapOf()
 
+
     fun addInput(
         id: String, label: String, initialValue: String = "", multiLine: Boolean = false
     ): DialogBuilder {

@@ -2,6 +2,7 @@ package com.github.walkandtag.ui.pages
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,13 +39,23 @@ fun Login(
 ) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
+    val resources = koinInject<Resources>()
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is LoginEvent.ShowError -> when (event.err) {
-                    LoginError.INVALID_CREDENTIALS -> globalViewModel.showSnackbar("Invalid credentials.")
-                    LoginError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar("All fields are required.")
+                    LoginError.INVALID_CREDENTIALS -> globalViewModel.showSnackbar(
+                        resources.getString(
+                            R.string.invalid_credential
+                        )
+                    )
+
+                    LoginError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar(
+                        resources.getString(
+                            R.string.all_fields_required
+                        )
+                    )
                 }
 
                 is LoginEvent.LoginSuccess -> {

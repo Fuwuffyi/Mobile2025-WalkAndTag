@@ -3,10 +3,12 @@ package com.github.walkandtag.service
 import android.Manifest
 import android.app.Service
 import android.content.Intent
+import android.content.res.Resources
 import android.location.Location
 import android.os.IBinder
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
+import com.github.walkandtag.R
 import com.github.walkandtag.repository.SavedPathRepository
 import com.github.walkandtag.util.Notifier
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -34,8 +36,8 @@ class PathRecordingService : Service() {
     override fun onCreate() {
         super.onCreate()
         val notification = notifier.notifyPersistent(
-            title = "Recording Path",
-            text = "Your walk is being recorded.",
+            title = getResources().getString(R.string.recording_path),
+            text = getResources().getString(R.string.walk_recording),
             priority = NotificationCompat.PRIORITY_LOW
         )
         startForeground(pathRecordingNotificationId, notification)
@@ -79,8 +81,8 @@ class PathRecordingService : Service() {
         }
         if (!savedPathRepo.isValid) {
             notifier.notify(
-                title = "Path Not Saved",
-                text = "Could not save the path, too few points recorded.",
+                title =getResources().getString(R.string.path_not_saved),
+                text = getResources().getString(R.string.error_saving_path),
                 notificationId = pathRecordingNotificationId + 1
             )
             savedPathRepo.clear()

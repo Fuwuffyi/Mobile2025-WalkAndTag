@@ -1,6 +1,7 @@
 package com.github.walkandtag
 
 import android.content.Intent
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
@@ -58,7 +59,7 @@ class AuthActivity : BaseActivity() {
                     }
 
                     is AuthResult.Failure -> {
-                        globalViewModel.showSnackbar("Could not login using Google")
+                        globalViewModel.showSnackbar(resources.getString(R.string.error_login_google))
                     }
                 }
             }
@@ -79,17 +80,17 @@ class AuthActivity : BaseActivity() {
                     BiometricStatus.SUCCESS -> {
                         BiometricPromptManager(this@AuthActivity).authenticate(
                             onSuccess = {
-                            if (auth.currentUser != null) {
-                                context.startActivity(
-                                    Intent(
-                                        context, MainActivity::class.java
-                                    ).apply {
-                                        flags =
-                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    })
-                                finish()
-                            }
-                        },
+                                if (auth.currentUser != null) {
+                                    context.startActivity(
+                                        Intent(
+                                            context, MainActivity::class.java
+                                        ).apply {
+                                            flags =
+                                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        })
+                                    finish()
+                                }
+                            },
                             onFail = { Log.e("Biometric", "Authentication failed") },
                             onError = { Log.e("Biometric", "Error: $it") })
                     }

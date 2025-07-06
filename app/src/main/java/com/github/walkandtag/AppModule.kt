@@ -31,6 +31,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
+    // Language
+    single { androidContext().resources }
     // Datastore
     single<DataStore<Preferences>> {
         val context: Context = get()
@@ -56,7 +58,13 @@ val appModule = module {
         FirestoreRepository.create("paths")
     }
     // View models
-    single { GlobalViewModel(get(), get(), get()) } // Singleton per evitare di ricrearlo per tutte le pagine
+    single {
+        GlobalViewModel(
+            get(),
+            get(),
+            get()
+        )
+    } // Singleton per evitare di ricrearlo per tutte le pagine
     viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
     viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
     viewModel { LoginViewModel(get()) }

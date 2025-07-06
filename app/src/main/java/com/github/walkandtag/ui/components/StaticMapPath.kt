@@ -1,6 +1,7 @@
 package com.github.walkandtag.ui.components
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import com.mapbox.mapboxsdk.snapshotter.MapSnapshotter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import org.koin.compose.koinInject
 import kotlin.coroutines.resumeWithException
 import kotlin.math.ln
 import kotlin.math.min
@@ -86,6 +88,8 @@ fun StaticMapPath(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
+    val resources = koinInject<Resources>()
+
     LaunchedEffect(path, styleUri) {
         isLoading = true
         error = null
@@ -97,7 +101,7 @@ fun StaticMapPath(
                 generateMapSnapshot(context, styleUri, width, height, path)
             }
         } catch (e: Exception) {
-            error = "Map load failed: ${e.message}" //"${stringResource(R.string.map_fail)}:
+            error = resources.getString(R.string.map_fail, e.message?:"")
         } finally {
             isLoading = false
         }

@@ -2,6 +2,7 @@ package com.github.walkandtag.ui.pages
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,14 +40,27 @@ fun Register(
 ) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
+    val resources = koinInject<Resources>()
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is RegisterEvent.ShowError -> when (event.err) {
-                    RegisterError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar("All fields are required.")
-                    RegisterError.REPEAT_PASSWORD_INCORRECT -> globalViewModel.showSnackbar("Repeated password is incorrect.")
-                    RegisterError.GENERIC_ERROR -> globalViewModel.showSnackbar("Could not register your account.")
+                    RegisterError.ALL_FIELDS_REQUIRED -> globalViewModel.showSnackbar(
+                        resources.getString(
+                            R.string.all_fields_required
+                        )
+                    )
+
+                    RegisterError.REPEAT_PASSWORD_INCORRECT -> globalViewModel.showSnackbar(
+                        resources.getString(R.string.repeated_password_error)
+                    )
+
+                    RegisterError.GENERIC_ERROR -> globalViewModel.showSnackbar(
+                        resources.getString(
+                            R.string.generic_register_error
+                        )
+                    )
                 }
 
                 is RegisterEvent.RegisterSuccess -> {

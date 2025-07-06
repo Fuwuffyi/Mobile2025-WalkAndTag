@@ -87,7 +87,7 @@ fun FeedPathEntry(
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder,
-                        contentDescription = "Favorite",
+                        contentDescription = stringResource(R.string.favourite),
                         tint = Color(255, 127, 0),
                         modifier = Modifier.size(50.dp)
                     )

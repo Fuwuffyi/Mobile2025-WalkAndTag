@@ -8,8 +8,8 @@
     <string name="password" translatable="false">Password</string>
     <string name="home" translatable="false">Home</string>
     <string name="account" translatable="false">Account</string>
+
     <!-- Language stuff: ENGLISH -->
-    <string name="login">Login</string>
     <string name="profile_picture">Profile picture</string>
 
     <string name="username">Username</string>
@@ -27,31 +27,13 @@
     <string name="delete_account">Delete account</string>
     <string name="settings">Settings</string>
 
-    <string name="length">Length</string>
-    <string name="duration">Duration</string>
-    <string name="google_login">Google login</string>
+
     <string name="choose_language">Choose Language</string>
-    <string name="cancel">Cancel</string>
-    <string name="favourite">Favourite</string>
-    <string name="map_fail">Map load error</string>
-    <string name="static_map">Static map</string>
-    <string name="confirm">Confirm</string>
+
     <string name="biometric_access">Use biometric access</string>
 
     <!-- Generics -->
-    <string name="empty_feed">There\'s nothing here…</string>
     <string name="deleted_account">[Deleted Account]</string>
-
-    <!-- Home page -->
-    <string name="button_close_filters">Open Filters</string>
-    <string name="button_open_filters">Close Filters</string>
-    <string name="filter_search_title">Filters &amp; Search</string>
-    <string name="filter_name">Search by Name</string>
-    <string name="filter_author">Search by Author</string>
-    <string name="filter_favourite_only">Show Favorites Only</string>
-    <string name="filter_path_length">Path Length (m): %1$d - %2$d</string>
-    <string name="filter_path_duration">Path Time (min): %1$d - %2$d</string>
-    <string name="sort_by">"Sort by: </string>
 
     <!-- Profile page -->
     <string name="record_path">Record Path</string>
@@ -61,4 +43,50 @@
     <string name="description">Description</string>
     <string name="error_title">Title must contain at least 4 characters.</string>
     <string name="no_location_permissions">You did not provide location nor notification permissions</string>
+
+    <!-- PathRecordingService.kt -->
+    <string name="recording_path">Recording path</string>
+    <string name="walk_recording">Your walk is being recorded.</string>
+    <string name="path_not_saved">Path Not Saved</string>
+    <string name="error_saving_path">Could not save the path, too few points recorded.</string>
+
+    <!-- DialogBuilder.kt (manca roba che non posso mettere) -->
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- EmptyFeed.kt -->
+    <string name="empty_feed">There\'s nothing here…</string>
+
+    <!-- FeedPathEntry.kt -->
+    <string name="favourite">Favourite</string>
+    <string name="length">Length</string>
+    <string name="duration">Duration</string>
+
+    <!-- GoogleButton.kt -->
+    <string name="google_login">Google login</string>
+
+    <!-- StaticMapPath.kt -->
+    <string name="map_fail">Map load error %1$s</string>
+    <string name="static_map">Static map</string>
+
+    <!-- Home.kt -->
+    <string name="filter_search_title">Filters &amp; Search</string>
+    <string name="button_close_filters">Open Filters</string>
+    <string name="filter_name">Search by Name</string>
+    <string name="filter_author">Search by Author</string>
+    <string name="filter_path_length">Path Length (m): %1$d - %2$d</string>
+    <string name="filter_path_duration">Path Time (min): %1$d - %2$d</string>
+    <string name="filter_favourite_only">Show Favorites Only</string>
+    <string name="sort_by">"Sort by: </string>
+    <string name="button_open_filters">Close Filters</string>
+
+    <!-- Login.kt -->
+    <string name="invalid_credential">Invalid Credentials.</string>
+    <string name="all_fields_required">All fields are required.</string>
+    <string name="login">Login</string>
+    <string name="repeated_password_error">Repeated password is incorrect.</string>
+    <string name="generic_register_error">Could not register your account.</string>
+    <string name="error_login_google">Could not login using Google</string>
+
+
 </resources>
