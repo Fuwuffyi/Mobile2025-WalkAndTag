@@ -18,30 +18,22 @@ import org.koin.core.qualifier.named
 
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Initialize MapLibre
+        Mapbox.getInstance(this, null, WellKnownTileServer.MapTiler)
         super.onCreate(savedInstanceState)
-        Mapbox.getInstance(
-            this,
-            null,
-            WellKnownTileServer.MapTiler
-        )
     }
 
     @Composable
     override fun BuildNavbar(currentPage: Navigation, onPageChange: (Navigation) -> Unit) {
-        val auth = koinInject<Authentication>()
-        val homeNavbar =
-            NavbarBuilder().addButton(Navigation.Settings, Icons.Filled.Settings, stringResource(R.string.settings))
-                .addButton(Navigation.Home, Icons.Filled.Home, stringResource(R.string.home))
-        // If logged in, add account button
-        if (auth.getCurrentUserId() != null) {
-            homeNavbar.addButton(
-                Navigation.Profile(auth.getCurrentUserId()!!),
-                Icons.Filled.AccountCircle,
-                stringResource(R.string.account)
+        val auth: Authentication = koinInject()
+        val builder = NavbarBuilder().addButton(
+            Navigation.Settings, Icons.Default.Settings, "Settings"
+        ).addButton(Navigation.Home, Icons.Default.Home, "Home")
+        auth.getCurrentUserId()?.let { userId ->
+            builder.addButton(
+                Navigation.Profile(userId), Icons.Default.AccountCircle, "Account"
             )
         }
-        homeNavbar.Navbar(currentPage, onPageChange)
+        builder.Navbar(currentPage, onPageChange)
     }
 
     @Composable
@@ -51,4 +43,3 @@ class MainActivity : BaseActivity() {
 
     override fun navbarQualifier() = named("main")
 }
-

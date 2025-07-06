@@ -16,7 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,14 +33,12 @@ import com.github.walkandtag.util.updateLocale
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 import org.koin.core.qualifier.Qualifier
 
 abstract class BaseActivity : FragmentActivity() {
     protected val globalViewModel by inject<GlobalViewModel>()
 
     override fun attachBaseContext(newBase: Context) {
-        // Set base language as sytstem
         val updatedContext = newBase.updateLocale(null)
         super.attachBaseContext(updatedContext)
     }
@@ -50,26 +47,22 @@ abstract class BaseActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // @TODO(), Should I move this to a viewmodel??? Unsure
             val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
-            // Update language
             val context = remember(globalState.language) {
                 baseContext.updateLocale(globalState.language.locale)
             }
+
             CompositionLocalProvider(
                 LocalContext provides context,
                 LocalActivity provides this,
                 LocalActivityResultRegistryOwner provides this
             ) {
                 WalkAndTagTheme(theme = globalState.theme) {
-                    // Get navbar stuff
-                    val navigator: Navigator = koinInject()
                     val navController = rememberNavController()
-                    navigator.setController(navController)
-                    val navbarViewModel =
-                        koinViewModel<NavbarViewModel>(qualifier = navbarQualifier())
-                    val navbarState by navbarViewModel.uiState.collectAsState()
-                    // Handle navbar events
+                    val navigator: Navigator = Navigator().apply { setController(navController) }
+                    val navbarViewModel: NavbarViewModel =
+                        koinViewModel(qualifier = navbarQualifier())
+                    val navbarState by navbarViewModel.uiState.collectAsStateWithLifecycle()
                     LaunchedEffect(Unit) {
                         navbarViewModel.events.collectLatest { event ->
                             if (event is NavbarEvent.NavigateTo) {
@@ -77,21 +70,18 @@ abstract class BaseActivity : FragmentActivity() {
                             }
                         }
                     }
-                    // Main page content
                     Scaffold(
                         snackbarHost = { SnackbarHost(globalViewModel.snackbarHostState) },
-                        floatingActionButton = {
-                            FloatingActionButtonContent()
-                        },
+                        floatingActionButton = { FloatingActionButtonContent() },
                         bottomBar = {
                             BuildNavbar(navbarState.currentPage) { page ->
                                 navbarViewModel.onChangePage(page)
                             }
-                        }) { innerPadding ->
+                        }) { paddingValues ->
                         Surface(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(innerPadding)
+                                .padding(paddingValues)
                                 .background(MaterialTheme.colorScheme.background)
                         ) {
                             NavigationContent(navController)
