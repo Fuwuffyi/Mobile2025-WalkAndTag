@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.SupervisedUserCircle
 import androidx.compose.material.icons.filled.Timer
@@ -42,6 +43,7 @@ fun FeedPathEntry(
     modifier: Modifier = Modifier,
     user: FirestoreDocument<UserSchema>? = null,
     path: FirestoreDocument<PathSchema>,
+    isFavorite: Boolean = false,
     onProfileClick: (() -> Unit)? = null,
     onPathClick: () -> Unit,
     onFavoritePathClick: () -> Unit
@@ -84,7 +86,7 @@ fun FeedPathEntry(
                         .border(2.dp, Color(255, 127, 0))
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.StarBorder,
+                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder,
                         contentDescription = "Favorite",
                         tint = Color(255, 127, 0),
                         modifier = Modifier.size(50.dp)
@@ -146,13 +148,12 @@ private fun PathDetailsRow(
                 text = getDistanceString(LocalContext.current, length),
                 modifier = Modifier.padding(end = 4.dp)
             )
-            Icon(Icons.Filled.PinDrop, contentDescription =  stringResource(R.string.length))
+            Icon(Icons.Filled.PinDrop, contentDescription = stringResource(R.string.length))
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Timer, contentDescription =  stringResource(R.string.duration))
+            Icon(Icons.Filled.Timer, contentDescription = stringResource(R.string.duration))
             Text(
-                text = getTimeString(time),
-                modifier = Modifier.padding(start = 4.dp)
+                text = getTimeString(time), modifier = Modifier.padding(start = 4.dp)
             )
         }
     }

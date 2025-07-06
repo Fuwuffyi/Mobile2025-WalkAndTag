@@ -24,9 +24,9 @@ import com.mapbox.mapboxsdk.geometry.LatLng
 fun StaticMapFavorite(
     modifier: Modifier = Modifier,
     path: Collection<LatLng>,
+    isFavorite: Boolean = false,
     onPathClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
-    isFavorite: Boolean = false
+    onFavoriteClick: () -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,

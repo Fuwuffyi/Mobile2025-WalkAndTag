@@ -159,10 +159,9 @@ fun Profile(
                 items(state.paths) { path ->
                     FeedPathEntry(
                         path = path,
+                        isFavorite = state.favoritePathIds.contains(path.id),
                         onPathClick = { nav.navigate(Navigation.PathDetails(path.id)) },
-                        onFavoritePathClick = {
-                            // TODO: Implement favorites logic
-                        })
+                        onFavoritePathClick = { viewModel.toggleFavorite(path.id) })
                 }
             }
         } else {

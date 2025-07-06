@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 data class ProfileState(
     val user: FirestoreDocument<UserSchema>? = null,
     val paths: List<FirestoreDocument<PathSchema>> = emptyList(),
-    val isRecording: Boolean = false
+    val isRecording: Boolean = false,
+    val favoritePathIds: Collection<String> = emptyList()
 )
 
 class ProfileViewModel(
@@ -45,7 +46,25 @@ class ProfileViewModel(
         viewModelScope.launch {
             val userDoc = userRepo.get(userId)
             _state.update { it.copy(user = userDoc) }
+            val currentUser = userRepo.get(auth.getCurrentUserId()!!)
+            val favorites = currentUser?.data?.favoritePathIds ?: emptyList()
+            _state.update { it.copy(favoritePathIds = favorites) }
             loadNextPage()
+        }
+    }
+
+    fun toggleFavorite(pathId: String) {
+        viewModelScope.launch {
+            val userDoc = userRepo.get(auth.getCurrentUserId()!!) ?: return@launch
+            val favorites = userDoc.data.favoritePathIds
+            val isCurrentlyFav = pathId in favorites
+            if (isCurrentlyFav) {
+                favorites.remove(pathId)
+            } else {
+                favorites.add(pathId)
+            }
+            userRepo.update(userDoc.data.copy(favoritePathIds = favorites), userDoc.id)
+            _state.update { it.copy(favoritePathIds = favorites.toList()) }
         }
     }
 
