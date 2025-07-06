@@ -101,7 +101,7 @@ fun StaticMapPath(
                 generateMapSnapshot(context, styleUri, width, height, path)
             }
         } catch (e: Exception) {
-            error = resources.getString(R.string.map_fail, e.message?:"")
+            error = resources.getString(R.string.map_fail, e.message ?: "")
         } finally {
             isLoading = false
         }

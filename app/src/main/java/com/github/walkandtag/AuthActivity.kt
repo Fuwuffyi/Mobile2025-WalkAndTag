@@ -1,7 +1,6 @@
 package com.github.walkandtag
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AssignmentInd
@@ -57,9 +56,7 @@ class AuthActivity : BaseActivity() {
                         })
                     }
 
-                    is AuthResult.Failure -> {
-                        globalViewModel.showSnackbar(resources.getString(R.string.error_login_google))
-                    }
+                    is AuthResult.Failure -> globalViewModel.showSnackbar(resources.getString(R.string.error_login_google))
                 }
             }
         }
@@ -79,19 +76,19 @@ class AuthActivity : BaseActivity() {
                     BiometricStatus.SUCCESS -> {
                         BiometricPromptManager(this@AuthActivity).authenticate(
                             onSuccess = {
-                                if (auth.currentUser != null) {
-                                    context.startActivity(
-                                        Intent(
-                                            context, MainActivity::class.java
-                                        ).apply {
-                                            flags =
-                                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                        })
-                                    finish()
-                                }
-                            },
-                            onFail = { Log.e("Biometric", "Authentication failed") },
-                            onError = { Log.e("Biometric", "Error: $it") })
+                            if (auth.currentUser != null) {
+                                context.startActivity(
+                                    Intent(
+                                        context, MainActivity::class.java
+                                    ).apply {
+                                        flags =
+                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    })
+                                finish()
+                            }
+                        },
+                            onFail = { globalViewModel.showSnackbar("Biometric authentication failed.") },
+                            onError = { globalViewModel.showSnackbar("Biometric authentication error.") })
                     }
 
                     BiometricStatus.NO_ENROLLED -> globalViewModel.showSnackbar("No biometric enrolled.")

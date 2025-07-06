@@ -8,13 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class BiometricRepository(private val dataStore: DataStore<Preferences>) {
-
     companion object {
-        val BiometricEnabledPreferredKey = booleanPreferencesKey("biometric_enabled_key")
+        val BiometricEnabledPreferredKey = booleanPreferencesKey("biometric")
     }
 
-    val biometricEnabledFlow: Flow<Boolean> = dataStore.data
-        .map { preferences ->
+    val biometricEnabledFlow: Flow<Boolean> = dataStore.data.map { preferences ->
             try {
                 preferences[BiometricEnabledPreferredKey] ?: false
             } catch (e: Exception) {
@@ -27,5 +25,4 @@ class BiometricRepository(private val dataStore: DataStore<Preferences>) {
             preferences[BiometricEnabledPreferredKey] = enabled
         }
     }
-
 }

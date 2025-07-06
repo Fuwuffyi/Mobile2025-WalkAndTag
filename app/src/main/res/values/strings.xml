@@ -52,7 +52,7 @@
     <!-- GoogleButton.kt -->
     <string name="google_login">Google login</string>
     <!-- StaticMapPath.kt -->
-    <string name="map_fail">Map load error %1$s</string>
+    <string name="map_fail">Map load error: %1$s</string>
     <string name="static_map">Static map</string>
     <!-- Home.kt -->
     <string name="filter_search_title">Filters &amp; Search</string>
