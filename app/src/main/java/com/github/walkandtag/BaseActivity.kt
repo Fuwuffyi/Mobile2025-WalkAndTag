@@ -47,11 +47,11 @@ abstract class BaseActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navigator: Navigator by inject()
             val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
             val context = remember(globalState.language) {
                 baseContext.updateLocale(globalState.language.locale)
             }
-
             CompositionLocalProvider(
                 LocalContext provides context,
                 LocalActivity provides this,
@@ -59,7 +59,9 @@ abstract class BaseActivity : FragmentActivity() {
             ) {
                 WalkAndTagTheme(theme = globalState.theme) {
                     val navController = rememberNavController()
-                    val navigator: Navigator = Navigator().apply { setController(navController) }
+                    LaunchedEffect(navController) {
+                        navigator.setController(navController)
+                    }
                     val navbarViewModel: NavbarViewModel =
                         koinViewModel(qualifier = navbarQualifier())
                     val navbarState by navbarViewModel.uiState.collectAsStateWithLifecycle()
