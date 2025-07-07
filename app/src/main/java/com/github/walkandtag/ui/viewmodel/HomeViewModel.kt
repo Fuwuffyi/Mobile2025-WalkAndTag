@@ -23,7 +23,7 @@ data class HomeFilters(
 )
 
 enum class SortOption {
-    NAME, AUTHOR, LENGTH, TIME, NEAREST
+    NAME, AUTHOR, LENGTH, TIME, NEAREST, DATE
 }
 
 enum class SortDirection {

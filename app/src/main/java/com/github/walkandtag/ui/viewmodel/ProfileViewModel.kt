@@ -10,6 +10,7 @@ import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.Filter
 import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.SavedPathRepository
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -128,6 +129,7 @@ class ProfileViewModel(
             pathRepo.create(
                 PathSchema(
                     userId = userId,
+                    creationTimestamp = Timestamp.now(),
                     name = pathName,
                     description = pathDescription.orEmpty(),
                     length = lengthMeters / 1000.0,   // in km

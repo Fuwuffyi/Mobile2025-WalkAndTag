@@ -5,7 +5,6 @@
     <string name="username">Nome Utente</string>
     <string name="repeat_password">Ripeti Password</string>
     <string name="register">Registrati</string>
-    <string name="by_author">Creato da %1$s</string>
     <!-- Generics -->
     <string name="deleted_account">[Account Eliminato]</string>
     <!-- Settings.kt -->
@@ -32,6 +31,9 @@
     <string name="walk_recording">Il tuo percorso sta venendo registrato.</string>
     <string name="path_not_saved">Percorso non salvato</string>
     <string name="error_saving_path">Non si può salvare il percorso, troppi pochi punti registrati.</string>
+    <!-- PathDetails.kt -->
+    <string name="by_author">Creato da: %1$s</string>
+    <string name="created_at">Creato il: %1$s</string>
     <!-- DialogBuilder.kt (manca roba che non posso mettere) -->
     <string name="confirm">Conferma</string>
     <string name="cancel">Indietro</string>

@@ -27,6 +27,8 @@ import com.github.walkandtag.util.getDistanceString
 import com.github.walkandtag.util.getTimeString
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun PathDetails(
@@ -49,11 +51,24 @@ fun PathDetails(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(text = path.name, style = MaterialTheme.typography.headlineSmall)
-            Text(
-                text = stringResource(R.string.by_author, publisher),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(R.string.by_author, publisher),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = stringResource(
+                        R.string.created_at,
+                        SimpleDateFormat.getDateInstance()
+                            .format(Date(path.creationTimestamp.seconds * 1000))
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             HorizontalDivider()
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
