@@ -56,7 +56,9 @@ fun Settings(
 ) {
     val context = LocalContext.current
     val activity = LocalActivity.current!!
-    val globalState = globalViewModel.globalState.collectAsStateWithLifecycle()
+    val languageState by globalViewModel.language.collectAsStateWithLifecycle()
+    val themeState by globalViewModel.theme.collectAsStateWithLifecycle()
+    val biometricState by globalViewModel.biometricEnabled.collectAsStateWithLifecycle()
     val settingsState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -85,7 +87,7 @@ fun Settings(
         id = "lang",
         stringResource(R.string.language),
         EnumSet.allOf(Language::class.java).map { it.name },
-        globalState.value.language.name
+        languageState.name
     )
 
     Column(
@@ -123,7 +125,7 @@ fun Settings(
                 )
             }
             Switch(
-                checked = globalState.value.theme == Theme.System,
+                checked = themeState == Theme.System,
                 onCheckedChange = { globalViewModel.toggleSystemTheme() })
         }
         // Theme (Dark/Light)
@@ -138,9 +140,9 @@ fun Settings(
                 Text(stringResource(R.string.dark_mode), style = MaterialTheme.typography.bodyLarge)
             }
             Switch(
-                checked = globalState.value.theme == Theme.Dark,
+                checked = themeState == Theme.Dark,
                 onCheckedChange = { globalViewModel.toggleTheme() },
-                enabled = globalState.value.theme != Theme.System
+                enabled = themeState != Theme.System
             )
         }
         // Language
@@ -155,7 +157,7 @@ fun Settings(
                 MaterialIconInCircle(Modifier.size(36.dp), icon = Icons.Default.GTranslate)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "${stringResource(R.string.language)}: ${globalState.value.language.name}",
+                    text = stringResource(R.string.language, languageState.name),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -184,7 +186,7 @@ fun Settings(
                 )
             }
             Switch(
-                checked = globalState.value.enabledBiometric,
+                checked = biometricState,
                 enabled = checkBiometricAvailability(context) == BiometricStatus.SUCCESS,
                 onCheckedChange = { globalViewModel.toggleBiometricEnabled() })
         }

@@ -40,15 +40,15 @@ class AuthActivity : BaseActivity() {
 
     @Composable
     override fun NavigationContent(navController: androidx.navigation.NavHostController) {
-        val globalState by globalViewModel.globalState.collectAsStateWithLifecycle()
+        val biometricState by globalViewModel.biometricEnabled.collectAsStateWithLifecycle()
         val authViewModel: AuthViewModel = koinViewModel()
         val context = LocalContext.current
         val alreadyNavigated = remember { mutableStateOf(false) }
         // Login using biometrics and/or firebase
-        LaunchedEffect(globalState.enabledBiometric) {
+        LaunchedEffect(biometricState) {
             if (!alreadyNavigated.value) {
                 alreadyNavigated.value = true
-                if (globalState.enabledBiometric) {
+                if (biometricState) {
                     authViewModel.checkBiometricAndNavigate(this@AuthActivity)
                 } else if (FirebaseAuth.getInstance().currentUser != null) {
                     context.startActivity(Intent(context, MainActivity::class.java).apply {

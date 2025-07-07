@@ -9,11 +9,8 @@ import com.github.walkandtag.repository.LanguageRepository
 import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.repository.ThemeRepository
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-
-data class GlobalState(val theme: Theme, val language: Language, val enabledBiometric: Boolean)
 
 class GlobalViewModel(
     private val themeRepo: ThemeRepository,
@@ -21,15 +18,15 @@ class GlobalViewModel(
     private val biometricRepo: BiometricRepository
 ) : ViewModel() {
     val snackbarHostState = SnackbarHostState()
-    val globalState = combine(
-        themeRepo.theme, langRepo.language, biometricRepo.biometricEnabledFlow
-    ) { theme, language, enabledBiometric ->
-        GlobalState(theme, language, enabledBiometric)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = GlobalState(Theme.System, Language.System, false)
-    )
+    val biometricEnabled = biometricRepo.biometricEnabledFlow.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
+    val theme =
+        themeRepo.theme.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Theme.System)
+    val language =
+        langRepo.language.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Language.System)
 
     fun showSnackbar(message: String) {
         viewModelScope.launch {
@@ -38,7 +35,7 @@ class GlobalViewModel(
     }
 
     fun toggleTheme() {
-        val currTheme = globalState.value.theme
+        val currTheme = theme.value
         viewModelScope.launch {
             if (currTheme == Theme.Dark) {
                 themeRepo.setTheme(Theme.Light)
@@ -49,7 +46,7 @@ class GlobalViewModel(
     }
 
     fun toggleSystemTheme() {
-        val currTheme = globalState.value.theme
+        val currTheme = theme.value
         viewModelScope.launch {
             if (currTheme == Theme.System) {
                 themeRepo.setTheme(Theme.Light)
@@ -73,7 +70,7 @@ class GlobalViewModel(
 
     fun toggleBiometricEnabled() {
         viewModelScope.launch {
-            val current = globalState.value.enabledBiometric
+            val current = biometricEnabled.value
             biometricRepo.setBiometricEnabled(!current)
         }
     }
