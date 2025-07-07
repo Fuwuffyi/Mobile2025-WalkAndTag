@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.MainNavGraph
@@ -39,7 +40,7 @@ class MainActivity : BaseActivity() {
     }
 
     @Composable
-    override fun NavigationContent(navController: androidx.navigation.NavHostController) {
+    override fun NavigationContent(navController: NavHostController) {
         MainNavGraph(navController)
     }
 

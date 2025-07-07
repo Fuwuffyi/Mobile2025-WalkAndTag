@@ -30,23 +30,19 @@ fun MainNavGraph(navigationController: NavHostController) {
         exitTransition = { getExitTransition(initialState, targetState) },
         popEnterTransition = { getPopEnterTransition(initialState, targetState) },
         popExitTransition = { getPopExitTransition(initialState, targetState) }) {
-        composable<Navigation.Settings> { Settings() }
-
         composable<Navigation.Home> { Home() }
-
+        composable<Navigation.Settings> { Settings() }
         composable<Navigation.Profile> {
-            val routeData: Navigation.Profile = it.toRoute()
-            Profile(userId = routeData.userId)
+            val route = it.toRoute<Navigation.Profile>()
+            Profile(userId = route.userId)
         }
-
         composable<Navigation.PathDetails> {
-            val routeData: Navigation.PathDetails = it.toRoute()
-            PathDetails(routeData.pathId)
+            val route = it.toRoute<Navigation.PathDetails>()
+            PathDetails(pathId = route.pathId)
         }
-
         composable<Navigation.FullMap> {
-            val routeData: Navigation.FullMap = it.toRoute()
-            FullMap(routeData.pathId)
+            val route = it.toRoute<Navigation.FullMap>()
+            FullMap(pathId = route.pathId)
         }
     }
 }

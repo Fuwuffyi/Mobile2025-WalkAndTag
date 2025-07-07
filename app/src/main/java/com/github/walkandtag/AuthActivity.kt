@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.github.walkandtag.repository.BiometricRepository
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
@@ -41,13 +42,11 @@ class AuthActivity : BaseActivity() {
     }
 
     @Composable
-    override fun NavigationContent(navController: androidx.navigation.NavHostController) {
+    override fun NavigationContent(navController: NavHostController) {
         val biometricState by globalViewModel.biometricEnabled.collectAsStateWithLifecycle()
         val authViewModel: AuthViewModel = koinViewModel()
         val context = LocalContext.current
         val alreadyNavigated = remember { mutableStateOf(false) }
-
-        // React to the biometric preference state properly
         LaunchedEffect(biometricState) {
             if (!alreadyNavigated.value) {
                 when (biometricState) {
@@ -68,7 +67,6 @@ class AuthActivity : BaseActivity() {
                 }
             }
         }
-
         LaunchedEffect(Unit) {
             authViewModel.uiEvent.collectLatest { event ->
                 if (event is AuthViewModel.AuthUIEvent.NavigateToMain) {
@@ -79,7 +77,6 @@ class AuthActivity : BaseActivity() {
                 }
             }
         }
-
         LoginNavGraph(navController)
     }
 
