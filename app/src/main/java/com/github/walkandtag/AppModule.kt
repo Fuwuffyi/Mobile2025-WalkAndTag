@@ -76,5 +76,5 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(), get(named("users")), get(named("paths"))) }
-    viewModel { FullMapViewModel(get()) }
+    viewModel { FullMapViewModel(get(named("paths"))) }
 }
