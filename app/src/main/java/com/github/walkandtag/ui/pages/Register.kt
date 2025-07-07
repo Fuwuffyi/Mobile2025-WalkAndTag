@@ -1,8 +1,8 @@
 package com.github.walkandtag.ui.pages
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +39,7 @@ fun Register(
     globalViewModel: GlobalViewModel = koinInject(), viewModel: RegisterViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
+    val activity = LocalActivity.current!!
     val state by viewModel.uiState.collectAsState()
     val resources = koinInject<Resources>()
 
@@ -64,11 +65,10 @@ fun Register(
                 }
 
                 is RegisterEvent.RegisterSuccess -> {
-                    val intent = Intent(context, MainActivity::class.java).apply {
+                    context.startActivity(Intent(context, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    context.startActivity(intent)
-                    (context as? Activity)?.finish()
+                    })
+                    activity.finish()
                 }
             }
         }

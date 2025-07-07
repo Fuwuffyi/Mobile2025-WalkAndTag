@@ -14,6 +14,7 @@ import com.github.walkandtag.repository.LanguageRepository
 import com.github.walkandtag.repository.SavedPathRepository
 import com.github.walkandtag.repository.ThemeRepository
 import com.github.walkandtag.ui.navigation.Navigation
+import com.github.walkandtag.ui.viewmodel.AuthViewModel
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
@@ -67,6 +68,7 @@ val appModule = module {
     } // Singleton per evitare di ricrearlo per tutte le pagine
     viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
     viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
+    viewModel { AuthViewModel(get(), get(named("users")), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }
     viewModel { SettingsViewModel(get(), get(named("users"))) }

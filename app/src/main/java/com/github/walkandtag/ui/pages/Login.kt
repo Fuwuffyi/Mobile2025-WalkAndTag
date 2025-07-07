@@ -1,8 +1,8 @@
 package com.github.walkandtag.ui.pages
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +38,7 @@ fun Login(
     globalViewModel: GlobalViewModel = koinInject(), viewModel: LoginViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
+    val activity = LocalActivity.current!!
     val state by viewModel.uiState.collectAsState()
     val resources = koinInject<Resources>()
 
@@ -59,11 +60,10 @@ fun Login(
                 }
 
                 is LoginEvent.LoginSuccess -> {
-                    val intent = Intent(context, MainActivity::class.java).apply {
+                    context.startActivity(Intent(context, MainActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    context.startActivity(intent)
-                    (context as? Activity)?.finish()
+                    })
+                    activity.finish()
                 }
             }
         }

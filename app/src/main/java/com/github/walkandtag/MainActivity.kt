@@ -25,13 +25,14 @@ class MainActivity : BaseActivity() {
     @Composable
     override fun BuildNavbar(currentPage: Navigation, onPageChange: (Navigation) -> Unit) {
         val auth: Authentication = koinInject()
-
         val builder = NavbarBuilder().addButton(
             Navigation.Settings, Icons.Default.Settings, stringResource(R.string.settings)
         ).addButton(Navigation.Home, Icons.Default.Home, stringResource(R.string.home))
         auth.getCurrentUserId()?.let { userId ->
             builder.addButton(
-                Navigation.Profile(userId), Icons.Default.AccountCircle, stringResource(R.string.account)
+                Navigation.Profile(userId),
+                Icons.Default.AccountCircle,
+                stringResource(R.string.account)
             )
         }
         builder.Navbar(currentPage, onPageChange)
