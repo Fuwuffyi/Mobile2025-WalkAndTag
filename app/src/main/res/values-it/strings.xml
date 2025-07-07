@@ -15,7 +15,7 @@
     <string name="system_mode">Usa modalità di sistema</string>
     <string name="dark_mode">Modalità scura</string>
     <string name="other">Altro</string>
-    <string name="language">Lingua: $1%s</string>
+    <string name="language">Lingua: %1$s</string>
     <string name="choose_language">Scegli Lingua</string>
     <string name="biometric_access">Usa accesso biometrico</string>
     <!-- Profile.kt -->

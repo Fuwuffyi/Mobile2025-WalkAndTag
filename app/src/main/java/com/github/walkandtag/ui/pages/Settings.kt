@@ -86,7 +86,7 @@ fun Settings(
         settingsViewModel.toggleLanguageDialog(false)
     }.addRadioGroup(
         id = "lang",
-        stringResource(R.string.language),
+        stringResource(R.string.language, ""),
         EnumSet.allOf(Language::class.java).map { it.name },
         languageState.name
     )
