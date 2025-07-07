@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.walkandtag.repository.BiometricRepository
 import com.github.walkandtag.ui.components.GoogleButton
 import com.github.walkandtag.ui.components.NavbarBuilder
 import com.github.walkandtag.ui.navigation.LoginNavGraph
@@ -22,6 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.qualifier.named
 
 class AuthActivity : BaseActivity() {
+
     @Composable
     override fun BuildNavbar(currentPage: Navigation, onPageChange: (Navigation) -> Unit) {
         NavbarBuilder().addButton(Navigation.Login, Icons.AutoMirrored.Filled.Login, "Login")
@@ -44,21 +46,29 @@ class AuthActivity : BaseActivity() {
         val authViewModel: AuthViewModel = koinViewModel()
         val context = LocalContext.current
         val alreadyNavigated = remember { mutableStateOf(false) }
-        // Login using biometrics and/or firebase
+
+        // React to the biometric preference state properly
         LaunchedEffect(biometricState) {
             if (!alreadyNavigated.value) {
-                alreadyNavigated.value = true
-                if (biometricState) {
-                    authViewModel.checkBiometricAndNavigate(this@AuthActivity)
-                } else if (FirebaseAuth.getInstance().currentUser != null) {
-                    context.startActivity(Intent(context, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    })
-                    finish()
+                when (biometricState) {
+                    is BiometricRepository.BiometricPreferenceState.Loaded -> {
+                        alreadyNavigated.value = true
+                        if ((biometricState as BiometricRepository.BiometricPreferenceState.Loaded).enabled) {
+                            authViewModel.checkBiometricAndNavigate(this@AuthActivity)
+                        } else if (FirebaseAuth.getInstance().currentUser != null) {
+                            context.startActivity(Intent(context, MainActivity::class.java).apply {
+                                flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            })
+                            finish()
+                        }
+                    }
+
+                    else -> {}
                 }
             }
         }
-        // React to navigation events
+
         LaunchedEffect(Unit) {
             authViewModel.uiEvent.collectLatest { event ->
                 if (event is AuthViewModel.AuthUIEvent.NavigateToMain) {
@@ -69,6 +79,7 @@ class AuthActivity : BaseActivity() {
                 }
             }
         }
+
         LoginNavGraph(navController)
     }
 

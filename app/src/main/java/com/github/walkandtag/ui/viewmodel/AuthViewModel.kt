@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.walkandtag.R
 import com.github.walkandtag.firebase.auth.AuthResult
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.schemas.UserSchema
@@ -25,7 +24,6 @@ class AuthViewModel(
     private val _uiEvent = MutableSharedFlow<AuthUIEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    // Context should be removed, but google login requires it so idk what to do
     fun loginWithGoogle(context: Context) {
         viewModelScope.launch {
             when (auth.loginWithGoogle(context)) {
@@ -37,7 +35,7 @@ class AuthViewModel(
                     _uiEvent.emit(AuthUIEvent.NavigateToMain)
                 }
 
-                is AuthResult.Failure -> globalViewModel.showSnackbar(context.getString(R.string.error_login_google))
+                is AuthResult.Failure -> globalViewModel.showSnackbar("Google login failed.")
             }
         }
     }
@@ -63,7 +61,6 @@ class AuthViewModel(
             BiometricStatus.NO_HARDWARE -> globalViewModel.showSnackbar("No biometric hardware.")
             BiometricStatus.FAILURE -> globalViewModel.showSnackbar("Biometric error.")
         }
-
     }
 
     sealed class AuthUIEvent {

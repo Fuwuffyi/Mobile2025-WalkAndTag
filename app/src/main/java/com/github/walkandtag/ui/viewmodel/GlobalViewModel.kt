@@ -4,6 +4,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.repository.BiometricRepository
+import com.github.walkandtag.repository.BiometricRepository.BiometricPreferenceState
 import com.github.walkandtag.repository.Language
 import com.github.walkandtag.repository.LanguageRepository
 import com.github.walkandtag.repository.Theme
@@ -19,10 +20,8 @@ class GlobalViewModel(
 ) : ViewModel() {
     val snackbarHostState = SnackbarHostState()
     val biometricEnabled = biometricRepo.biometricEnabledFlow.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            false
-        )
+        viewModelScope, SharingStarted.WhileSubscribed(), BiometricPreferenceState.Loading
+    )
     val theme =
         themeRepo.theme.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Theme.System)
     val language =
@@ -71,7 +70,10 @@ class GlobalViewModel(
     fun toggleBiometricEnabled() {
         viewModelScope.launch {
             val current = biometricEnabled.value
-            biometricRepo.setBiometricEnabled(!current)
+            when (current) {
+                is BiometricPreferenceState.Loaded -> biometricRepo.setBiometricEnabled(!current.enabled)
+                else -> {}
+            }
         }
     }
 }

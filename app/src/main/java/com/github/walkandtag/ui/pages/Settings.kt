@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.walkandtag.AuthActivity
 import com.github.walkandtag.R
+import com.github.walkandtag.repository.BiometricRepository
 import com.github.walkandtag.repository.Language
 import com.github.walkandtag.repository.Theme
 import com.github.walkandtag.ui.components.DialogBuilder
@@ -186,9 +187,16 @@ fun Settings(
                 )
             }
             Switch(
-                checked = biometricState,
-                enabled = checkBiometricAvailability(context) == BiometricStatus.SUCCESS,
-                onCheckedChange = { globalViewModel.toggleBiometricEnabled() })
+                checked = when (biometricState) {
+                    is BiometricRepository.BiometricPreferenceState.Loaded -> (biometricState as BiometricRepository.BiometricPreferenceState.Loaded).enabled
+                    is BiometricRepository.BiometricPreferenceState.Loading -> false
+                }, enabled = when (biometricState) {
+                    is BiometricRepository.BiometricPreferenceState.Loaded -> checkBiometricAvailability(
+                        context
+                    ) == BiometricStatus.SUCCESS
+
+                    is BiometricRepository.BiometricPreferenceState.Loading -> false
+                }, onCheckedChange = { globalViewModel.toggleBiometricEnabled() })
         }
         // Logout
         Row(
