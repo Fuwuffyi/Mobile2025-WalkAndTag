@@ -9,6 +9,7 @@ import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class HomeFilters(
@@ -46,18 +47,17 @@ sealed class HomeState {
     data class Error(val message: String) : HomeState()
 }
 
-// @TODO(): Implement filter functionality
 class HomeViewModel(
     private val auth: Authentication,
     private val pathRepo: FirestoreRepository<PathSchema>,
     private val userRepo: FirestoreRepository<UserSchema>
 ) : ViewModel() {
     private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
-    val state: StateFlow<HomeState> = _state
-    private val _favoritePathIds = MutableStateFlow<List<String>>(emptyList())
-    val favoritePathIds: StateFlow<List<String>> = _favoritePathIds
+    val state: StateFlow<HomeState> = _state.asStateFlow()
+    private val _favoritePathIds = MutableStateFlow<Set<String>>(emptySet())
+    val favoritePathIds: StateFlow<Set<String>> = _favoritePathIds.asStateFlow()
     private val _filters = MutableStateFlow(HomeFilters())
-    val filters: StateFlow<HomeFilters> = _filters
+    val filters: StateFlow<HomeFilters> = _filters.asStateFlow()
     private val loadedItems =
         mutableListOf<Pair<FirestoreDocument<UserSchema>, FirestoreDocument<PathSchema>>>()
     private var lastPathId: String? = null
@@ -71,8 +71,9 @@ class HomeViewModel(
 
     private fun loadCurrentUserFavorites() {
         viewModelScope.launch {
-            val currentUser = userRepo.get(auth.getCurrentUserId()!!)
-            _favoritePathIds.value = currentUser?.data?.favoritePathIds ?: emptyList()
+            val currentUserId = auth.getCurrentUserId() ?: return@launch
+            val currentUser = userRepo.get(currentUserId)
+            _favoritePathIds.value = currentUser?.data?.favoritePathIds?.toSet() ?: emptySet()
         }
     }
 
@@ -98,20 +99,21 @@ class HomeViewModel(
                 val paths = page.documents
                 if (paths.isEmpty()) {
                     endReached = true
-                    isLoading = false
                     return@launch
                 }
                 lastPathId = page.lastDocumentId
                 val userIds = paths.map { it.data.userId }.toSet()
-                val users = userRepo.get(userIds).associate { it.id to it.data }
+                val users = userRepo.get(userIds).associateBy { it.id }
                 val newItems = paths.map { path ->
-                    val user = users[path.data.userId] ?: UserSchema("Deleted User")
-                    Pair(FirestoreDocument(path.data.userId, user), path)
+                    val user = users[path.data.userId]?.data ?: UserSchema("Deleted User")
+                    FirestoreDocument(path.data.userId, user) to path
                 }
                 loadedItems += newItems
                 val filteredItems = if (filters.value.showFavorites) {
-                    loadedItems.filter { feedItem -> _favoritePathIds.value.contains(feedItem.second.id) }
-                } else loadedItems
+                    loadedItems.filter { _favoritePathIds.value.contains(it.second.id) }
+                } else {
+                    loadedItems
+                }
                 _state.value = HomeState.Success(filteredItems.toList(), _favoritePathIds.value)
             } catch (e: Exception) {
                 _state.value = HomeState.Error(e.message ?: "Unknown error")
@@ -123,21 +125,15 @@ class HomeViewModel(
 
     fun toggleFavorite(pathId: String) {
         viewModelScope.launch {
-            val currentUserDoc = userRepo.get(auth.getCurrentUserId()!!) ?: return@launch
-            val favorites = currentUserDoc.data.favoritePathIds.toMutableList()
-            val isFavorite = favorites.contains(pathId)
-            if (isFavorite) {
-                favorites.remove(pathId)
-            } else {
-                favorites.add(pathId)
+            val currentUserId = auth.getCurrentUserId() ?: return@launch
+            val userDoc = userRepo.get(currentUserId) ?: return@launch
+            val newFavorites = userDoc.data.favoritePathIds.toMutableSet().apply {
+                if (contains(pathId)) remove(pathId) else add(pathId)
             }
-            userRepo.update(
-                currentUserDoc.data.copy(favoritePathIds = favorites), currentUserDoc.id
-            )
-            _favoritePathIds.value = favorites
-            _state.value = when (val currentState = _state.value) {
-                is HomeState.Success -> currentState.copy(favoritePathIds = favorites)
-                else -> _state.value
+            userRepo.update(userDoc.data.copy(favoritePathIds = newFavorites.toMutableList()), userDoc.id)
+            _favoritePathIds.value = newFavorites
+            (_state.value as? HomeState.Success)?.let {
+                _state.value = it.copy(favoritePathIds = newFavorites.toList())
             }
         }
     }

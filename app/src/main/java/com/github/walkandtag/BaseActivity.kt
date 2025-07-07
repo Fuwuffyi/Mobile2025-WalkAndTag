@@ -60,12 +60,12 @@ abstract class BaseActivity : FragmentActivity() {
             ) {
                 WalkAndTagTheme(theme = themeState) {
                     val navController = rememberNavController()
-                    LaunchedEffect(navController) {
-                        navigator.setController(navController)
-                    }
                     val navbarViewModel: NavbarViewModel =
                         koinViewModel(qualifier = navbarQualifier())
                     val navbarState by navbarViewModel.uiState.collectAsStateWithLifecycle()
+                    LaunchedEffect(navController) {
+                        navigator.setController(navController)
+                    }
                     LaunchedEffect(Unit) {
                         navbarViewModel.events.collectLatest { event ->
                             if (event is NavbarEvent.NavigateTo) {

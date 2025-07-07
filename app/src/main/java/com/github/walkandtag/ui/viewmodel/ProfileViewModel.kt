@@ -37,7 +37,6 @@ class ProfileViewModel(
     private var endReached = false
     private val pageSize = 10u
     private var currentUserId: String? = null
-
     fun loadUserProfile(userId: String) {
         currentUserId = userId
         lastPathId = null
@@ -46,26 +45,26 @@ class ProfileViewModel(
         _state.value = ProfileState()
         viewModelScope.launch {
             val userDoc = userRepo.get(userId)
-            _state.update { it.copy(user = userDoc) }
-            val currentUser = userRepo.get(auth.getCurrentUserId()!!)
-            val favorites = currentUser?.data?.favoritePathIds ?: emptyList()
-            _state.update { it.copy(favoritePathIds = favorites) }
+            val currentUserDoc = userRepo.get(auth.getCurrentUserId()!!)
+            val favorites = currentUserDoc?.data?.favoritePathIds ?: emptyList()
+            _state.value = ProfileState(
+                user = userDoc, favoritePathIds = favorites
+            )
             loadNextPage()
         }
     }
 
     fun toggleFavorite(pathId: String) {
         viewModelScope.launch {
-            val userDoc = userRepo.get(auth.getCurrentUserId()!!) ?: return@launch
-            val favorites = userDoc.data.favoritePathIds
-            val isCurrentlyFav = pathId in favorites
-            if (isCurrentlyFav) {
-                favorites.remove(pathId)
-            } else {
-                favorites.add(pathId)
+            val currentUserId = auth.getCurrentUserId() ?: return@launch
+            val userDoc = userRepo.get(currentUserId) ?: return@launch
+            val newFavorites = userDoc.data.favoritePathIds.toMutableSet().apply {
+                if (contains(pathId)) remove(pathId) else add(pathId)
             }
-            userRepo.update(userDoc.data.copy(favoritePathIds = favorites), userDoc.id)
-            _state.update { it.copy(favoritePathIds = favorites.toList()) }
+            userRepo.update(
+                userDoc.data.copy(favoritePathIds = newFavorites.toMutableList()), userDoc.id
+            )
+            _state.update { it.copy(favoritePathIds = newFavorites) }
         }
     }
 
@@ -80,15 +79,12 @@ class ProfileViewModel(
                     limit = pageSize,
                     startAfterId = lastPathId
                 )
-
-                val paths = page.documents
-                if (paths.isEmpty()) {
+                val newPaths = page.documents
+                if (newPaths.isEmpty()) {
                     endReached = true
                 } else {
                     lastPathId = page.lastDocumentId
-                    _state.update { current ->
-                        current.copy(paths = current.paths + paths)
-                    }
+                    _state.update { it.copy(paths = it.paths + newPaths) }
                 }
             } finally {
                 isLoading = false
@@ -97,8 +93,7 @@ class ProfileViewModel(
     }
 
     fun isOwnProfile(): Boolean {
-        val userId = _state.value.user?.id ?: return false
-        return auth.getCurrentUserId() == userId
+        return _state.value.user?.id == auth.getCurrentUserId()
     }
 
     fun toggleRecording() {
@@ -108,22 +103,14 @@ class ProfileViewModel(
     fun savePath(pathName: String, pathDescription: String? = null) {
         val userId = auth.getCurrentUserId() ?: return
         val pathPoints = savedPathRepo.points
-        if (pathPoints.size < 2) {
-            return
+        if (pathPoints.size < 2) return
+        val lengthMeters = pathPoints.zipWithNext().sumOf { (start, end) ->
+            FloatArray(1).also {
+                Location.distanceBetween(
+                    start.latitude, start.longitude, end.latitude, end.longitude, it
+                )
+            }[0].toDouble()
         }
-        // Calculate distance (meters)
-        val lengthMeters = pathPoints.zipWithNext().sumOf {
-            val result = FloatArray(1)
-            Location.distanceBetween(
-                it.first.latitude,
-                it.first.longitude,
-                it.second.latitude,
-                it.second.longitude,
-                result
-            )
-            result[0].toDouble()
-        }
-        // Estimate walking time (in seconds)
         val estimatedSeconds = lengthMeters / 1.39
         viewModelScope.launch {
             pathRepo.create(
@@ -132,8 +119,8 @@ class ProfileViewModel(
                     creationTimestamp = Timestamp.now(),
                     name = pathName,
                     description = pathDescription.orEmpty(),
-                    length = lengthMeters / 1000.0,   // in km
-                    time = estimatedSeconds / 3600.0, // in hours
+                    length = lengthMeters / 1000.0,
+                    time = estimatedSeconds / 3600.0,
                     points = pathPoints.toMutableList()
                 )
             )

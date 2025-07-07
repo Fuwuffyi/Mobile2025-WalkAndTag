@@ -156,7 +156,7 @@ fun Profile(
                 contentPadding = PaddingValues(bottom = 64.dp),
                 state = listState
             ) {
-                items(state.paths) { path ->
+                items(state.paths, key = { it.id }) { path ->
                     FeedPathEntry(
                         path = path,
                         isFavorite = state.favoritePathIds.contains(path.id),

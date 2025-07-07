@@ -53,7 +53,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun Home(
+    fun Home(
     nav: Navigator = koinInject(),
     globalViewModel: GlobalViewModel = koinInject(),
     viewModel: HomeViewModel = koinViewModel()
@@ -219,7 +219,7 @@ fun Home(
                         val items = (state as HomeState.Success).items
                         if (items.isNotEmpty()) {
                             LazyColumn(state = listState) {
-                                items(items) { feedItem ->
+                                items(items, key = { it.second.id }) { feedItem ->
                                     FeedPathEntry(
                                         user = feedItem.first,
                                         path = feedItem.second,
