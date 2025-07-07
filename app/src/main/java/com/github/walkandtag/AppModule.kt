@@ -15,6 +15,7 @@ import com.github.walkandtag.repository.SavedPathRepository
 import com.github.walkandtag.repository.ThemeRepository
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.AuthViewModel
+import com.github.walkandtag.ui.viewmodel.FullMapViewModel
 import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.github.walkandtag.ui.viewmodel.HomeViewModel
 import com.github.walkandtag.ui.viewmodel.LoginViewModel
@@ -75,4 +76,5 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(named("paths")), get(named("users"))) }
     viewModel { ProfileViewModel(get(), get(named("users")), get(named("paths")), get()) }
     viewModel { PathDetailsViewModel(get(), get(named("users")), get(named("paths"))) }
+    viewModel { FullMapViewModel(get()) }
 }
