@@ -65,6 +65,7 @@ fun FeedPathEntry(
         if (user != null) {
             StaticMapFavorite(
                 path = path.data.points,
+                isFavorite = isFavorite,
                 modifier = Modifier.fillMaxWidth(),
                 onPathClick = onPathClick,
                 onFavoriteClick = onFavoritePathClick
