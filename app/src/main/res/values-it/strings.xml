@@ -31,6 +31,8 @@
     <string name="walk_recording">Il tuo percorso sta venendo registrato.</string>
     <string name="path_not_saved">Percorso non salvato</string>
     <string name="error_saving_path">Non si può salvare il percorso, troppi pochi punti registrati.</string>
+    <string name="path_saved_successfully">Percorso salvato</string>
+    <string name="path_saved_successfully_message">Il percorso è stato salvato con successo.</string>
     <!-- PathDetails.kt -->
     <string name="by_author">Creato da: %1$s</string>
     <string name="created_at">Creato il: %1$s</string>
@@ -65,7 +67,4 @@
     <string name="repeated_password_error">La password ripetuta non è corretta.</string>
     <string name="generic_register_error">Non è stato possibile registrare il tuo account.</string>
     <string name="error_login_google">Non è stato possibile accedere con Google</string>
-    <!--Notifier.kt-->
-    <string name="path_saved_successfully">Percorso salvato</string>
-    <string name="path_saved_successfully_message">Il percorso è stato salvato con successo.</string>
 </resources>

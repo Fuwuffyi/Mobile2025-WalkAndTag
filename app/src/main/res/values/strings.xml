@@ -39,6 +39,8 @@
     <string name="walk_recording">Your walk is being recorded.</string>
     <string name="path_not_saved">Path Not Saved</string>
     <string name="error_saving_path">Could not save the path, too few points recorded.</string>
+    <string name="path_saved_successfully">Path saved</string>
+    <string name="path_saved_successfully_message">Path has been saved successfully.</string>
     <!-- PathDetails.kt -->
     <string name="by_author">By: %1$s</string>
     <string name="created_at">Created at: %1$s</string>
@@ -73,7 +75,4 @@
     <string name="repeated_password_error">Repeated password is incorrect.</string>
     <string name="generic_register_error">Could not register your account.</string>
     <string name="error_login_google">Could not login using Google</string>
-    <!--Notifier.kt-->
-    <string name="path_saved_successfully">Path saved</string>
-    <string name="path_saved_successfully_message">Path has been saved successfully.</string>
 </resources>
