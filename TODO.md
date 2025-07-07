@@ -8,7 +8,7 @@
 - [X] Pagina home e ricerca percorsi (con preferiti)
 - [ ] Pagina delle quest
 - [ ] Pagina dei reward e delle quest di un profilo
-- [-] Pagina del profile (con i propri percorsi)
+- [X] Pagina del profile (con i propri percorsi)
 - [X] Pagina di un singolo percorso
 - [X] Pagina della mappa di un percorso
 
