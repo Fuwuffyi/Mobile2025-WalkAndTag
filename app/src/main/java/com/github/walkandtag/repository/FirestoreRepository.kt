@@ -80,15 +80,12 @@ class FirestoreRepository<T : Any>(
 
     suspend fun getAllPaged(limit: UInt = 15u, startAfterId: String? = null): PagedResult<T> {
         var query = docRef.limit(limit.toLong())
-
         if (startAfterId != null) {
             val doc = docRef.document(startAfterId).get().await()
             if (doc.exists()) query = query.startAfter(doc)
         }
-
         val snapshot = query.get().await()
         val docs = processSnapshot(snapshot)
-
         return PagedResult(docs, snapshot.documents.lastOrNull()?.id)
     }
 
@@ -124,7 +121,6 @@ class FirestoreRepository<T : Any>(
         queryBuilder.builder()
         queryBuilder.limit(limit.toLong())
         startAfterId?.let { queryBuilder.startAfter(it) }
-
         val docs = runQuery(queryBuilder)
         return PagedResult(docs, docs.lastOrNull()?.id)
     }
@@ -175,14 +171,6 @@ class FirestoreRepository<T : Any>(
                 FirestoreDocument(doc.id, it)
             }
         }
-    }
-
-    fun clearCache() {
-        cache.clear()
-    }
-
-    fun removeCacheEntry(id: String) {
-        cache.remove(id)
     }
 
     companion object {
