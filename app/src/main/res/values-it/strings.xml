@@ -67,4 +67,8 @@
     <string name="repeated_password_error">La password ripetuta non è corretta.</string>
     <string name="generic_register_error">Non è stato possibile registrare il tuo account.</string>
     <string name="error_login_google">Non è stato possibile accedere con Google</string>
+    <!-- MapsIntent.kt -->
+    <string name="error_opening_maps">Errore nell\'apertura dell\'app di Maps.</string>
+    <string name="no_maps_app_found">Non riesco a trovare un\'app di Maps.</string>
+    <string name="open_navigation">Apri navigazione</string>
 </resources>
