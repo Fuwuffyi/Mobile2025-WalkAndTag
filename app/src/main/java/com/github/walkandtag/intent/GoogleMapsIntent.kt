@@ -2,6 +2,7 @@ package com.github.walkandtag.intent
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.github.walkandtag.R
@@ -32,6 +33,7 @@ object GoogleMapsIntent {
                 context.getString(R.string.error_opening_maps),
                 Toast.LENGTH_SHORT
             ).show()
+            Log.e("MAPS_INTENT", "Could not open google maps.", e)
         }
     }
 
