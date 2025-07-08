@@ -1,6 +1,9 @@
-package com.github.walkandtag.firebase.db.schemas
+package com.github.walkandtag.firebase.db
 
+import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.Query
+import kotlin.reflect.KProperty1
+import kotlin.reflect.jvm.javaField
 
 sealed class QueryOperator {
     object Equal : QueryOperator()
@@ -23,30 +26,74 @@ data class FirestoreOrder(
     val field: String, val ascending: Boolean = true
 )
 
-class FirestoreQueryBuilder {
+class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
     private val filters = mutableListOf<FirestoreQueryFilter>()
     private val orders = mutableListOf<FirestoreOrder>()
     private var limit: Long? = null
     private var startAfterDocId: String? = null
 
-    fun where(field: String, op: QueryOperator, value: Any): FirestoreQueryBuilder {
-        filters.add(FirestoreQueryFilter(field, op, value))
+    fun <V> where(
+        property: KProperty1<T, V>, op: QueryOperator, value: V
+    ): FirestoreQueryBuilder<T> {
+        val fieldName = getFirestoreFieldName(property)
+        filters.add(FirestoreQueryFilter(fieldName, op, value as Any))
         return this
     }
 
-    fun orderBy(field: String, ascending: Boolean = true): FirestoreQueryBuilder {
-        orders.add(FirestoreOrder(field, ascending))
+    fun <V> orderBy(
+        property: KProperty1<T, V>, ascending: Boolean = true
+    ): FirestoreQueryBuilder<T> {
+        val fieldName = getFirestoreFieldName(property)
+        orders.add(FirestoreOrder(fieldName, ascending))
         return this
     }
 
-    fun limit(limit: Long): FirestoreQueryBuilder {
+    fun <V> equalTo(property: KProperty1<T, V>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.Equal, value)
+
+    fun <V> notEqualTo(property: KProperty1<T, V>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.NotEqual, value)
+
+    fun <V> greaterThan(property: KProperty1<T, V>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.GreaterThan, value)
+
+    fun <V> greaterThanOrEqualTo(property: KProperty1<T, V>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.GreaterThanOrEqual, value)
+
+    fun <V> lessThan(property: KProperty1<T, V>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.LessThan, value)
+
+    fun <V> lessThanOrEqualTo(property: KProperty1<T, V>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.LessThanOrEqual, value)
+
+    fun <V> arrayContains(property: KProperty1<T, List<V>>, value: V): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.ArrayContains, value)
+
+    fun <V> arrayContainsAny(
+        property: KProperty1<T, List<V>>, values: List<V>
+    ): FirestoreQueryBuilder<T> = where(property, QueryOperator.ArrayContainsAny, values)
+
+    fun <V> whereIn(property: KProperty1<T, V>, values: List<V>): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.In, values)
+
+    fun <V> whereNotIn(property: KProperty1<T, V>, values: List<V>): FirestoreQueryBuilder<T> =
+        where(property, QueryOperator.NotIn, values)
+
+    fun limit(limit: Long): FirestoreQueryBuilder<T> {
         this.limit = limit
         return this
     }
 
-    fun startAfter(id: String): FirestoreQueryBuilder {
+    fun startAfter(id: String): FirestoreQueryBuilder<T> {
         this.startAfterDocId = id
         return this
+    }
+
+    private fun <V> getFirestoreFieldName(property: KProperty1<T, V>): String {
+        property.javaField?.getAnnotation(PropertyName::class.java)?.let {
+            return it.value
+        }
+        return property.name
     }
 
     internal fun buildQuery(base: Query): BuiltFirestoreQuery {
@@ -83,9 +130,7 @@ class FirestoreQueryBuilder {
                 if (order.ascending) Query.Direction.ASCENDING else Query.Direction.DESCENDING
             )
         }
-        if (limit != null) {
-            query = query.limit(limit!!)
-        }
+        limit?.let { query = query.limit(it) }
         return BuiltFirestoreQuery(query, startAfterDocId)
     }
 

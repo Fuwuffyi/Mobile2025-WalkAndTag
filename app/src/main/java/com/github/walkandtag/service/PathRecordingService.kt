@@ -85,7 +85,7 @@ class PathRecordingService : Service() {
                 notificationId = pathRecordingNotificationId + 1
             )
             savedPathRepo.clear()
-            return;
+            return
         }
         notifier.notify(
             title = resources.getString(R.string.path_saved_successfully),

@@ -1,6 +1,5 @@
 [versions]
 agp = "8.11.0"
-androidSdk = "11.11.0"
 biometric = "1.1.0"
 credentialsPlayServicesAuth = "1.5.0"
 datastorePreferences = "1.1.7"
@@ -36,7 +35,6 @@ androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-gl-android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 io-gitlab-arturbosch-detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "ioGitlabArturboschDetektGradlePlugin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -56,6 +54,7 @@ koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-core = { module = "io.insert-koin:koin-core" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }

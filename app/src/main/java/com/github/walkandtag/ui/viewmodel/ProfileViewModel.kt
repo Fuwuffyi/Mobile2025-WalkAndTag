@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.firebase.auth.Authentication
 import com.github.walkandtag.firebase.db.FirestoreDocument
-import com.github.walkandtag.firebase.db.schemas.FirestoreQueryBuilder
 import com.github.walkandtag.firebase.db.schemas.PathSchema
-import com.github.walkandtag.firebase.db.schemas.QueryOperator
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
 import com.github.walkandtag.repository.SavedPathRepository
@@ -75,15 +73,15 @@ class ProfileViewModel(
         isLoading = true
         viewModelScope.launch {
             try {
-                val queryBuilder = FirestoreQueryBuilder()
-                    .where("userId", QueryOperator.Equal, userId)
-                    .limit(pageSize.toLong())
-                if (lastPathId != null) {
-                    queryBuilder.startAfter(lastPathId!!)
+                val pagedResult = pathRepo.queryPaged(
+                    limit = pageSize.toUInt(),
+                    startAfterId = lastPathId
+                ) {
+                    equalTo(PathSchema::userId, userId)
                 }
-                val newPaths = pathRepo.runQuery(queryBuilder)
+                val newPaths = pagedResult.documents
                 val endReached = newPaths.isEmpty()
-                val lastDocId = newPaths.lastOrNull()?.id
+                val lastDocId = pagedResult.lastDocumentId
                 if (!endReached) {
                     lastPathId = lastDocId
                     _state.update { it.copy(paths = it.paths + newPaths) }
