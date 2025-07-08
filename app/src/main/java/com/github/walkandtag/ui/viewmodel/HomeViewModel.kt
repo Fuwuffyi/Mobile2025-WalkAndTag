@@ -95,13 +95,57 @@ class HomeViewModel(
         _state.value = if (loadedItems.isEmpty()) HomeState.Loading else _state.value
         viewModelScope.launch {
             try {
-                val page = pathRepo.getAllPaged(startAfterId = lastPathId)
-                val paths = page.documents
+                val currentFilters = filters.value
+                val pageResult = pathRepo.queryPaged(
+                    limit = 15u, startAfterId = lastPathId
+                ) {
+                    if (currentFilters.nameQuery.isNotBlank()) {
+                        equalTo(PathSchema::name, currentFilters.nameQuery)
+                    }
+                    if (currentFilters.authorQuery.isNotBlank()) {
+                        // @TODO(): Fix with author name
+                        // equalTo(PathSchema::userId, currentFilters.authorQuery)
+                    }
+                    if (currentFilters.minLength > 0) {
+                        greaterThanOrEqualTo(PathSchema::length, currentFilters.minLength)
+                    }
+                    if (currentFilters.maxLength < 10000) {
+                        lessThanOrEqualTo(PathSchema::length, currentFilters.maxLength)
+                    }
+                    if (currentFilters.minTime > 0) {
+                        greaterThanOrEqualTo(PathSchema::time, currentFilters.minTime)
+                    }
+                    if (currentFilters.maxTime < 1440) {
+                        lessThanOrEqualTo(PathSchema::time, currentFilters.maxTime)
+                    }
+                    // @TODO(): Add favorite filters
+//                    if (currentFilters.showFavorites) {
+//                        val favIds = _favoritePathIds.value.toList()
+//                        if (favIds.isNotEmpty()) {
+//                            whereIn(FieldPath.documentId(), favIds)
+//                        }
+//                    }
+                    if (currentFilters.sortOptions.isNotEmpty()) {
+                        val (sortOption, direction) = currentFilters.sortOptions.entries.first()
+                        val ascending = direction == SortDirection.ASC
+                        when (sortOption) {
+                            SortOption.NAME -> orderBy(PathSchema::name, ascending)
+                            SortOption.AUTHOR -> orderBy(PathSchema::userId, ascending)
+                            SortOption.LENGTH -> orderBy(PathSchema::length, ascending)
+                            SortOption.TIME -> orderBy(PathSchema::time, ascending)
+                            SortOption.DATE -> orderBy(PathSchema::creationTimestamp, ascending)
+                            SortOption.NEAREST -> {
+                                // @TODO(): Get nearest
+                            }
+                        }
+                    }
+                }
+                val paths = pageResult.documents
                 if (paths.isEmpty()) {
                     endReached = true
                     return@launch
                 }
-                lastPathId = page.lastDocumentId
+                lastPathId = pageResult.lastDocumentId
                 val userIds = paths.map { it.data.userId }.toSet()
                 val users = userRepo.get(userIds).associateBy { it.id }
                 val newItems = paths.map { path ->
@@ -130,7 +174,9 @@ class HomeViewModel(
             val newFavorites = userDoc.data.favoritePathIds.toMutableSet().apply {
                 if (contains(pathId)) remove(pathId) else add(pathId)
             }
-            userRepo.update(userDoc.data.copy(favoritePathIds = newFavorites.toMutableList()), userDoc.id)
+            userRepo.update(
+                userDoc.data.copy(favoritePathIds = newFavorites.toMutableList()), userDoc.id
+            )
             _favoritePathIds.value = newFavorites
             (_state.value as? HomeState.Success)?.let {
                 _state.value = it.copy(favoritePathIds = newFavorites.toList())
