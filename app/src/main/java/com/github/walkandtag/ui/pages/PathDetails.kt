@@ -84,20 +84,12 @@ fun PathDetails(
                 modifier = Modifier.fillMaxWidth(),
                 isFavorite = state.value.isFavorite,
                 onPathClick = { navigator.navigate(Navigation.FullMap(pathId)) },
-                onFavoriteClick = { viewModel.toggleFavorite() }
+                onFavoriteClick = { viewModel.toggleFavorite() })
+            NavigationButton(
+                startPoint = viewModel.getStartPoint()!!,
+                endPoint = viewModel.getEndPoint()!!,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
-
-            val startPoint = viewModel.getStartPoint()
-            val endPoint = viewModel.getEndPoint()
-
-            if (startPoint != null && endPoint != null) {
-                NavigationButton(
-                    startPoint = startPoint,
-                    endPoint = endPoint,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
-
             HorizontalDivider()
             Text(text = path.description, style = MaterialTheme.typography.bodyLarge)
         }

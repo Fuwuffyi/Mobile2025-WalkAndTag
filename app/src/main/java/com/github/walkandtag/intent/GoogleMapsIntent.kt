@@ -1,4 +1,4 @@
-package com.github.walkandtag.util
+package com.github.walkandtag.intent
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,7 @@ import androidx.core.net.toUri
 import com.github.walkandtag.R
 import com.mapbox.mapboxsdk.geometry.LatLng
 
-object NavigationIntent {
+object GoogleMapsIntent {
 
     fun openGoogleMapsNavigation(
         context: Context,
@@ -21,7 +21,6 @@ object NavigationIntent {
                 setPackage("com.google.android.apps.maps")
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
-
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
             } else {
@@ -43,7 +42,6 @@ object NavigationIntent {
     ) {
         val uri = "https://www.google.com/maps/dir/${start.latitude},${start.longitude}/${end.latitude},${end.longitude}".toUri()
         val intent = Intent(Intent.ACTION_VIEW, uri)
-
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         } else {
