@@ -17,23 +17,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.walkandtag.R
-import com.github.walkandtag.intent.GoogleMapsIntent
+import com.github.walkandtag.intent.openGoogleMapsNavigation
 import com.mapbox.mapboxsdk.geometry.LatLng
 
 @Composable
 fun NavigationButton(
     modifier: Modifier = Modifier,
-    startPoint: LatLng,
-    endPoint: LatLng,
+    paddedPoints: List<LatLng> = emptyList(),
     enabled: Boolean = true
 ) {
     val context = LocalContext.current
     Button(
         onClick = {
-            GoogleMapsIntent.openGoogleMapsNavigation(
+            openGoogleMapsNavigation(
                 context = context,
-                start = startPoint,
-                end = endPoint
+                paddedPoints = paddedPoints
             )
         },
         modifier = modifier.fillMaxWidth(),

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 data class PathDetailsState(
     var publisher: FirestoreDocument<UserSchema>? = null,
@@ -68,11 +69,11 @@ class PathDetailsViewModel(
         }
     }
 
-    fun getStartPoint(): LatLng? {
-        return _uiState.value.path?.data?.points?.firstOrNull()
+    fun getPaddedPoints(n: Int = 10): List<LatLng> {
+        val points = _uiState.value.path?.data?.points ?: return emptyList()
+        if (points.size <= n) return points
+        val step = (points.size - 1).toDouble() / (n - 1)
+        return List(n) { index -> points[(index * step).roundToInt()] }
     }
 
-    fun getEndPoint(): LatLng? {
-        return _uiState.value.path?.data?.points?.lastOrNull()
-    }
 }

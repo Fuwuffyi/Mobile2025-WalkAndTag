@@ -3,55 +3,65 @@ package com.github.walkandtag.intent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import androidx.core.net.toUri
 import com.github.walkandtag.R
+import com.github.walkandtag.ui.viewmodel.GlobalViewModel
 import com.mapbox.mapboxsdk.geometry.LatLng
+import org.koin.java.KoinJavaComponent.inject
 
-object GoogleMapsIntent {
+fun openGoogleMapsNavigation(
+    context: Context,
+    paddedPoints: List<LatLng>,
+) {
+    val globalViewModel: GlobalViewModel by inject(
+        clazz = GlobalViewModel::class.java
+    )
+    try {
+        val start = paddedPoints.first()
+        val end = paddedPoints.last()
+        val waypoints = paddedPoints
+            .subList(1, paddedPoints.size - 1)
+            .joinToString("|") { "${it.latitude},${it.longitude}" }
 
-    fun openGoogleMapsNavigation(
-        context: Context,
-        start: LatLng,
-        end: LatLng
-    ) {
-        try {
-            val uri =
-                "https://www.google.com/maps/dir/?api=1&origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&travelmode=walking".toUri()
-            val intent = Intent(Intent.ACTION_VIEW, uri).apply {
-                setPackage("com.google.android.apps.maps")
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-            if (intent.resolveActivity(context.packageManager) != null) {
-                context.startActivity(intent)
-            } else {
-                openWebMapsNavigation(context, start, end)
-            }
-        } catch (e: Exception) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.error_opening_maps),
-                Toast.LENGTH_SHORT
-            ).show()
-            Log.e("MAPS_INTENT", "Could not open google maps.", e)
+        val uriBuilder = StringBuilder()
+            .append("https://www.google.com/maps/dir/?api=1")
+            .append("&origin=${start.latitude},${start.longitude}")
+            .append("&destination=${end.latitude},${end.longitude}")
+            .append("&travelmode=walking")
+
+        if (waypoints.isNotEmpty()) {
+            uriBuilder.append("&waypoints=$waypoints")
         }
-    }
 
-    private fun openWebMapsNavigation(
-        context: Context,
-        start: LatLng,
-        end: LatLng
-    ) {
-        val uri = "https://www.google.com/maps/dir/${start.latitude},${start.longitude}/${end.latitude},${end.longitude}".toUri()
-        val intent = Intent(Intent.ACTION_VIEW, uri)
+        val uri = uriBuilder.toString().toUri()
+
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            setPackage("com.google.android.apps.maps")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
         } else {
-            Toast.makeText(
-                context,
-                context.getString(R.string.no_maps_app_found),
-                Toast.LENGTH_SHORT
-            ).show()
+            openWebMapsNavigation(context, paddedPoints)
         }
+
+    } catch (e: Exception) {
+        globalViewModel.showSnackbar(context.getString(R.string.error_opening_maps))
+        Log.e("MAPS_INTENT", "Could not open Google Maps.", e)
     }
 }
+
+private fun openWebMapsNavigation(
+    context: Context,
+    paddedPoints: List<LatLng>
+) {
+    val pathPart = paddedPoints.joinToString("/") { "${it.latitude},${it.longitude}" }
+    val uri = "https://www.google.com/maps/dir/$pathPart/data=!4m2!4m1!3e2".toUri()
+
+    val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    context.startActivity(intent)
+}
+
