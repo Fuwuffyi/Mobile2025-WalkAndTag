@@ -7,6 +7,7 @@ import com.github.walkandtag.firebase.db.FirestoreDocument
 import com.github.walkandtag.firebase.db.schemas.PathSchema
 import com.github.walkandtag.firebase.db.schemas.UserSchema
 import com.github.walkandtag.repository.FirestoreRepository
+import com.mapbox.mapboxsdk.geometry.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -65,5 +66,13 @@ class PathDetailsViewModel(
                 _uiState.update { it.copy(isFavorite = !isCurrentlyFav) }
             }
         }
+    }
+
+    fun getStartPoint(): LatLng? {
+        return _uiState.value.path?.data?.points?.firstOrNull()
+    }
+
+    fun getEndPoint(): LatLng? {
+        return _uiState.value.path?.data?.points?.lastOrNull()
     }
 }

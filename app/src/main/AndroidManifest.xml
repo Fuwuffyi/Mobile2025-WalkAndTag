@@ -13,14 +13,8 @@
     <!-- Biometric & fingerprint permissions -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-    <!-- Query for location permissions  -->
     <queries>
-        <intent>
-            <action android:name="android.settings.LOCATION_SOURCE_SETTINGS" />
-        </intent>
-        <intent>
-            <action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" />
-        </intent>
+        <package android:name="com.google.android.apps.maps" />
     </queries>
     <!-- Application stuff -->
     <application

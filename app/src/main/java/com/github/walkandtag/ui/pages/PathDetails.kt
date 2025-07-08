@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.walkandtag.R
 import com.github.walkandtag.ui.components.LoadingScreen
+import com.github.walkandtag.ui.components.NavigationButton
 import com.github.walkandtag.ui.components.StaticMapFavorite
 import com.github.walkandtag.ui.navigation.Navigation
 import com.github.walkandtag.ui.viewmodel.PathDetailsViewModel
@@ -82,7 +84,20 @@ fun PathDetails(
                 modifier = Modifier.fillMaxWidth(),
                 isFavorite = state.value.isFavorite,
                 onPathClick = { navigator.navigate(Navigation.FullMap(pathId)) },
-                onFavoriteClick = { viewModel.toggleFavorite() })
+                onFavoriteClick = { viewModel.toggleFavorite() }
+            )
+
+            val startPoint = viewModel.getStartPoint()
+            val endPoint = viewModel.getEndPoint()
+
+            if (startPoint != null && endPoint != null) {
+                NavigationButton(
+                    startPoint = startPoint,
+                    endPoint = endPoint,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
             HorizontalDivider()
             Text(text = path.description, style = MaterialTheme.typography.bodyLarge)
         }
