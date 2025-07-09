@@ -1,5 +1,6 @@
 package com.github.walkandtag.firebase.db
 
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.Query
 import kotlin.reflect.KProperty1
@@ -19,11 +20,14 @@ sealed class QueryOperator {
 }
 
 data class FirestoreQueryFilter(
-    val field: String, val operator: QueryOperator, val value: Any
+    val field: String,
+    val operator: QueryOperator,
+    val value: Any,
+    val isDocumentId: Boolean = false
 )
 
 data class FirestoreOrder(
-    val field: String, val ascending: Boolean = true
+    val field: String, val ascending: Boolean = true, val isDocumentId: Boolean = false
 )
 
 class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
@@ -40,11 +44,45 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
         return this
     }
 
+    fun whereDocumentId(op: QueryOperator, value: Any): FirestoreQueryBuilder<T> {
+        filters.add(FirestoreQueryFilter("", op, value, isDocumentId = true))
+        return this
+    }
+
+    fun whereDocumentIdEqualTo(id: String): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.Equal, id)
+
+    fun whereDocumentIdNotEqualTo(id: String): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.NotEqual, id)
+
+    fun whereDocumentIdGreaterThan(id: String): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.GreaterThan, id)
+
+    fun whereDocumentIdGreaterThanOrEqualTo(id: String): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.GreaterThanOrEqual, id)
+
+    fun whereDocumentIdLessThan(id: String): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.LessThan, id)
+
+    fun whereDocumentIdLessThanOrEqualTo(id: String): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.LessThanOrEqual, id)
+
+    fun whereDocumentIdIn(ids: List<String>): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.In, ids)
+
+    fun whereDocumentIdNotIn(ids: List<String>): FirestoreQueryBuilder<T> =
+        whereDocumentId(QueryOperator.NotIn, ids)
+
     fun <V> orderBy(
         property: KProperty1<T, V>, ascending: Boolean = true
     ): FirestoreQueryBuilder<T> {
         val fieldName = getFirestoreFieldName(property)
         orders.add(FirestoreOrder(fieldName, ascending))
+        return this
+    }
+
+    fun orderByDocumentId(ascending: Boolean = true): FirestoreQueryBuilder<T> {
+        orders.add(FirestoreOrder("", ascending, isDocumentId = true))
         return this
     }
 
@@ -100,35 +138,90 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
         var query = base
         for (filter in filters) {
             query = when (filter.operator) {
-                is QueryOperator.Equal -> query.whereEqualTo(filter.field, filter.value)
-                is QueryOperator.NotEqual -> query.whereNotEqualTo(filter.field, filter.value)
-                is QueryOperator.GreaterThan -> query.whereGreaterThan(filter.field, filter.value)
-                is QueryOperator.GreaterThanOrEqual -> query.whereGreaterThanOrEqualTo(
-                    filter.field, filter.value
-                )
-
-                is QueryOperator.LessThan -> query.whereLessThan(filter.field, filter.value)
-                is QueryOperator.LessThanOrEqual -> query.whereLessThanOrEqualTo(
-                    filter.field, filter.value
-                )
-
-                is QueryOperator.ArrayContains -> query.whereArrayContains(
-                    filter.field, filter.value
-                )
-
-                is QueryOperator.ArrayContainsAny -> query.whereArrayContainsAny(
-                    filter.field, filter.value as List<*>
-                )
-
-                is QueryOperator.In -> query.whereIn(filter.field, filter.value as List<*>)
-                is QueryOperator.NotIn -> query.whereNotIn(filter.field, filter.value as List<*>)
+                is QueryOperator.Equal -> {
+                    if (filter.isDocumentId) {
+                        query.whereEqualTo(FieldPath.documentId(), filter.value)
+                    } else {
+                        query.whereEqualTo(filter.field, filter.value)
+                    }
+                }
+                is QueryOperator.NotEqual -> {
+                    if (filter.isDocumentId) {
+                        query.whereNotEqualTo(FieldPath.documentId(), filter.value)
+                    } else {
+                        query.whereNotEqualTo(filter.field, filter.value)
+                    }
+                }
+                is QueryOperator.GreaterThan -> {
+                    if (filter.isDocumentId) {
+                        query.whereGreaterThan(FieldPath.documentId(), filter.value)
+                    } else {
+                        query.whereGreaterThan(filter.field, filter.value)
+                    }
+                }
+                is QueryOperator.GreaterThanOrEqual -> {
+                    if (filter.isDocumentId) {
+                        query.whereGreaterThanOrEqualTo(FieldPath.documentId(), filter.value)
+                    } else {
+                        query.whereGreaterThanOrEqualTo(filter.field, filter.value)
+                    }
+                }
+                is QueryOperator.LessThan -> {
+                    if (filter.isDocumentId) {
+                        query.whereLessThan(FieldPath.documentId(), filter.value)
+                    } else {
+                        query.whereLessThan(filter.field, filter.value)
+                    }
+                }
+                is QueryOperator.LessThanOrEqual -> {
+                    if (filter.isDocumentId) {
+                        query.whereLessThanOrEqualTo(FieldPath.documentId(), filter.value)
+                    } else {
+                        query.whereLessThanOrEqualTo(filter.field, filter.value)
+                    }
+                }
+                is QueryOperator.ArrayContains -> {
+                    // Document ID cannot use array operations
+                    if (filter.isDocumentId) {
+                        throw IllegalArgumentException("Document ID cannot use array operations")
+                    }
+                    query.whereArrayContains(filter.field, filter.value)
+                }
+                is QueryOperator.ArrayContainsAny -> {
+                    // Document ID cannot use array operations
+                    if (filter.isDocumentId) {
+                        throw IllegalArgumentException("Document ID cannot use array operations")
+                    }
+                    query.whereArrayContainsAny(filter.field, filter.value as List<*>)
+                }
+                is QueryOperator.In -> {
+                    if (filter.isDocumentId) {
+                        query.whereIn(FieldPath.documentId(), filter.value as List<*>)
+                    } else {
+                        query.whereIn(filter.field, filter.value as List<*>)
+                    }
+                }
+                is QueryOperator.NotIn -> {
+                    if (filter.isDocumentId) {
+                        query.whereNotIn(FieldPath.documentId(), filter.value as List<*>)
+                    } else {
+                        query.whereNotIn(filter.field, filter.value as List<*>)
+                    }
+                }
             }
         }
         for (order in orders) {
-            query = query.orderBy(
-                order.field,
-                if (order.ascending) Query.Direction.ASCENDING else Query.Direction.DESCENDING
-            )
+            query = if (order.isDocumentId) {
+                query.orderBy(
+                    FieldPath.documentId(),
+                    if (order.ascending) Query.Direction.ASCENDING else Query.Direction.DESCENDING
+                )
+            } else {
+                query.orderBy(
+                    order.field,
+                    if (order.ascending) Query.Direction.ASCENDING else Query.Direction.DESCENDING
+                )
+            }
         }
         limit?.let { query = query.limit(it) }
         return BuiltFirestoreQuery(query, startAfterDocId)

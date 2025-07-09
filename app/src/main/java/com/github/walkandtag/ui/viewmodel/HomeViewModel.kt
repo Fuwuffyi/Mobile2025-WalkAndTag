@@ -118,13 +118,12 @@ class HomeViewModel(
                     if (currentFilters.maxTime < 1440) {
                         lessThanOrEqualTo(PathSchema::time, currentFilters.maxTime)
                     }
-                    // @TODO(): Add favorite filters
-//                    if (currentFilters.showFavorites) {
-//                        val favIds = _favoritePathIds.value.toList()
-//                        if (favIds.isNotEmpty()) {
-//                            whereIn(FieldPath.documentId(), favIds)
-//                        }
-//                    }
+                    if (currentFilters.showFavorites) {
+                        val favIds = _favoritePathIds.value.toList()
+                        if (favIds.isNotEmpty()) {
+                            whereDocumentIdIn(favIds)
+                        }
+                    }
                     if (currentFilters.sortOptions.isNotEmpty()) {
                         val (sortOption, direction) = currentFilters.sortOptions.entries.first()
                         val ascending = direction == SortDirection.ASC
