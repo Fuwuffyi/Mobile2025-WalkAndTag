@@ -47,12 +47,12 @@ class AuthViewModel(
             BiometricStatus.SUCCESS -> {
                 BiometricPromptManager(activity).authenticate(
                     onSuccess = {
-                    viewModelScope.launch {
-                        if (currentUser != null) {
-                            _uiEvent.emit(AuthUIEvent.NavigateToMain)
+                        viewModelScope.launch {
+                            if (currentUser != null) {
+                                _uiEvent.emit(AuthUIEvent.NavigateToMain)
+                            }
                         }
-                    }
-                },
+                    },
                     onFail = { globalViewModel.showSnackbar("Biometric authentication failed.") },
                     onError = { globalViewModel.showSnackbar("Biometric authentication error.") })
             }

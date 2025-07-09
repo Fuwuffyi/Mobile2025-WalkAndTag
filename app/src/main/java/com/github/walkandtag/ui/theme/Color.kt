@@ -39,6 +39,7 @@ val md_theme_light_surfaceContainerLow = Color(0xF3F3FAFF)
 val md_theme_light_surfaceContainer = Color(0xEDEDF4FF)
 val md_theme_light_surfaceContainerHigh = Color(0xE7E8EEFF)
 val md_theme_light_surfaceContainerHighest = Color(0xE2E2E9FF)
+
 // Dark Theme Colors
 val md_theme_dark_primary = Color(0xAAC7FFFF)
 val md_theme_dark_surfaceTint = Color(0xAAC7FFFF)

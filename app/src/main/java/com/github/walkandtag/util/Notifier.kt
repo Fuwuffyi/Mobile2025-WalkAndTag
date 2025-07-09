@@ -66,9 +66,7 @@ class Notifier(
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun notifyPersistent(
-        title: String,
-        text: String,
-        priority: Int = NotificationCompat.PRIORITY_DEFAULT
+        title: String, text: String, priority: Int = NotificationCompat.PRIORITY_DEFAULT
     ): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(
                 appContext, Manifest.permission.POST_NOTIFICATIONS

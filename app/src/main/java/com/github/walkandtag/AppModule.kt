@@ -60,13 +60,12 @@ val appModule = module {
         FirestoreRepository.create("paths")
     }
     // View models
+    // Global one is singleton to properly work
     single {
         GlobalViewModel(
-            get(),
-            get(),
-            get()
+            get(), get(), get()
         )
-    } // Singleton per evitare di ricrearlo per tutte le pagine
+    }
     viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
     viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
     viewModel { AuthViewModel(get(), get(named("users")), get()) }

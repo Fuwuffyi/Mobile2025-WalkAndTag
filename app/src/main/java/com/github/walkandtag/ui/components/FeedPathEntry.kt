@@ -50,52 +50,52 @@ fun FeedPathEntry(
 ) {
     FeedPathEntryLayout(
         modifier = modifier, userSection = user?.let {
-        {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onProfileClick?.invoke() }) {
-                MaterialIconInCircle(
-                    icon = Icons.Filled.SupervisedUserCircle, modifier = Modifier.size(32.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(it.data.username)
-            }
-        }
-    }, pathTitle = path.data.name, mapContent = {
-        if (user != null) {
-            StaticMapFavorite(
-                path = path.data.points,
-                isFavorite = isFavorite,
-                modifier = Modifier.fillMaxWidth(),
-                onPathClick = onPathClick,
-                onFavoriteClick = onFavoritePathClick
-            )
-        } else {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(3f / 2f)
-                    .clickable(onClick = onPathClick)
-            ) {
-                StaticMapPath(path = path.data.points, modifier = Modifier.fillMaxSize())
-                IconButton(
-                    onClick = onFavoritePathClick,
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp)
-                        .border(2.dp, Color(255, 127, 0))
-                ) {
-                    Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder,
-                        contentDescription = stringResource(R.string.favourite),
-                        tint = Color(255, 127, 0),
-                        modifier = Modifier.size(50.dp)
+            {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { onProfileClick?.invoke() }) {
+                    MaterialIconInCircle(
+                        icon = Icons.Filled.SupervisedUserCircle, modifier = Modifier.size(32.dp)
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(it.data.username)
                 }
             }
-        }
-    }, length = path.data.length, time = path.data.time
+        }, pathTitle = path.data.name, mapContent = {
+            if (user != null) {
+                StaticMapFavorite(
+                    path = path.data.points,
+                    isFavorite = isFavorite,
+                    modifier = Modifier.fillMaxWidth(),
+                    onPathClick = onPathClick,
+                    onFavoriteClick = onFavoritePathClick
+                )
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(3f / 2f)
+                        .clickable(onClick = onPathClick)
+                ) {
+                    StaticMapPath(path = path.data.points, modifier = Modifier.fillMaxSize())
+                    IconButton(
+                        onClick = onFavoritePathClick,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp)
+                            .border(2.dp, Color(255, 127, 0))
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder,
+                            contentDescription = stringResource(R.string.favourite),
+                            tint = Color(255, 127, 0),
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                }
+            }
+        }, length = path.data.length, time = path.data.time
     )
 }
 

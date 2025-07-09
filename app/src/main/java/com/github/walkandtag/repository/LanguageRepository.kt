@@ -17,12 +17,12 @@ class LanguageRepository(private val dataStore: DataStore<Preferences>) {
     }
 
     val language = dataStore.data.map { preferences ->
-            try {
-                Language.valueOf(preferences[LANG_KEY] ?: Language.System.name)
-            } catch (_: Exception) {
-                Language.System
-            }
+        try {
+            Language.valueOf(preferences[LANG_KEY] ?: Language.System.name)
+        } catch (_: Exception) {
+            Language.System
         }
+    }
 
     suspend fun setLang(lang: Language) = dataStore.edit { it[LANG_KEY] = lang.toString() }
 }

@@ -74,8 +74,7 @@ class ProfileViewModel(
         viewModelScope.launch {
             try {
                 val pagedResult = pathRepo.queryPaged(
-                    limit = pageSize.toUInt(),
-                    startAfterId = lastPathId
+                    limit = pageSize, startAfterId = lastPathId
                 ) {
                     equalTo(PathSchema::userId, userId)
                 }

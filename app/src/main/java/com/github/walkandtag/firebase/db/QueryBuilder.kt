@@ -145,6 +145,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereEqualTo(filter.field, filter.value)
                     }
                 }
+
                 is QueryOperator.NotEqual -> {
                     if (filter.isDocumentId) {
                         query.whereNotEqualTo(FieldPath.documentId(), filter.value)
@@ -152,6 +153,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereNotEqualTo(filter.field, filter.value)
                     }
                 }
+
                 is QueryOperator.GreaterThan -> {
                     if (filter.isDocumentId) {
                         query.whereGreaterThan(FieldPath.documentId(), filter.value)
@@ -159,6 +161,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereGreaterThan(filter.field, filter.value)
                     }
                 }
+
                 is QueryOperator.GreaterThanOrEqual -> {
                     if (filter.isDocumentId) {
                         query.whereGreaterThanOrEqualTo(FieldPath.documentId(), filter.value)
@@ -166,6 +169,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereGreaterThanOrEqualTo(filter.field, filter.value)
                     }
                 }
+
                 is QueryOperator.LessThan -> {
                     if (filter.isDocumentId) {
                         query.whereLessThan(FieldPath.documentId(), filter.value)
@@ -173,6 +177,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereLessThan(filter.field, filter.value)
                     }
                 }
+
                 is QueryOperator.LessThanOrEqual -> {
                     if (filter.isDocumentId) {
                         query.whereLessThanOrEqualTo(FieldPath.documentId(), filter.value)
@@ -180,6 +185,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereLessThanOrEqualTo(filter.field, filter.value)
                     }
                 }
+
                 is QueryOperator.ArrayContains -> {
                     // Document ID cannot use array operations
                     if (filter.isDocumentId) {
@@ -187,6 +193,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                     }
                     query.whereArrayContains(filter.field, filter.value)
                 }
+
                 is QueryOperator.ArrayContainsAny -> {
                     // Document ID cannot use array operations
                     if (filter.isDocumentId) {
@@ -194,6 +201,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                     }
                     query.whereArrayContainsAny(filter.field, filter.value as List<*>)
                 }
+
                 is QueryOperator.In -> {
                     if (filter.isDocumentId) {
                         query.whereIn(FieldPath.documentId(), filter.value as List<*>)
@@ -201,6 +209,7 @@ class FirestoreQueryBuilder<T : Any>(private val classType: Class<T>) {
                         query.whereIn(filter.field, filter.value as List<*>)
                     }
                 }
+
                 is QueryOperator.NotIn -> {
                     if (filter.isDocumentId) {
                         query.whereNotIn(FieldPath.documentId(), filter.value as List<*>)

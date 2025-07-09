@@ -12,8 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class SettingsState(
-    val username: String = "",
-    val showLanguageDialog: Boolean = false
+    val username: String = "", val showLanguageDialog: Boolean = false
 )
 
 sealed interface SettingsEvent {
@@ -22,8 +21,7 @@ sealed interface SettingsEvent {
 }
 
 class SettingsViewModel(
-    private val auth: Authentication,
-    private val userRepo: FirestoreRepository<UserSchema>
+    private val auth: Authentication, private val userRepo: FirestoreRepository<UserSchema>
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsState())
