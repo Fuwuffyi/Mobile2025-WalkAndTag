@@ -1,5 +1,6 @@
 package com.github.walkandtag.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.walkandtag.firebase.auth.Authentication
@@ -14,7 +15,6 @@ import kotlinx.coroutines.launch
 
 data class HomeFilters(
     val nameQuery: String = "",
-    val authorQuery: String = "",
     val minLength: Int = 0,
     val maxLength: Int = 10000,
     val minTime: Int = 0,
@@ -102,15 +102,11 @@ class HomeViewModel(
                     if (currentFilters.nameQuery.isNotBlank()) {
                         equalTo(PathSchema::name, currentFilters.nameQuery)
                     }
-                    if (currentFilters.authorQuery.isNotBlank()) {
-                        // @TODO(): Fix with author name
-                        // equalTo(PathSchema::userId, currentFilters.authorQuery)
-                    }
                     if (currentFilters.minLength > 0) {
-                        greaterThanOrEqualTo(PathSchema::length, currentFilters.minLength)
+                        greaterThanOrEqualTo(PathSchema::length, currentFilters.minLength / 1000)
                     }
                     if (currentFilters.maxLength < 10000) {
-                        lessThanOrEqualTo(PathSchema::length, currentFilters.maxLength)
+                        lessThanOrEqualTo(PathSchema::length, currentFilters.maxLength / 1000)
                     }
                     if (currentFilters.minTime > 0) {
                         greaterThanOrEqualTo(PathSchema::time, currentFilters.minTime)
@@ -157,6 +153,7 @@ class HomeViewModel(
                 _state.value = HomeState.Success(filteredItems.toList(), _favoritePathIds.value)
             } catch (e: Exception) {
                 _state.value = HomeState.Error(e.message ?: "Unknown error")
+                Log.e("HOME_FILTERS", "Error while applying filters", e)
             } finally {
                 isLoading = false
             }

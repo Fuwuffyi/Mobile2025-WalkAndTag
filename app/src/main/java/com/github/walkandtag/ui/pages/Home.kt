@@ -109,12 +109,6 @@ fun Home(
                             label = { Text(stringResource(R.string.filter_name)) },
                             modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
-                            value = filters.authorQuery,
-                            onValueChange = { viewModel.updateFilters { copy(authorQuery = it) } },
-                            label = { Text(stringResource(R.string.filter_author)) },
-                            modifier = Modifier.fillMaxWidth()
-                        )
                         Spacer(Modifier.padding(8.dp))
                         Text(
                             stringResource(
