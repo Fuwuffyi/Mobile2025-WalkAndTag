@@ -20,11 +20,11 @@ data class HomeFilters(
     val minTime: Int = 0,
     val maxTime: Int = 1440,
     val showFavorites: Boolean = false,
-    val sortOptions: Map<SortOption, SortDirection> = emptyMap()
+    val sortOptions: Map<SortOption, SortDirection> = mapOf(SortOption.DATE to SortDirection.DESC)
 )
 
 enum class SortOption {
-    NAME, AUTHOR, LENGTH, TIME, NEAREST, DATE
+    NAME, AUTHOR, LENGTH, TIME, DATE
 }
 
 enum class SortDirection {
@@ -133,9 +133,6 @@ class HomeViewModel(
                             SortOption.LENGTH -> orderBy(PathSchema::length, ascending)
                             SortOption.TIME -> orderBy(PathSchema::time, ascending)
                             SortOption.DATE -> orderBy(PathSchema::creationTimestamp, ascending)
-                            SortOption.NEAREST -> {
-                                // @TODO(): Get nearest
-                            }
                         }
                     }
                 }

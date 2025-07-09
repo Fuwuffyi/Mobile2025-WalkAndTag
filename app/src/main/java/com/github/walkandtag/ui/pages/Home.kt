@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Checkbox
@@ -53,7 +55,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-    fun Home(
+fun Home(
     nav: Navigator = koinInject(),
     globalViewModel: GlobalViewModel = koinInject(),
     viewModel: HomeViewModel = koinViewModel()
@@ -161,8 +163,10 @@ import org.koin.compose.koinInject
                         val allSortOptions = SortOption.entries
                         FlowRow {
                             allSortOptions.forEach { option ->
+                                val dir = filters.sortOptions[option] ?: SortDirection.NONE
                                 FilterChip(
-                                    selected = filters.sortOptions[option] != SortDirection.NONE,
+                                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                                    selected = dir != SortDirection.NONE,
                                     onClick = {
                                         viewModel.updateFilters {
                                             val current = sortOptions[option] ?: SortDirection.NONE
@@ -174,15 +178,29 @@ import org.koin.compose.koinInject
                                         }
                                     },
                                     label = {
-                                        val dir = filters.sortOptions[option] ?: SortDirection.NONE
-                                        val suffix = when (dir) {
-                                            SortDirection.ASC -> " ↑"
-                                            SortDirection.DESC -> " ↓"
-                                            else -> ""
-                                        }
                                         Text(
-                                            option.name.lowercase()
-                                                .replaceFirstChar { it.uppercase() } + suffix)
+                                            when (option) {
+                                                SortOption.DATE -> stringResource(R.string.chip_filter_date)
+                                                SortOption.NAME -> stringResource(R.string.chip_filter_name)
+                                                SortOption.AUTHOR -> stringResource(R.string.chip_filter_author)
+                                                SortOption.LENGTH -> stringResource(R.string.chip_filter_length)
+                                                SortOption.TIME -> stringResource(R.string.chip_filter_time)
+                                            }
+                                        )
+                                    },
+                                    trailingIcon = {
+                                        when (dir) {
+                                            SortDirection.ASC -> Icon(
+                                                Icons.Default.ArrowUpward, contentDescription = null
+                                            )
+
+                                            SortDirection.DESC -> Icon(
+                                                Icons.Default.ArrowDownward,
+                                                contentDescription = null
+                                            )
+
+                                            else -> {}
+                                        }
                                     })
                             }
                         }

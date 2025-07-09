@@ -60,14 +60,19 @@
     <string name="static_map">Static map</string>
     <!-- Home.kt -->
     <string name="filter_search_title">Filters &amp; Search</string>
-    <string name="button_close_filters">Open Filters</string>
+    <string name="button_close_filters">Close Filters</string>
+    <string name="button_open_filters">Open Filters</string>
     <string name="filter_name">Search by Name</string>
     <string name="filter_author">Search by Author</string>
     <string name="filter_path_length">Path Length (m): %1$d - %2$d</string>
     <string name="filter_path_duration">Path Time (min): %1$d - %2$d</string>
     <string name="filter_favourite_only">Show Favorites Only</string>
     <string name="sort_by">"Sort by: </string>
-    <string name="button_open_filters">Close Filters</string>
+    <string name="chip_filter_date">Date</string>
+    <string name="chip_filter_name">Name</string>
+    <string name="chip_filter_author">Author</string>
+    <string name="chip_filter_length">Length</string>
+    <string name="chip_filter_time">Duration</string>
     <!-- Login.kt -->
     <string name="login">Login</string>
     <string name="invalid_credential">Invalid Credentials.</string>

@@ -51,15 +51,20 @@
     <string name="map_fail">Errore durante il caricamento della mappa: %1$s</string>
     <string name="static_map">Mappa statica</string>
     <!-- Home.kt -->
-    <string name="button_close_filters">Apri Filtri</string>
-    <string name="button_open_filters">Chiudi Filtri</string>
     <string name="filter_search_title">Filtri &amp; Ricerca</string>
+    <string name="button_open_filters">Apri Filtri</string>
+    <string name="button_close_filters">Chiudi Filtri</string>
     <string name="filter_name">Ricerca per Nome</string>
     <string name="filter_author">Ricerca per Autore</string>
     <string name="filter_favourite_only">Mostra solo Preferiti</string>
     <string name="filter_path_length">Lunghezza del Percorso (m): %1$d - %2$d</string>
     <string name="filter_path_duration">Durata del Percorso (min): %1$d - %2$d</string>
     <string name="sort_by">"Ordina per: </string>
+    <string name="chip_filter_date">Data</string>
+    <string name="chip_filter_name">Nome</string>
+    <string name="chip_filter_author">Autore</string>
+    <string name="chip_filter_length">Lunghezza</string>
+    <string name="chip_filter_time">Durata</string>
     <!-- Login.kt -->
     <string name="login">Accedi</string>
     <string name="invalid_credential">Credenziali invalide.</string>
