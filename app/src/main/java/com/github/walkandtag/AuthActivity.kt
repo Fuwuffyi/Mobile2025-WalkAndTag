@@ -80,5 +80,5 @@ class AuthActivity : BaseActivity() {
         LoginNavGraph(navController)
     }
 
-    override fun navbarQualifier() = named("login")
+    override fun navbarQualifier() = named("auth_navbar")
 }

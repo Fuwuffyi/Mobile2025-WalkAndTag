@@ -66,8 +66,16 @@ val appModule = module {
             get(), get(), get()
         )
     }
-    viewModel(named("login")) { NavbarViewModel(Navigation.Login) }
-    viewModel(named("main")) { NavbarViewModel(Navigation.Home) }
+    // Factories for navbar to safely create them
+    factory { (startPage: Navigation, navigator: Navigator) ->
+        NavbarViewModel(startPage, navigator)
+    }
+    factory(qualifier = named("main_navbar")) { (navigator: Navigator) ->
+        NavbarViewModel(Navigation.Home, navigator)
+    }
+    factory(qualifier = named("auth_navbar")) { (navigator: Navigator) ->
+        NavbarViewModel(Navigation.Login, navigator)
+    }
     viewModel { AuthViewModel(get(), get(named("users")), get()) }
     viewModel { LoginViewModel(get()) }
     viewModel { RegisterViewModel(get(), get(named("users"))) }

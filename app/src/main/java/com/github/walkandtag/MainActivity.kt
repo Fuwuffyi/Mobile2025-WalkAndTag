@@ -44,5 +44,5 @@ class MainActivity : BaseActivity() {
         MainNavGraph(navController)
     }
 
-    override fun navbarQualifier() = named("main")
+    override fun navbarQualifier() = named("main_navbar")
 }

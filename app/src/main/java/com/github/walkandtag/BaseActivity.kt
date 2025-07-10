@@ -33,6 +33,7 @@ import com.github.walkandtag.util.updateLocale
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.Qualifier
 
 abstract class BaseActivity : FragmentActivity() {
@@ -60,8 +61,8 @@ abstract class BaseActivity : FragmentActivity() {
             ) {
                 WalkAndTagTheme(theme = themeState) {
                     val navController = rememberNavController()
-                    val navbarViewModel: NavbarViewModel =
-                        koinViewModel(qualifier = navbarQualifier())
+                    val navbarViewModel: NavbarViewModel = koinViewModel(
+                        qualifier = navbarQualifier(), parameters = { parametersOf(navigator) })
                     val navbarState by navbarViewModel.uiState.collectAsStateWithLifecycle()
                     LaunchedEffect(navController) {
                         navigator.setController(navController)
