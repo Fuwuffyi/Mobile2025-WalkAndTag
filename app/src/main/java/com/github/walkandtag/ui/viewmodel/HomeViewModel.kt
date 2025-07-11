@@ -103,16 +103,28 @@ class HomeViewModel(
                         equalTo(PathSchema::name, currentFilters.nameQuery)
                     }
                     if (currentFilters.minLength > 0) {
-                        greaterThanOrEqualTo(PathSchema::length, currentFilters.minLength.toDouble() / 1000.0)
+                        greaterThanOrEqualTo(
+                            PathSchema::length,
+                            currentFilters.minLength.toDouble() / 1000.0
+                        )
                     }
                     if (currentFilters.maxLength < 10000) {
-                        lessThanOrEqualTo(PathSchema::length, currentFilters.maxLength.toDouble() / 1000.0)
+                        lessThanOrEqualTo(
+                            PathSchema::length,
+                            currentFilters.maxLength.toDouble() / 1000.0
+                        )
                     }
                     if (currentFilters.minTime > 0) {
-                        greaterThanOrEqualTo(PathSchema::time, currentFilters.minTime.toDouble() / 60.0)
+                        greaterThanOrEqualTo(
+                            PathSchema::time,
+                            currentFilters.minTime.toDouble() / 60.0
+                        )
                     }
                     if (currentFilters.maxTime < 1440) {
-                        lessThanOrEqualTo(PathSchema::time, currentFilters.maxTime.toDouble() / 60.0)
+                        lessThanOrEqualTo(
+                            PathSchema::time,
+                            currentFilters.maxTime.toDouble() / 60.0
+                        )
                     }
                     if (currentFilters.showFavorites) {
                         val favIds = _favoritePathIds.value.toList()
